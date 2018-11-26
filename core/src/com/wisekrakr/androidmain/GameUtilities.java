@@ -128,5 +128,5 @@ public class GameUtilities {
     Some constants for game objects
      */
 
-    public static float BALL_RADIUS = 45f;
+    public static float BALL_RADIUS = Gdx.graphics.getWidth() /10;
 }

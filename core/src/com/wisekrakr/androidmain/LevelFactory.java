@@ -12,12 +12,16 @@ import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.CollisionComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
+import com.wisekrakr.androidmain.components.RowComponent;
 import com.wisekrakr.androidmain.components.StateComponent;
 import com.wisekrakr.androidmain.components.TextureComponent;
 import com.wisekrakr.androidmain.components.TransformComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
 import com.wisekrakr.androidmain.components.SurfaceComponent;
 import com.wisekrakr.androidmain.systems.RenderingSystem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.BALL;
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.PLAYER;
@@ -26,26 +30,27 @@ import static com.wisekrakr.androidmain.components.TypeComponent.Type.WATER;
 
 
 public class LevelFactory {
+
+    private Entity player;
+
     private BodyFactory bodyFactory;
     public World world;
     private PooledEngine engine;
     private TextureAtlas atlas;
-    private SimplexNoise simplexNoise;
-    private SimplexNoise simplexRoughNoise;
-    public int currentLevel = 0;
+
     private TextureRegion floorTex;
     private TextureRegion enemyTexture;
     private TextureRegion platformTex;
     private TextureRegion bulletTex;
 
+    private List<Entity> totalBalls = new ArrayList<Entity>();
 
     public LevelFactory(PooledEngine pooledEngine){
         engine = pooledEngine;
 
         //this.atlas = atlas;
 
-
-        world = new World(new Vector2(0,00f), true);
+        world = new World(new Vector2(0,0f), true);
         world.setContactListener(new PhysicalObjectContactListener());
 
         bodyFactory = BodyFactory.getBodyFactoryInstance(world);
@@ -53,44 +58,15 @@ public class LevelFactory {
         floorTex = GameUtilities.makeTextureRegion(40*RenderingSystem.PPM, 0.5f*RenderingSystem.PPM, "111111FF");
         platformTex = GameUtilities.makeTextureRegion(2*RenderingSystem.PPM, 0.1f*RenderingSystem.PPM, "221122FF");
 
-        simplexNoise = new SimplexNoise(512, 0.85f, 1);
-        simplexRoughNoise = new SimplexNoise(512, 0.95f, 1);
     }
 
+    public void generateLevel(){
 
-    /** Creates a pair of platforms per level up to yLevel
-     * @param ylevel
-     */
-    public void generateLevel(int ylevel){
-        while(ylevel > currentLevel){
-            // get noise      sim.getNoise(xpos,ypos,zpos) 3D noise
-            float noise1 = (float)simplexNoise.getNoise(1, currentLevel, 0);		// platform 1 should exist?
-            float noise2 = (float)simplexNoise.getNoise(1, currentLevel, 100);	// if plat 1 exists where on x axis
-            float noise3 = (float)simplexNoise.getNoise(1, currentLevel, 200);	// platform 2 exists?
-            float noise4 = (float)simplexNoise.getNoise(1, currentLevel, 300);	// if 2 exists where on x axis ?
-            float noise5 = (float)simplexRoughNoise.getNoise(1, currentLevel ,1400);	// should spring exist on p1?
-            float noise6 = (float)simplexRoughNoise.getNoise(1, currentLevel ,2500);	// should spring exists on p2?
-            float noise7 = (float)simplexRoughNoise.getNoise(1, currentLevel, 2700);	// should enemy exist?
-            float noise8 = (float)simplexRoughNoise.getNoise(1, currentLevel, 3000);	// platform 1 or 2?
-            if(noise1 > 0.2f){
-                //createPlatform(noise2 * 25 +2 ,currentLevel * 2);
-                if(noise5 > 0.5f){
-                    //createBouncyPlatform(noise2 * 25 +2,currentLevel * 2);
-                }
-                if (noise7 > 0.5f){
-                    //create obstacle?
-                }
+        for(int i = 1; i < 10; i++){
+            for (int j = 1; j < 4; j++) {
+                createRowBall(i * GameUtilities.BALL_RADIUS,
+                        Gdx.graphics.getHeight() - j * GameUtilities.BALL_RADIUS);
             }
-            if(noise3 > 0.2f){
-               // createPlatform(noise4 * 25 +2, currentLevel * 2);
-                if(noise6 > 0.4f){
-                   // createBouncyPlatform(noise4 * 25 +2,currentLevel * 2);
-                }
-                if (noise8 > 0.5f){
-                    //create obstacle?
-                }
-            }
-            currentLevel++;
         }
     }
 
@@ -129,7 +105,7 @@ public class LevelFactory {
         TextureComponent texture = engine.createComponent(TextureComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
 
-        bodyComponent.body = bodyFactory.makeBoxPolyBody(x, y, 1.5f, 0.2f, BodyFactory.Material.STONE, BodyDef.BodyType.StaticBody, false);
+        bodyComponent.body = bodyFactory.makeBoxPolyBody(x, y, Gdx.graphics.getWidth(), 50f, BodyFactory.Material.STONE, BodyDef.BodyType.StaticBody, false);
 
         texture.region = platformTex;
 
@@ -171,7 +147,7 @@ public class LevelFactory {
 
     }
 
-    public Entity createBall(float radius, BodyFactory.Material material, float x, float y, float xVelocity, float yVelocity){
+    public Entity createBall(BodyFactory.Material material, float x, float y, float xVelocity, float yVelocity){
 
         Entity entity = engine.createEntity();
 
@@ -182,7 +158,7 @@ public class LevelFactory {
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
         BallComponent ballComponent = engine.createComponent(BallComponent.class);
 
-        ballBodyComponent.body = bodyFactory.makeCirclePolyBody(x, y, radius, material, BodyDef.BodyType.DynamicBody, false);
+        ballBodyComponent.body = bodyFactory.makeCirclePolyBody(x, y, GameUtilities.BALL_RADIUS, material, BodyDef.BodyType.DynamicBody, false);
         ballBodyComponent.body.setBullet(true); // increase physics computation to limit body travelling through other objects
         //BodyFactory.makeAllFixturesSensors(ballBodyComponent.body); // make bullets sensors so they don't move player
 
@@ -207,14 +183,58 @@ public class LevelFactory {
         entity.add(ballComponent);
 
         engine.addEntity(entity);
+        player.getComponent(PlayerComponent.class).balls.add(entity);
+
+        totalBalls.addAll(player.getComponent(PlayerComponent.class).balls);
 
         return entity;
     }
 
+    private Entity createRowBall(float x, float y){
+        Entity entity = engine.createEntity();
+
+        Box2dBodyComponent ballBodyComponent = engine.createComponent(Box2dBodyComponent.class);
+        TextureComponent texture = engine.createComponent(TextureComponent.class);
+        TypeComponent type = engine.createComponent(TypeComponent.class);
+        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
+        CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
+        BallComponent ballComponent = engine.createComponent(BallComponent.class);
+        RowComponent rowComponent = engine.createComponent(RowComponent.class);
+
+        ballBodyComponent.body = bodyFactory.makeCirclePolyBody(x, y, GameUtilities.BALL_RADIUS, BodyFactory.Material.RUBBER, BodyDef.BodyType.KinematicBody, false);
+
+        type.type = BALL;
+
+        transformComponent.position.set(x, y, 0);
+
+        ballBodyComponent.body.setUserData(entity);
+        ballComponent.position = ballBodyComponent.body.getPosition();
+        ballComponent.velocityX = 0f;
+        ballComponent.velocityY = 0f;
+
+        ballComponent.ballColor = ballComponent.randomBallColor();
+
+        entity.add(ballBodyComponent);
+        entity.add(texture);
+        entity.add(type);
+        entity.add(transformComponent);
+        entity.add(rowComponent);
+        entity.add(collisionComponent);
+        entity.add(ballComponent);
+
+        engine.addEntity(entity);
+        rowComponent.rowOfBalls.add(entity);
+
+        totalBalls.addAll(rowComponent.rowOfBalls);
+
+        return entity;
+
+    }
 
     public Entity createPlayer(){
 
         Entity entity = engine.createEntity();
+        player = entity;
 
         Box2dBodyComponent bodyComponent = engine.createComponent(Box2dBodyComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
@@ -271,6 +291,7 @@ public class LevelFactory {
 
     }
 
-
-
+    public List<Entity> totalBalls(){
+        return totalBalls;
+    }
 }

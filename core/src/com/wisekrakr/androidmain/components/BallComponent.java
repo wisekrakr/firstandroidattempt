@@ -15,6 +15,8 @@ import java.util.List;
 
 public class BallComponent implements Component, Pool.Poolable {
 
+    private Entity collisionEntity;
+
     public enum BallColor{
         RED, BLUE, YELLOW, GREEN, PURPLE, GOLD, SILVER
     }
@@ -28,9 +30,17 @@ public class BallComponent implements Component, Pool.Poolable {
     public BallColor ballColor;
     public float velocityX = 0f;
     public float velocityY = 0f;
-    public boolean sameColor = false;
     public boolean hitSurface = false;
     public boolean destroyed = false;
+    public boolean hitBall = false;
+
+
+    public Entity getCollisionEntity(){
+        return collisionEntity;
+    }
+    public void setCollisionEntity(Entity collisionEntity){
+        this.collisionEntity = collisionEntity;
+    }
 
     public Vector2 position = new Vector2();
 
@@ -39,8 +49,10 @@ public class BallComponent implements Component, Pool.Poolable {
         position = new Vector2();
         velocityX = 0f;
         velocityY = 0f;
-        sameColor = false;
+
         hitSurface = false;
         destroyed = false;
+        hitBall = false;
+        collisionEntity = null;
     }
 }

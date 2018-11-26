@@ -36,7 +36,7 @@ public class PhysicsSystem extends IteratingSystem {
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        float frameTime = Math.min(deltaTime, 0.25f);
+        float frameTime = Math.min(deltaTime, 0.60f);
         accumulator += frameTime;
 
         if(accumulator >= MAX_STEP_TIME) {

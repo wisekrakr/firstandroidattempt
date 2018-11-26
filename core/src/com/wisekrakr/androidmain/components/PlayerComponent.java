@@ -2,7 +2,6 @@ package com.wisekrakr.androidmain.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ public class PlayerComponent implements Component, Pool.Poolable {
 
     public boolean hasBall = false;
     public boolean isDead = false;
-    public float shootDelay = 0.5f;
+    public float spawnDelay = 50f;
     public float timeSinceLastShot = 0f;
     public float score = 0f;
 
@@ -23,7 +22,7 @@ public class PlayerComponent implements Component, Pool.Poolable {
 
         hasBall = false;
         isDead = false;
-        shootDelay = 0.5f;
+        spawnDelay = 50f;
         timeSinceLastShot = 0f;
         score = 0f;
     }

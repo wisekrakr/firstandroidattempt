@@ -8,8 +8,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
-import com.wisekrakr.androidmain.BodyFactory;
-import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.LevelFactory;
 import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
@@ -17,10 +15,7 @@ import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.components.StateComponent;
 import com.wisekrakr.androidmain.controls.Controls;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.wisekrakr.androidmain.GameUtilities.BALL_RADIUS;
+import java.util.Iterator;
 
 public class PlayerControlSystem extends IteratingSystem {
 
@@ -82,37 +77,31 @@ public class PlayerControlSystem extends IteratingSystem {
 //            }
 
 
-
             if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
-
-                playerComponent.timeSinceLastShot += deltaTime;
-                if (playerComponent.timeSinceLastShot > playerComponent.shootDelay) {
+                if (playerComponent.hasBall) {
+                    playerComponent.hasBall = false;
 
                     Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                     camera.unproject(mousePos); // convert position from screen to box2d world position
                     float speed = 1000f;  // set the speed of the ball
-                    float shooterX = b2body.body.getPosition().x; // get player location
-                    float shooterY = b2body.body.getPosition().y; // get player location
-                    float xVelocity = mousePos.x - shooterX; // get distance from shooter to target on x plain
-                    float yVelocity = mousePos.y - shooterY; // get distance from shooter to target on y plain
+                    float xVelocity = mousePos.x - b2body.body.getPosition().x; // get distance from shooter to target on x plain
+                    float yVelocity = mousePos.y - b2body.body.getPosition().y; // get distance from shooter to target on y plain
                     float length = (float) Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // get distance to target direct
                     if (length != 0) {
                         xVelocity = xVelocity / length;  // get required x velocity to aim at target
                         yVelocity = yVelocity / length;  // get required y velocity to aim at target
                     }
 
-                    Entity ball = levelFactory.createBall(GameUtilities.BALL_RADIUS,
-                            BodyFactory.Material.RUBBER,
-                            b2body.body.getPosition().x, b2body.body.getPosition().y + GameUtilities.BALL_RADIUS,
-                            xVelocity * speed, yVelocity * speed);
+                    Iterator<Entity> iterator = playerComponent.balls.iterator();
+                    if (iterator.hasNext()) {
+                        playerComponent.balls.get(0).getComponent(BallComponent.class).velocityX = xVelocity * speed;
+                        playerComponent.balls.get(0).getComponent(BallComponent.class).velocityY = yVelocity * speed;
 
-                    playerComponent.balls.add(ball);
-                    if (ballComponentMapper.get(ball).destroyed){
-                        playerComponent.balls.remove(ball);
                     }
-                    playerComponent.timeSinceLastShot = 0f;
-               }
+                }
+
             }
+
         }
 
     }

@@ -49,11 +49,20 @@ public class CollisionSystem extends IteratingSystem {
                     switch (typeComponent.type) {
                         case BALL:
 
-                            if (ballComponentMapper.get(entity).ballColor.equals(collidedEntity.getComponent(BallComponent.class).ballColor)) {
-                                ballComponentMapper.get(entity).sameColor = true;
+                            ballComponentMapper.get(entity).hitBall = true;
+                            ballComponentMapper.get(entity).setCollisionEntity(collidedEntity);
+                            ballComponentMapper.get(entity).getCollisionEntity().getComponent(BallComponent.class).setCollisionEntity(entity);
 
-                                System.out.println("ball hit SAME COLOR ball " + ballComponentMapper.get(entity).ballColor +  collidedEntity.getComponent(BallComponent.class).ballColor);
+                            if (ballComponentMapper.get(entity).ballColor == ballComponentMapper.get(entity).getCollisionEntity().getComponent(BallComponent.class).ballColor) {
+
+                                ballComponentMapper.get(entity).destroyed = true;
+                                ballComponentMapper.get(entity).getCollisionEntity().getComponent(BallComponent.class).destroyed = true;
+
+
                             }
+
+                            System.out.println("ball hit ball " + ballComponentMapper.get(entity).ballColor +  ballComponentMapper.get(entity).getCollisionEntity().getComponent(BallComponent.class).ballColor);
+
                             break;
                         case SCENERY:
 

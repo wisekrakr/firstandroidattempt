@@ -23,16 +23,16 @@ public class SimplexNoise {
         this.seed=seed;
 
         //recieves a number (eg 128) and calculates what power of 2 it is (eg 2^7)
-        int numberOfOctaves=(int)Math.ceil(Math.log10(largestFeature)/Math.log10(2));
+        int numberOfOctaves = (int)Math.ceil(Math.log10(largestFeature)/Math.log10(2));
 
-        octaves=new SimplexNoise_octave[numberOfOctaves];
-        frequencys=new double[numberOfOctaves];
-        amplitudes=new double[numberOfOctaves];
+        octaves = new SimplexNoise_octave[numberOfOctaves];
+        frequencys = new double[numberOfOctaves];
+        amplitudes = new double[numberOfOctaves];
 
         Random rnd = new Random(seed);
 
-        for(int i=0;i<numberOfOctaves;i++){
-            octaves[i]=new SimplexNoise_octave(rnd.nextInt());
+        for(int i = 0 ; i < numberOfOctaves ;i++){
+            octaves[i] = new SimplexNoise_octave(rnd.nextInt());
 
             frequencys[i] = Math.pow(2,i);
             //System.out.println("F="+frequencys[i]+" "+i);
@@ -42,12 +42,12 @@ public class SimplexNoise {
 
     }
 
-
     public double getNoise(int x, int y){
-        double result=0;
+        double result = 0;
 
-        for(int i=0;i<octaves.length;i++){
-            result=result+octaves[i].noise(x/frequencys[i], y/frequencys[i])* amplitudes[i];
+        for(int i = 0 ; i < octaves.length ; i++){
+            result = result+octaves[i].noise(x/frequencys[i],
+                    y/frequencys[i])* amplitudes[i];
         }
         return result;
     }

@@ -13,8 +13,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.androidmain.AndroidGame;
-import com.wisekrakr.androidmain.BodyFactory;
-import com.wisekrakr.androidmain.GameHelper;
 import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.LevelFactory;
 import com.wisekrakr.androidmain.components.BallComponent;
@@ -27,6 +25,7 @@ import com.wisekrakr.androidmain.systems.PhysicsDebugSystem;
 import com.wisekrakr.androidmain.systems.PhysicsSystem;
 import com.wisekrakr.androidmain.systems.PlayerControlSystem;
 import com.wisekrakr.androidmain.systems.RenderingSystem;
+import com.wisekrakr.androidmain.systems.RowSystem;
 import com.wisekrakr.androidmain.systems.WallSystem;
 
 public class PlayScreen extends ScreenAdapter {
@@ -78,8 +77,8 @@ public class PlayScreen extends ScreenAdapter {
 
         player = levelFactory.createPlayer();
 
-
-        engine.addSystem(new BallSystem(player));
+        engine.addSystem(new BallSystem(player, levelFactory));
+        engine.addSystem(new RowSystem(levelFactory, player));
         engine.addSystem(new WallSystem());
         engine.addSystem(new LevelGenerationSystem(levelFactory));
 
@@ -88,17 +87,18 @@ public class PlayScreen extends ScreenAdapter {
         levelFactory.createWalls(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), Gdx.graphics.getWidth()*2,10f);
 
 
-        for (int i = 0; i< 20; i++){
-            Entity levelBall = levelFactory.createBall(GameUtilities.BALL_RADIUS, BodyFactory.Material.RUBBER,
-                    GameHelper.generateRandomNumberBetween(0, Gdx.graphics.getWidth()),
-                    GameHelper.generateRandomNumberBetween(Gdx.graphics.getHeight()- GameUtilities.BALL_RADIUS *5,
-                            Gdx.graphics.getHeight() - GameUtilities.BALL_RADIUS),
-                    0,0);
-            player.getComponent(PlayerComponent.class).balls.add(levelBall);
-        }
+//        for (int i = 0; i< 20; i++){
+//            Entity levelBall = levelFactory.createBall(GameUtilities.BALL_RADIUS, BodyFactory.Material.RUBBER,
+//                    GameHelper.generateRandomNumberBetween(0, Gdx.graphics.getWidth()),
+//                    GameHelper.generateRandomNumberBetween(Gdx.graphics.getHeight()- GameUtilities.BALL_RADIUS *5,
+//                            Gdx.graphics.getHeight() - GameUtilities.BALL_RADIUS),
+//                    0,0);
+//            player.getComponent(PlayerComponent.class).balls.add(levelBall);
+//        }
 
-        levelFactory.createWaterFloor(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2, 80f,30f);
+//        levelFactory.createWaterFloor(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2, 80f,30f);
 
+        levelFactory.generateLevel();
     }
 
     @Override
@@ -122,21 +122,21 @@ public class PlayScreen extends ScreenAdapter {
         spriteBatch.setProjectionMatrix(camera.combined);
 
         ballTime += delta;
-        if (ballTime > 20f){ // time when more balls come on the screen
-            if (player.getComponent(PlayerComponent.class).balls.size() > 60){ //maximum number of balls on the screen
-                return;
-            }else {
-                for (int i = 0; i < 10; i++) {
-                    Entity levelBall = levelFactory.createBall(GameUtilities.BALL_RADIUS, BodyFactory.Material.RUBBER,
-                            GameHelper.generateRandomNumberBetween(0, Gdx.graphics.getWidth()),
-                            GameHelper.generateRandomNumberBetween(Gdx.graphics.getHeight() - GameUtilities.BALL_RADIUS * 5,
-                                    Gdx.graphics.getHeight() - GameUtilities.BALL_RADIUS),
-                            0, 0);
-                    player.getComponent(PlayerComponent.class).balls.add(levelBall);
-                }
-            }
-            ballTime = 0f;
-        }
+//        if (ballTime > 20f){ // time when more balls come on the screen
+//            if (player.getComponent(PlayerComponent.class).balls.size() > 60){ //maximum number of balls on the screen
+//                return;
+//            }else {
+//                for (int i = 0; i < 10; i++) {
+//                    Entity levelBall = levelFactory.createBall(GameUtilities.BALL_RADIUS, BodyFactory.Material.RUBBER,
+//                            GameHelper.generateRandomNumberBetween(0, Gdx.graphics.getWidth()),
+//                            GameHelper.generateRandomNumberBetween(Gdx.graphics.getHeight() - GameUtilities.BALL_RADIUS * 5,
+//                                    Gdx.graphics.getHeight() - GameUtilities.BALL_RADIUS),
+//                            0, 0);
+//                    player.getComponent(PlayerComponent.class).balls.add(levelBall);
+//                }
+//            }
+//            ballTime = 0f;
+//        }
 
         drawObjects();
 
@@ -145,7 +145,7 @@ public class PlayScreen extends ScreenAdapter {
     private void drawObjects(){
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Entity entity: player.getComponent(PlayerComponent.class).balls) {
+        for (Entity entity: levelFactory.totalBalls()) {
             entity.getComponent(BallComponent.class);
 
             if (entity.getComponent(BallComponent.class) != null) {
@@ -167,6 +167,7 @@ public class PlayScreen extends ScreenAdapter {
                 shapeRenderer.circle(entity.getComponent(BallComponent.class).position.x, entity.getComponent(BallComponent.class).position.y, GameUtilities.BALL_RADIUS / 2);
             }
         }
+
         shapeRenderer.end();
     }
 
