@@ -45,12 +45,13 @@ public class LevelFactory {
 
     private List<Entity> totalBalls = new ArrayList<Entity>();
 
+
     public LevelFactory(PooledEngine pooledEngine){
         engine = pooledEngine;
 
         //this.atlas = atlas;
 
-        world = new World(new Vector2(0,0f), true);
+        world = new World(new Vector2(0,0), true);
         world.setContactListener(new PhysicalObjectContactListener());
 
         bodyFactory = BodyFactory.getBodyFactoryInstance(world);
@@ -62,12 +63,23 @@ public class LevelFactory {
 
     public void generateLevel(){
 
+        createPlayer(Gdx.graphics.getWidth()/2, 5);
+
         for(int i = 1; i < 10; i++){
             for (int j = 1; j < 4; j++) {
                 createRowBall(i * GameUtilities.BALL_RADIUS,
                         Gdx.graphics.getHeight() - j * GameUtilities.BALL_RADIUS);
             }
         }
+//        for(int i = 1; i < 2; i++) {
+//            for (int j = 1; j < 20; j++) {
+//                createRowBall(i * GameUtilities.BALL_RADIUS,
+//                       j * GameUtilities.BALL_RADIUS * 2);
+//                createRowBall(Gdx.graphics.getWidth() - i * GameUtilities.BALL_RADIUS,
+//                        j * GameUtilities.BALL_RADIUS * 2);
+//
+//            }
+//        }
     }
 
     private void createBouncyPlatform(float x, float y) {
@@ -190,7 +202,7 @@ public class LevelFactory {
         return entity;
     }
 
-    private Entity createRowBall(float x, float y){
+    public Entity createRowBall(float x, float y){
         Entity entity = engine.createEntity();
 
         Box2dBodyComponent ballBodyComponent = engine.createComponent(Box2dBodyComponent.class);
@@ -231,7 +243,7 @@ public class LevelFactory {
 
     }
 
-    public Entity createPlayer(){
+    public Entity createPlayer(float x, float y){
 
         Entity entity = engine.createEntity();
         player = entity;
@@ -244,7 +256,7 @@ public class LevelFactory {
         TypeComponent type = engine.createComponent(TypeComponent.class);
         StateComponent stateComponent = engine.createComponent(StateComponent.class);
 
-        bodyComponent.body = bodyFactory.makeBoxPolyBody(Gdx.graphics.getWidth()/2, 5, 5, 20, BodyFactory.Material.STONE, BodyDef.BodyType.DynamicBody, true);
+        bodyComponent.body = bodyFactory.makeBoxPolyBody(x, y, 5, 20, BodyFactory.Material.STONE, BodyDef.BodyType.DynamicBody, true);
 
         transformComponent.position.set(10,10,0);
 
@@ -293,5 +305,9 @@ public class LevelFactory {
 
     public List<Entity> totalBalls(){
         return totalBalls;
+    }
+
+    public Entity getPlayer() {
+        return player;
     }
 }

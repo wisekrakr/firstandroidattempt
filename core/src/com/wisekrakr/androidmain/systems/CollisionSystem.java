@@ -50,18 +50,15 @@ public class CollisionSystem extends IteratingSystem {
                         case BALL:
 
                             ballComponentMapper.get(entity).hitBall = true;
-                            ballComponentMapper.get(entity).setCollisionEntity(collidedEntity);
-                            ballComponentMapper.get(entity).getCollisionEntity().getComponent(BallComponent.class).setCollisionEntity(entity);
+                            ballComponentMapper.get(collidedEntity).hitBall = true;
 
-                            if (ballComponentMapper.get(entity).ballColor == ballComponentMapper.get(entity).getCollisionEntity().getComponent(BallComponent.class).ballColor) {
-
+                            if (ballComponentMapper.get(entity).ballColor == collisionComponent.collisionEntity.getComponent(BallComponent.class).ballColor) {
                                 ballComponentMapper.get(entity).destroyed = true;
-                                ballComponentMapper.get(entity).getCollisionEntity().getComponent(BallComponent.class).destroyed = true;
-
-
+                                collisionComponent.collisionEntity.getComponent(BallComponent.class).destroyed = true;
+                                ballComponentMapper.get(entity).identicalColor = true;
                             }
 
-                            System.out.println("ball hit ball " + ballComponentMapper.get(entity).ballColor +  ballComponentMapper.get(entity).getCollisionEntity().getComponent(BallComponent.class).ballColor);
+                            System.out.println("ball hit ball " + ballComponentMapper.get(entity).ballColor +  collisionComponent.collisionEntity.getComponent(BallComponent.class).ballColor);
 
                             break;
                         case SCENERY:

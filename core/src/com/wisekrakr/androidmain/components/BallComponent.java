@@ -9,13 +9,9 @@ import com.badlogic.gdx.utils.Pool;
 
 import com.wisekrakr.androidmain.GameHelper;
 
-import java.util.ArrayList;
-
-import java.util.List;
-
 public class BallComponent implements Component, Pool.Poolable {
 
-    private Entity collisionEntity;
+    public boolean identicalColor = false;
 
     public enum BallColor{
         RED, BLUE, YELLOW, GREEN, PURPLE, GOLD, SILVER
@@ -34,14 +30,6 @@ public class BallComponent implements Component, Pool.Poolable {
     public boolean destroyed = false;
     public boolean hitBall = false;
 
-
-    public Entity getCollisionEntity(){
-        return collisionEntity;
-    }
-    public void setCollisionEntity(Entity collisionEntity){
-        this.collisionEntity = collisionEntity;
-    }
-
     public Vector2 position = new Vector2();
 
     @Override
@@ -53,6 +41,6 @@ public class BallComponent implements Component, Pool.Poolable {
         hitSurface = false;
         destroyed = false;
         hitBall = false;
-        collisionEntity = null;
+        identicalColor = false;
     }
 }

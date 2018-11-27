@@ -16,7 +16,6 @@ import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.LevelFactory;
 import com.wisekrakr.androidmain.components.BallComponent;
-import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.controls.Controls;
 import com.wisekrakr.androidmain.systems.BallSystem;
 import com.wisekrakr.androidmain.systems.CollisionSystem;
@@ -39,10 +38,9 @@ public class PlayScreen extends ScreenAdapter {
     private AndroidGame androidGame;
 
     private ShapeRenderer shapeRenderer;
-    private Entity player;
-    private float ballTime = 0f;
 
     private Viewport viewport;
+    private InfoDisplay infoDisplay;
 
     public PlayScreen(AndroidGame androidGame) {
         this.androidGame = androidGame;
@@ -65,6 +63,8 @@ public class PlayScreen extends ScreenAdapter {
 
         shapeRenderer = new ShapeRenderer();
 
+
+
         addSystems(renderingSystem, controls);
     }
 
@@ -75,10 +75,10 @@ public class PlayScreen extends ScreenAdapter {
         engine.addSystem(new CollisionSystem());
         engine.addSystem(new PlayerControlSystem(controls, levelFactory, camera));
 
-        player = levelFactory.createPlayer();
+        levelFactory.generateLevel();
 
-        engine.addSystem(new BallSystem(player, levelFactory));
-        engine.addSystem(new RowSystem(levelFactory, player));
+        engine.addSystem(new BallSystem(levelFactory.getPlayer(), levelFactory));
+        engine.addSystem(new RowSystem(levelFactory, levelFactory.getPlayer()));
         engine.addSystem(new WallSystem());
         engine.addSystem(new LevelGenerationSystem(levelFactory));
 
@@ -86,19 +86,9 @@ public class PlayScreen extends ScreenAdapter {
         levelFactory.createWalls(Gdx.graphics.getWidth(),0, 5f, Gdx.graphics.getHeight()*2);
         levelFactory.createWalls(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), Gdx.graphics.getWidth()*2,10f);
 
-
-//        for (int i = 0; i< 20; i++){
-//            Entity levelBall = levelFactory.createBall(GameUtilities.BALL_RADIUS, BodyFactory.Material.RUBBER,
-//                    GameHelper.generateRandomNumberBetween(0, Gdx.graphics.getWidth()),
-//                    GameHelper.generateRandomNumberBetween(Gdx.graphics.getHeight()- GameUtilities.BALL_RADIUS *5,
-//                            Gdx.graphics.getHeight() - GameUtilities.BALL_RADIUS),
-//                    0,0);
-//            player.getComponent(PlayerComponent.class).balls.add(levelBall);
-//        }
-
 //        levelFactory.createWaterFloor(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2, 80f,30f);
 
-        levelFactory.generateLevel();
+        infoDisplay = new InfoDisplay(androidGame, camera, levelFactory.getPlayer());
     }
 
     @Override
@@ -121,24 +111,9 @@ public class PlayScreen extends ScreenAdapter {
 
         spriteBatch.setProjectionMatrix(camera.combined);
 
-        ballTime += delta;
-//        if (ballTime > 20f){ // time when more balls come on the screen
-//            if (player.getComponent(PlayerComponent.class).balls.size() > 60){ //maximum number of balls on the screen
-//                return;
-//            }else {
-//                for (int i = 0; i < 10; i++) {
-//                    Entity levelBall = levelFactory.createBall(GameUtilities.BALL_RADIUS, BodyFactory.Material.RUBBER,
-//                            GameHelper.generateRandomNumberBetween(0, Gdx.graphics.getWidth()),
-//                            GameHelper.generateRandomNumberBetween(Gdx.graphics.getHeight() - GameUtilities.BALL_RADIUS * 5,
-//                                    Gdx.graphics.getHeight() - GameUtilities.BALL_RADIUS),
-//                            0, 0);
-//                    player.getComponent(PlayerComponent.class).balls.add(levelBall);
-//                }
-//            }
-//            ballTime = 0f;
-//        }
-
         drawObjects();
+
+        infoDisplay.renderDisplay(delta);
 
     }
 

@@ -60,9 +60,11 @@ public class PlayerControlSystem extends IteratingSystem {
 
             if (controller.left) {
                 b2body.body.setLinearVelocity(MathUtils.lerp(b2body.body.getLinearVelocity().x, -5f, 0.2f), b2body.body.getLinearVelocity().y);
+//                b2body.body.setTransform(b2body.body.getPosition().x,b2body.body.getPosition().y, b2body.body.getAngle() + 15f * deltaTime);
             }
             if (controller.right) {
                 b2body.body.setLinearVelocity(MathUtils.lerp(b2body.body.getLinearVelocity().x, 5f, 0.2f), b2body.body.getLinearVelocity().y);
+//                b2body.body.setTransform(b2body.body.getPosition().x,b2body.body.getPosition().y, b2body.body.getAngle() + -15f * deltaTime);
             }
 
             if (!controller.left && !controller.right) {
@@ -80,10 +82,11 @@ public class PlayerControlSystem extends IteratingSystem {
             if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
                 if (playerComponent.hasBall) {
                     playerComponent.hasBall = false;
-
+                    playerComponent.shotBall = true;
+                    Gdx.input.vibrate(6);
                     Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                     camera.unproject(mousePos); // convert position from screen to box2d world position
-                    float speed = 1000f;  // set the speed of the ball
+                    float speed = 100000000000f;  // set the speed of the ball
                     float xVelocity = mousePos.x - b2body.body.getPosition().x; // get distance from shooter to target on x plain
                     float yVelocity = mousePos.y - b2body.body.getPosition().y; // get distance from shooter to target on y plain
                     float length = (float) Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // get distance to target direct
@@ -96,7 +99,8 @@ public class PlayerControlSystem extends IteratingSystem {
                     if (iterator.hasNext()) {
                         playerComponent.balls.get(0).getComponent(BallComponent.class).velocityX = xVelocity * speed;
                         playerComponent.balls.get(0).getComponent(BallComponent.class).velocityY = yVelocity * speed;
-
+                    }else {
+                        playerComponent.hasBall = false;
                     }
                 }
 
