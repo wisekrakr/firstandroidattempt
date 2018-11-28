@@ -3,6 +3,7 @@ package com.wisekrakr.androidmain.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -36,7 +37,7 @@ public class LoadingScreen implements Screen {
     public LoadingScreen(AndroidGame game) {
         this.game = game;
 
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth() / RenderingSystem.PPM, Gdx.graphics.getHeight() / RenderingSystem.PPM));
+        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()));
 
         spriteBatch = new SpriteBatch();
         spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
@@ -46,6 +47,7 @@ public class LoadingScreen implements Screen {
     public void show() {
 
         game.assetManager().queueAddLoadingImages();
+
         game.assetManager().assetManager.finishLoading();
 
         TextureAtlas atlas = game.assetManager().assetManager.get("images/loading/loading.atlas");
@@ -89,8 +91,8 @@ public class LoadingScreen implements Screen {
                 case IMAGE:
                     System.out.println("Loading images...");
                     game.assetManager().queuePlayerImages();
-
                     game.assetManager().loadTextures();
+
                     break;
                 case FONT:
                     System.out.println("Loading fonts...");

@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.CollisionComponent;
+import com.wisekrakr.androidmain.components.LevelComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.components.RowComponent;
 import com.wisekrakr.androidmain.components.StateComponent;
@@ -46,10 +47,10 @@ public class LevelFactory {
     private List<Entity> totalBalls = new ArrayList<Entity>();
 
 
-    public LevelFactory(PooledEngine pooledEngine){
+    public LevelFactory(PooledEngine pooledEngine, AndroidGame game){
         engine = pooledEngine;
 
-        //this.atlas = atlas;
+        atlas = game.assetManager().assetManager.get("images/game/game.atlas", TextureAtlas.class);;
 
         world = new World(new Vector2(0,0), true);
         world.setContactListener(new PhysicalObjectContactListener());
@@ -59,11 +60,12 @@ public class LevelFactory {
         floorTex = GameUtilities.makeTextureRegion(40*RenderingSystem.PPM, 0.5f*RenderingSystem.PPM, "111111FF");
         platformTex = GameUtilities.makeTextureRegion(2*RenderingSystem.PPM, 0.1f*RenderingSystem.PPM, "221122FF");
 
+
     }
 
     public void generateLevel(){
 
-        createPlayer(Gdx.graphics.getWidth()/2, 5);
+        player = createPlayer(Gdx.graphics.getWidth()/2, 5);
 
         for(int i = 1; i < 10; i++){
             for (int j = 1; j < 4; j++) {
@@ -176,7 +178,23 @@ public class LevelFactory {
 
         transformComponent.position.set(x, y, 0);
 
-        //texture.region = textureRegion;
+//        if (entity.getComponent(BallComponent.class) != null) {
+//            if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.MARS) {
+//                texture.region = atlas.findRegion("mars");
+//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.MERCURY) {
+//                texture.region = atlas.findRegion("mercury");
+//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.JUPITER) {
+//                texture.region = atlas.findRegion("jupiter");
+//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.EARTH) {
+//                texture.region = atlas.findRegion("earth");
+//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.NEPTUNE) {
+//                texture.region = atlas.findRegion("neptune");
+//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.SATURN) {
+//                texture.region = atlas.findRegion("saturn");
+//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.URANUS) {
+//                texture.region = atlas.findRegion("uranus");
+//            }
+//        }
 
         type.type = BALL;
 
@@ -197,9 +215,12 @@ public class LevelFactory {
         engine.addEntity(entity);
         player.getComponent(PlayerComponent.class).balls.add(entity);
 
-        totalBalls.addAll(player.getComponent(PlayerComponent.class).balls);
 
         return entity;
+    }
+
+    public void drawBalls(){
+
     }
 
     public Entity createRowBall(float x, float y){
@@ -243,7 +264,7 @@ public class LevelFactory {
 
     }
 
-    public Entity createPlayer(float x, float y){
+    private Entity createPlayer(float x, float y){
 
         Entity entity = engine.createEntity();
         player = entity;
@@ -255,6 +276,7 @@ public class LevelFactory {
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
         StateComponent stateComponent = engine.createComponent(StateComponent.class);
+        LevelComponent levelComponent = engine.createComponent(LevelComponent.class);
 
         bodyComponent.body = bodyFactory.makeBoxPolyBody(x, y, 5, 20, BodyFactory.Material.STONE, BodyDef.BodyType.DynamicBody, true);
 
@@ -263,7 +285,7 @@ public class LevelFactory {
         //texture.region = textureRegion;
 
         type.type = PLAYER;
-        stateComponent.set(StateComponent.STATE_NORMAL);
+
         bodyComponent.body.setUserData(entity);
 
         entity.add(bodyComponent);
@@ -273,6 +295,7 @@ public class LevelFactory {
         entity.add(collisionComponent);
         entity.add(type);
         entity.add(stateComponent);
+        entity.add(levelComponent);
 
         engine.addEntity(entity);
 

@@ -62,9 +62,9 @@ public class CollisionSystem extends IteratingSystem {
 
                             break;
                         case SCENERY:
-
-                            ballComponentMapper.get(entity).velocityY = 0f;
-                            ballComponentMapper.get(entity).velocityX = 0f;
+                            ballComponentMapper.get(entity).hitSurface = true;
+//                            ballComponentMapper.get(entity).velocityY = 0f;
+//                            ballComponentMapper.get(entity).velocityX = 0f;
                             System.out.println("ball hit surface " );
                             break;
                         case WATER:
@@ -92,7 +92,7 @@ public class CollisionSystem extends IteratingSystem {
                             System.out.println("wall hit other");
                             break;
                         case BALL:
-                            ballComponentMapper.get(entity).hitSurface = true;
+
                             System.out.println("wall hit ball");
                             break;
                         default:

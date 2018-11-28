@@ -19,7 +19,7 @@ import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.controls.Controls;
 import com.wisekrakr.androidmain.systems.BallSystem;
 import com.wisekrakr.androidmain.systems.CollisionSystem;
-import com.wisekrakr.androidmain.systems.LevelGenerationSystem;
+import com.wisekrakr.androidmain.systems.LevelGeneration;
 import com.wisekrakr.androidmain.systems.PhysicsDebugSystem;
 import com.wisekrakr.androidmain.systems.PhysicsSystem;
 import com.wisekrakr.androidmain.systems.PlayerControlSystem;
@@ -29,11 +29,13 @@ import com.wisekrakr.androidmain.systems.WallSystem;
 
 public class PlayScreen extends ScreenAdapter {
 
-    private final SpriteBatch spriteBatch;
     private final InputMultiplexer inputMultiplexer;
     private final PooledEngine engine;
     private final LevelFactory levelFactory;
+    private final SpriteBatch spriteBatch;
+    private final Controls controls;
     private OrthographicCamera camera;
+    private LevelGeneration levelGeneration;
 
     private AndroidGame androidGame;
 
@@ -45,25 +47,23 @@ public class PlayScreen extends ScreenAdapter {
     public PlayScreen(AndroidGame androidGame) {
         this.androidGame = androidGame;
 
-        spriteBatch = new SpriteBatch();
+        spriteBatch = androidGame.getSpriteBatch();
 
         RenderingSystem renderingSystem = new RenderingSystem(spriteBatch);
 
         camera = renderingSystem.getCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
-        Controls controls = new Controls();
+        controls = new Controls();
 
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(controls);
 
         engine = new PooledEngine();
 
-        levelFactory = new LevelFactory(engine);
+        levelFactory = new LevelFactory(engine, androidGame);
 
         shapeRenderer = new ShapeRenderer();
-
-
 
         addSystems(renderingSystem, controls);
     }
@@ -76,19 +76,20 @@ public class PlayScreen extends ScreenAdapter {
         engine.addSystem(new PlayerControlSystem(controls, levelFactory, camera));
 
         levelFactory.generateLevel();
+        levelGeneration = new LevelGeneration(androidGame, levelFactory);
 
         engine.addSystem(new BallSystem(levelFactory.getPlayer(), levelFactory));
         engine.addSystem(new RowSystem(levelFactory, levelFactory.getPlayer()));
         engine.addSystem(new WallSystem());
-        engine.addSystem(new LevelGenerationSystem(levelFactory));
 
         levelFactory.createWalls(0,0, 5f, Gdx.graphics.getHeight()*2);
         levelFactory.createWalls(Gdx.graphics.getWidth(),0, 5f, Gdx.graphics.getHeight()*2);
         levelFactory.createWalls(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), Gdx.graphics.getWidth()*2,10f);
+        levelFactory.createWalls(0,0, Gdx.graphics.getWidth()*2,5f);
 
 //        levelFactory.createWaterFloor(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2, 80f,30f);
 
-        infoDisplay = new InfoDisplay(androidGame, camera, levelFactory.getPlayer());
+        infoDisplay = new InfoDisplay(androidGame);
     }
 
     @Override
@@ -111,9 +112,11 @@ public class PlayScreen extends ScreenAdapter {
 
         spriteBatch.setProjectionMatrix(camera.combined);
 
+        levelGeneration.levelUpdate(delta);
+
         drawObjects();
 
-        infoDisplay.renderDisplay(delta);
+        infoDisplay.renderDisplay(levelFactory.getPlayer(), delta );
 
     }
 
@@ -124,19 +127,19 @@ public class PlayScreen extends ScreenAdapter {
             entity.getComponent(BallComponent.class);
 
             if (entity.getComponent(BallComponent.class) != null) {
-                if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.SILVER) {
+                if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.MARS) {
                     shapeRenderer.setColor(Color.CYAN);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.RED) {
+                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.MERCURY) {
                     shapeRenderer.setColor(Color.RED);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.YELLOW) {
+                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.JUPITER) {
                     shapeRenderer.setColor(Color.YELLOW);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.BLUE) {
+                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.EARTH) {
                     shapeRenderer.setColor(Color.BLUE);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.GREEN) {
+                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.NEPTUNE) {
                     shapeRenderer.setColor(Color.GREEN);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.PURPLE) {
+                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.SATURN) {
                     shapeRenderer.setColor(Color.PURPLE);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.GOLD) {
+                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.URANUS) {
                     shapeRenderer.setColor(Color.GOLD);
                 }
                 shapeRenderer.circle(entity.getComponent(BallComponent.class).position.x, entity.getComponent(BallComponent.class).position.y, GameUtilities.BALL_RADIUS / 2);
@@ -144,6 +147,8 @@ public class PlayScreen extends ScreenAdapter {
         }
 
         shapeRenderer.end();
+
+
     }
 
     @Override

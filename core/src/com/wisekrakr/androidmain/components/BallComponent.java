@@ -14,7 +14,7 @@ public class BallComponent implements Component, Pool.Poolable {
     public boolean identicalColor = false;
 
     public enum BallColor{
-        RED, BLUE, YELLOW, GREEN, PURPLE, GOLD, SILVER
+        MERCURY, EARTH, JUPITER, NEPTUNE, SATURN, URANUS, MARS
     }
 
     private BallColor[]ballColors = BallColor.values();

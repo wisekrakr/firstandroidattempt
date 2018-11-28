@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GameUtilities {
@@ -88,6 +89,7 @@ public class GameUtilities {
         }
         return makeTexture(width,height,Color.valueOf(hex));
     }
+
 
     public static TextureRegion makeTextureRegion(int width, int height, String hex){
         if(hex.length() == 6 ){

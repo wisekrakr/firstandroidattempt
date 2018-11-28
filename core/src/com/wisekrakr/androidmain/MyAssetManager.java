@@ -1,11 +1,14 @@
 package com.wisekrakr.androidmain;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
@@ -67,6 +70,7 @@ public class MyAssetManager implements Disposable {
         assetManager.load("images/objects/earthball.png", Texture.class);
         assetManager.load("images/objects/starball.png", Texture.class);
 
+
         assetManager.finishLoading();
     }
 
@@ -88,7 +92,12 @@ public class MyAssetManager implements Disposable {
         assetManager.load("images/loading/loading.atlas", TextureAtlas.class);
     }
 
+    public void loadParticleEffects(){
+        ParticleEffectLoader.ParticleEffectParameter effectParameter = new ParticleEffectLoader.ParticleEffectParameter();
+        effectParameter.imagesDir = new FileHandle("images/particles/exhaust.party");
+        assetManager.load("images/particles/exhaust.party", ParticleEffect.class);
 
+    }
 
     @Override
     public void dispose() {

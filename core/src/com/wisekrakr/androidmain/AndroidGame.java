@@ -1,14 +1,7 @@
 package com.wisekrakr.androidmain;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.wisekrakr.androidmain.screens.EndScreen;
 import com.wisekrakr.androidmain.screens.LoadingScreen;
 import com.wisekrakr.androidmain.screens.MenuScreen;
@@ -19,6 +12,7 @@ public class AndroidGame extends Game {
 
 	private MyAssetManager myAssetManager;
 	private GamePreferences gamePreferences;
+	private SpriteBatch spriteBatch;
 
 	private PreferencesScreen preferencesScreen;
 	private MenuScreen menuScreen;
@@ -39,6 +33,8 @@ public class AndroidGame extends Game {
 		gamePreferences = new GamePreferences();
 
 		myAssetManager = new MyAssetManager();
+
+		spriteBatch = new SpriteBatch();
 
 		setScreen(new LoadingScreen(this));
 	}
@@ -70,5 +66,9 @@ public class AndroidGame extends Game {
 
 	public MyAssetManager assetManager() {
 		return myAssetManager;
+	}
+
+	public SpriteBatch getSpriteBatch() {
+		return spriteBatch;
 	}
 }

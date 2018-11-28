@@ -15,6 +15,7 @@ public class PlayerComponent implements Component, Pool.Poolable {
     public float spawnDelay = 50f;
     public float timeSinceLastShot = 0f;
     public float score = 0f;
+    public float angle = 0f;
 
     public List<Entity> balls = new ArrayList<Entity>();
 
@@ -27,5 +28,6 @@ public class PlayerComponent implements Component, Pool.Poolable {
         spawnDelay = 50f;
         timeSinceLastShot = 0f;
         score = 0f;
+        angle = 0f;
     }
 }

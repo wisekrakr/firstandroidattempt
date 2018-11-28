@@ -39,55 +39,52 @@ public class BallSystem extends IteratingSystem {
 
         Box2dBodyComponent b2body = ComponentMapper.getFor(Box2dBodyComponent.class).get(entity);
         BallComponent ballComponent = ComponentMapper.getFor(BallComponent.class).get(entity);
-        CollisionComponent collisionComponent = ComponentMapper.getFor(CollisionComponent.class).get(entity);
         PlayerComponent playerComponent = player.getComponent(PlayerComponent.class);
 
         if (playerComponent.shotBall) {
             b2body.body.setLinearVelocity(ballComponent.velocityX, ballComponent.velocityY);
-//            b2body.body.applyForceToCenter(ballComponent.velocityX, ballComponent.velocityY, true); //todo use this for other modes to let balls bounce
-
         }
 
         Box2dBodyComponent playerBodyComp = ComponentMapper.getFor(Box2dBodyComponent.class).get(player);
         float positionX = playerBodyComp.body.getPosition().x;
         float positionY = playerBodyComp.body.getPosition().y;
 
-        if (levelFactory.totalBalls().size() != 1) {
-            if (!playerComponent.hasBall) {
-                playerComponent.timeSinceLastShot += deltaTime;
 
-                if (playerComponent.timeSinceLastShot > playerComponent.spawnDelay) {
-                    Entity ball = levelFactory.createBall(
-                            BodyFactory.Material.RUBBER,
-                            positionX, positionY + GameUtilities.BALL_RADIUS,
-                            0, 0);
+        if (!playerComponent.hasBall) {
+            playerComponent.timeSinceLastShot += deltaTime;
 
-                    playerComponent.balls.set(0, ball);
-                    playerComponent.hasBall = true;
-                    playerComponent.timeSinceLastShot = 0f;
-                }
+            if (playerComponent.timeSinceLastShot > playerComponent.spawnDelay) {
+                entity = levelFactory.createBall(
+                        BodyFactory.Material.RUBBER,
+                        positionX, positionY + GameUtilities.BALL_RADIUS,
+                        0, 0);
+
+                playerComponent.balls.set(0, entity);
+                playerComponent.hasBall = true;
+                playerComponent.timeSinceLastShot = 0f;
+                levelFactory.totalBalls().add(entity);
             }
-            if (ballComponent.destroyed) {
-                b2body.isDead = true;
-                System.out.println(player.getComponent(PlayerComponent.class).score += 10);
-            }
-
-            if (!ballComponent.destroyed) {
-                if (ballComponent.hitBall) {
-                    waitingForASpot += deltaTime;
-                    if (waitingForASpot > timeToStopMoving) {
-                        ballComponent.velocityX = 0f;
-                        ballComponent.velocityY = 0f;
-
-                        waitingForASpot = 0f;
-                    }
-                }
-            } else {
-                System.out.println("ball died"); //todo: remove
-                b2body.isDead = true;
-            }
-        }else {
-            //endscreen
         }
+        if (ballComponent.destroyed) {
+            b2body.isDead = true;
+            player.getComponent(PlayerComponent.class).score += 10;
+            levelFactory.totalBalls().remove(entity);
+        }
+
+        if (!ballComponent.destroyed) {
+            if (ballComponent.hitBall) {
+                waitingForASpot += deltaTime;
+                if (waitingForASpot > timeToStopMoving) {
+                    ballComponent.velocityX = 0f;
+                    ballComponent.velocityY = 0f;
+
+                    waitingForASpot = 0f;
+                }
+            }
+        } else {
+            System.out.println("ball died"); //todo: remove
+            b2body.isDead = true;
+        }
+
     }
 }

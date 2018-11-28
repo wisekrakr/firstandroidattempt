@@ -5,17 +5,17 @@ import com.badlogic.gdx.utils.Pool;
 
 public class StateComponent implements Component, Pool.Poolable {
 
-    public static final int STATE_NORMAL = 0;
-    public static final int STATE_MOVING = 1;
-    public static final int STATE_HIT = 2;
+    public static final int GAME_OVER = 0;
+    public static final int NEW_LEVEL = 1;
+    public static final int OTHER = 2;
 
     private int state = 0;
-    public float time = 0.0f;
-    public boolean isLooping = false;
+    public float time = 300f;
+    public float timeSaver = time;
 
     public void set(int newState){
         state = newState;
-        time = 0.0f;
+        time = timeSaver;
     }
 
     public int get(){
@@ -25,7 +25,6 @@ public class StateComponent implements Component, Pool.Poolable {
     @Override
     public void reset() {
         state = 0;
-        time = 0.0f;
-        isLooping = false;
+        time = timeSaver;
     }
 }

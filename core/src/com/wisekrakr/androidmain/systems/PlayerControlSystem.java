@@ -37,26 +37,20 @@ public class PlayerControlSystem extends IteratingSystem {
 
         playerComponentMapper = ComponentMapper.getFor(PlayerComponent.class);
         box2dBodyComponentMapper = ComponentMapper.getFor(Box2dBodyComponent.class);
-        stateComponentMapper = ComponentMapper.getFor(StateComponent.class);
         ballComponentMapper = ComponentMapper.getFor(BallComponent.class);
+        stateComponentMapper = ComponentMapper.getFor(StateComponent.class);
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         Box2dBodyComponent b2body = box2dBodyComponentMapper.get(entity);
-        StateComponent state = stateComponentMapper.get(entity);
         PlayerComponent playerComponent = playerComponentMapper.get(entity);
+        StateComponent state = stateComponentMapper.get(entity);
 
         if (playerComponent.isDead){
             b2body.isDead = true;
             System.out.println("Player died");
         }else {
-
-            if (b2body.body.getLinearVelocity().y == 0) {
-                if (b2body.body.getLinearVelocity().x != 0) {
-                    state.set(StateComponent.STATE_MOVING);
-                }
-            }
 
             if (controller.left) {
                 b2body.body.setLinearVelocity(MathUtils.lerp(b2body.body.getLinearVelocity().x, -5f, 0.2f), b2body.body.getLinearVelocity().y);
@@ -67,26 +61,14 @@ public class PlayerControlSystem extends IteratingSystem {
 //                b2body.body.setTransform(b2body.body.getPosition().x,b2body.body.getPosition().y, b2body.body.getAngle() + -15f * deltaTime);
             }
 
-            if (!controller.left && !controller.right) {
-                b2body.body.setLinearVelocity(MathUtils.lerp(b2body.body.getLinearVelocity().x, 0, 0.1f), b2body.body.getLinearVelocity().y);
-            }
-
-//            if (controller.up &&
-//                    (state.get() == StateComponent.STATE_NORMAL || state.get() == StateComponent.STATE_MOVING)) {
-//                //b2body.body.applyForceToCenter(0, 3000,true);
-//                b2body.body.applyLinearImpulse(0, 10f, b2body.body.getWorldCenter().x, b2body.body.getWorldCenter().y, true);
-//                state.set(StateComponent.STATE_JUMPING);
-//            }
-
-
             if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
                 if (playerComponent.hasBall) {
                     playerComponent.hasBall = false;
                     playerComponent.shotBall = true;
-                    Gdx.input.vibrate(6);
+
                     Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                     camera.unproject(mousePos); // convert position from screen to box2d world position
-                    float speed = 100000000000f;  // set the speed of the ball
+                    float speed = 10000000000f;  // set the speed of the ball
                     float xVelocity = mousePos.x - b2body.body.getPosition().x; // get distance from shooter to target on x plain
                     float yVelocity = mousePos.y - b2body.body.getPosition().y; // get distance from shooter to target on y plain
                     float length = (float) Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // get distance to target direct
@@ -103,10 +85,7 @@ public class PlayerControlSystem extends IteratingSystem {
                         playerComponent.hasBall = false;
                     }
                 }
-
             }
-
         }
-
     }
 }

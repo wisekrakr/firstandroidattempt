@@ -1,5 +1,6 @@
 package com.wisekrakr.androidmain.screens;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -9,9 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.androidmain.AndroidGame;
-import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.PlayerComponent;
+import com.wisekrakr.androidmain.components.StateComponent;
 
 
 public class InfoDisplay implements Disposable {
@@ -24,20 +26,16 @@ public class InfoDisplay implements Disposable {
     private Label scoreLabel;
 
     private AndroidGame game;
-    private OrthographicCamera camera;
-    private Entity player;
+
     private Stage stage;
     private float timeCounter;
 
-
-    InfoDisplay(AndroidGame game, OrthographicCamera camera, Entity player) {
+    InfoDisplay(AndroidGame game) {
         this.game = game;
-        this.camera = camera;
-        this.player = player;
 
         worldTimer = 0;
 
-        stage = new Stage();
+        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()));
 
         BitmapFont font = game.assetManager().assetManager.get("font/gamerFont.fnt");
         font.getData().setScale(2f);
@@ -61,19 +59,20 @@ public class InfoDisplay implements Disposable {
         stage.addActor(table);
     }
 
-    void renderDisplay(float delta){
+    void renderDisplay(Entity player, float delta){
         stage.act();
         stage.draw();
 
+        StateComponent stateComponent = ComponentMapper.getFor(StateComponent.class).get(player);
+
         timeCounter += delta;
         if (timeCounter >= 1) {
-            if (player != null) {
-                timeCounter = 0;
-                worldTimer++;
+            timeCounter = 0;
+            worldTimer = (int) stateComponent.time;
 
-                timeCountLabel.setText(String.format("%s",worldTimer));
-                scoreCountLabel.setText(Float.toString(player.getComponent(PlayerComponent.class).score));
-            }
+            timeCountLabel.setText(String.format("%s",worldTimer));
+            scoreCountLabel.setText(Float.toString(player.getComponent(PlayerComponent.class).score));
+
         }
     }
 
