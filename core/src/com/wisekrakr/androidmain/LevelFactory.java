@@ -24,6 +24,8 @@ import com.wisekrakr.androidmain.systems.RenderingSystem;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.midi.Soundbank;
+
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.BALL;
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.PLAYER;
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.SCENERY;
@@ -39,13 +41,7 @@ public class LevelFactory {
     private PooledEngine engine;
     private TextureAtlas atlas;
 
-    private TextureRegion floorTex;
-    private TextureRegion enemyTexture;
-    private TextureRegion platformTex;
-    private TextureRegion bulletTex;
-
     private List<Entity> totalBalls = new ArrayList<Entity>();
-
 
     public LevelFactory(PooledEngine pooledEngine, AndroidGame game){
         engine = pooledEngine;
@@ -57,15 +53,11 @@ public class LevelFactory {
 
         bodyFactory = BodyFactory.getBodyFactoryInstance(world);
 
-        floorTex = GameUtilities.makeTextureRegion(40*RenderingSystem.PPM, 0.5f*RenderingSystem.PPM, "111111FF");
-        platformTex = GameUtilities.makeTextureRegion(2*RenderingSystem.PPM, 0.1f*RenderingSystem.PPM, "221122FF");
-
+        player = createPlayer(Gdx.graphics.getWidth()/2, 5);
 
     }
 
     public void generateLevel(){
-
-        player = createPlayer(Gdx.graphics.getWidth()/2, 5);
 
         for(int i = 1; i < 10; i++){
             for (int j = 1; j < 4; j++) {
@@ -73,15 +65,18 @@ public class LevelFactory {
                         Gdx.graphics.getHeight() - j * GameUtilities.BALL_RADIUS);
             }
         }
-//        for(int i = 1; i < 2; i++) {
-//            for (int j = 1; j < 20; j++) {
-//                createRowBall(i * GameUtilities.BALL_RADIUS,
-//                       j * GameUtilities.BALL_RADIUS * 2);
-//                createRowBall(Gdx.graphics.getWidth() - i * GameUtilities.BALL_RADIUS,
-//                        j * GameUtilities.BALL_RADIUS * 2);
-//
-//            }
-//        }
+    }
+
+    public void generateLevelTwo(){
+
+        player.getComponent(TransformComponent.class).position.set(new Vector2(Gdx.graphics.getWidth()/2, 20), 0);
+
+        for(int i = 1; i < 6; i++){
+            for (int j = 1; j < 5; j++) {
+                createRowBall(i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2,
+                        Gdx.graphics.getHeight() - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2);
+            }
+        }
     }
 
     private void createBouncyPlatform(float x, float y) {
@@ -94,10 +89,6 @@ public class LevelFactory {
         bodyComponent.body = bodyFactory.makeBoxPolyBody(x, y, .5f, 0.5f, BodyFactory.Material.STONE, BodyDef.BodyType.StaticBody);
         //make it a sensor so not to impede movement
         //BodyFactory.makeAllFixturesSensors(bodyComponent.body, true);
-
-        //TODO: give it a texture... get another texture and anim for springy action
-
-        texture.region = floorTex;
 
         //type.type = SPRING;
 
@@ -120,8 +111,6 @@ public class LevelFactory {
         TypeComponent type = engine.createComponent(TypeComponent.class);
 
         bodyComponent.body = bodyFactory.makeBoxPolyBody(x, y, Gdx.graphics.getWidth(), 50f, BodyFactory.Material.STONE, BodyDef.BodyType.StaticBody, false);
-
-        texture.region = platformTex;
 
         type.type = SCENERY;
 

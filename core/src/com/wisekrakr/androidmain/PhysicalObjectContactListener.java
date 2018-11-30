@@ -4,6 +4,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.*;
 import com.wisekrakr.androidmain.components.CollisionComponent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PhysicalObjectContactListener implements ContactListener {
 
     private void entityCollision(Entity entity, Fixture fixtureB) {
@@ -37,36 +40,17 @@ public class PhysicalObjectContactListener implements ContactListener {
             entityCollision(entity, fixtureA);
         }
 
-
     }
 
     @Override
     public void endContact(Contact contact) {
-//        Body bodyA = contact.getFixtureA().getBody();
-//        Body bodyB = contact.getFixtureB().getBody();
-//
-//        System.out.println(StringHelper.ANSI_RED_BACKGROUND + "Contact : " + StringHelper.ANSI_RESET + bodyA.getUserData() + " and " + bodyB.getUserData());
-//
-//        if (bodyA.getUserData() == "WATER"){
-//            System.out.println("out of water");
-//        }else if (bodyB.getUserData() == "WATER"){
-//            System.out.println("out of water");
-//        }
+
     }
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-//        Body bodyA = contact.getFixtureA().getBody();
-//        Body bodyB = contact.getFixtureB().getBody();
-//
-//        if (bodyA.getUserData() == "WALL_OF_DEATH"){
-//
-//        }else if (bodyB.getUserData() == "WALL_OF_DEATH"){
-//
-//        }
+
     }
-
-
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {

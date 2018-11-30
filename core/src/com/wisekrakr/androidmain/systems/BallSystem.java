@@ -41,14 +41,11 @@ public class BallSystem extends IteratingSystem {
         BallComponent ballComponent = ComponentMapper.getFor(BallComponent.class).get(entity);
         PlayerComponent playerComponent = player.getComponent(PlayerComponent.class);
 
-        if (playerComponent.shotBall) {
-            b2body.body.setLinearVelocity(ballComponent.velocityX, ballComponent.velocityY);
-        }
+        b2body.body.setLinearVelocity(ballComponent.velocityX, ballComponent.velocityY);
 
         Box2dBodyComponent playerBodyComp = ComponentMapper.getFor(Box2dBodyComponent.class).get(player);
         float positionX = playerBodyComp.body.getPosition().x;
         float positionY = playerBodyComp.body.getPosition().y;
-
 
         if (!playerComponent.hasBall) {
             playerComponent.timeSinceLastShot += deltaTime;
@@ -84,6 +81,7 @@ public class BallSystem extends IteratingSystem {
         } else {
             System.out.println("ball died"); //todo: remove
             b2body.isDead = true;
+            System.out.println(levelFactory.totalBalls().size());//todo remove
         }
 
     }

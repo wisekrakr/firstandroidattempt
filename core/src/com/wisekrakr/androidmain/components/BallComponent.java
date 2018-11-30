@@ -11,8 +11,6 @@ import com.wisekrakr.androidmain.GameHelper;
 
 public class BallComponent implements Component, Pool.Poolable {
 
-    public boolean identicalColor = false;
-
     public enum BallColor{
         MERCURY, EARTH, JUPITER, NEPTUNE, SATURN, URANUS, MARS
     }
@@ -41,6 +39,5 @@ public class BallComponent implements Component, Pool.Poolable {
         hitSurface = false;
         destroyed = false;
         hitBall = false;
-        identicalColor = false;
     }
 }

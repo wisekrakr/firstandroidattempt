@@ -30,12 +30,12 @@ import com.wisekrakr.androidmain.systems.WallSystem;
 public class PlayScreen extends ScreenAdapter {
 
     private final InputMultiplexer inputMultiplexer;
-    private final PooledEngine engine;
+
     private final LevelFactory levelFactory;
     private final SpriteBatch spriteBatch;
     private final Controls controls;
+    private final PooledEngine engine;
     private OrthographicCamera camera;
-    private LevelGeneration levelGeneration;
 
     private AndroidGame androidGame;
 
@@ -59,7 +59,7 @@ public class PlayScreen extends ScreenAdapter {
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(controls);
 
-        engine = new PooledEngine();
+        engine = androidGame.getEngine();
 
         levelFactory = new LevelFactory(engine, androidGame);
 
@@ -72,11 +72,9 @@ public class PlayScreen extends ScreenAdapter {
         engine.addSystem(renderingSystem);
         engine.addSystem(new PhysicsSystem(levelFactory.world));
         engine.addSystem(new PhysicsDebugSystem(levelFactory.world, renderingSystem.getCamera()));
-        engine.addSystem(new CollisionSystem());
+        engine.addSystem(new CollisionSystem(levelFactory));
         engine.addSystem(new PlayerControlSystem(controls, levelFactory, camera));
-
-        levelFactory.generateLevel();
-        levelGeneration = new LevelGeneration(androidGame, levelFactory);
+        engine.addSystem(new LevelGeneration(androidGame, levelFactory));
 
         engine.addSystem(new BallSystem(levelFactory.getPlayer(), levelFactory));
         engine.addSystem(new RowSystem(levelFactory, levelFactory.getPlayer()));
@@ -111,8 +109,6 @@ public class PlayScreen extends ScreenAdapter {
         camera.update();
 
         spriteBatch.setProjectionMatrix(camera.combined);
-
-        levelGeneration.levelUpdate(delta);
 
         drawObjects();
 

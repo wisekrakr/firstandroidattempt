@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.wisekrakr.androidmain.BodyFactory;
+import com.wisekrakr.androidmain.LevelFactory;
 import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.CollisionComponent;
@@ -19,11 +19,13 @@ public class CollisionSystem extends IteratingSystem {
     private ComponentMapper<BallComponent> ballComponentMapper;
     private ComponentMapper<SurfaceComponent> surfaceComponentMapper;
     private ComponentMapper<Box2dBodyComponent> box2dBodyComponentMapper;
+    private LevelFactory levelFactory;
 
     @SuppressWarnings("unchecked")
-    public CollisionSystem() {
+    public CollisionSystem(LevelFactory levelFactory) {
         // only need to worry about player collisions
         super(Family.all(CollisionComponent.class).get());
+        this.levelFactory = levelFactory;
 
         collisionComponentMapper = ComponentMapper.getFor(CollisionComponent.class);
         playerComponentMapper = ComponentMapper.getFor(PlayerComponent.class);
@@ -40,7 +42,7 @@ public class CollisionSystem extends IteratingSystem {
 
         Entity collidedEntity = collisionComponent.collisionEntity;
 
-        TypeComponent thisType = entity.getComponent(TypeComponent.class);
+        TypeComponent thisType = ComponentMapper.getFor(TypeComponent.class).get(entity);
 
         if (thisType.type == TypeComponent.Type.BALL){
             if (collidedEntity != null) {
@@ -48,24 +50,21 @@ public class CollisionSystem extends IteratingSystem {
                 if (typeComponent != null) {
                     switch (typeComponent.type) {
                         case BALL:
-
                             ballComponentMapper.get(entity).hitBall = true;
-                            ballComponentMapper.get(collidedEntity).hitBall = true;
 
                             if (ballComponentMapper.get(entity).ballColor == collisionComponent.collisionEntity.getComponent(BallComponent.class).ballColor) {
                                 ballComponentMapper.get(entity).destroyed = true;
                                 collisionComponent.collisionEntity.getComponent(BallComponent.class).destroyed = true;
-                                ballComponentMapper.get(entity).identicalColor = true;
                             }
 
-                            System.out.println("ball hit ball " + ballComponentMapper.get(entity).ballColor +  collisionComponent.collisionEntity.getComponent(BallComponent.class).ballColor);
+//                            System.out.println("ball hit ball " + ballComponentMapper.get(entity).ballColor +  collisionComponent.collisionEntity.getComponent(BallComponent.class).ballColor);
 
                             break;
                         case SCENERY:
                             ballComponentMapper.get(entity).hitSurface = true;
-//                            ballComponentMapper.get(entity).velocityY = 0f;
-//                            ballComponentMapper.get(entity).velocityX = 0f;
-                            System.out.println("ball hit surface " );
+                            ballComponentMapper.get(entity).velocityY = 0f;
+                            ballComponentMapper.get(entity).velocityX = 0f;
+//                            System.out.println("ball hit surface " );
                             break;
                         case WATER:
 
@@ -78,7 +77,7 @@ public class CollisionSystem extends IteratingSystem {
                         default:
                             System.out.println("ball: No matching type found " );
                     }
-                    collisionComponent.collisionEntity = null;
+                    //collisionComponent.collisionEntity = null;
                 }else {
                     System.out.println("type == null");
                 }
@@ -98,7 +97,7 @@ public class CollisionSystem extends IteratingSystem {
                         default:
                             System.out.println("wall: No matching type found");
                     }
-                    collisionComponent.collisionEntity = null;
+//                    collisionComponent.collisionEntity = null;
                 }else {
                     System.out.println("type == null");
                 }

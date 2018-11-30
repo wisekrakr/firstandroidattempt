@@ -1,8 +1,10 @@
 package com.wisekrakr.androidmain;
 
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.wisekrakr.androidmain.screens.EndScreen;
+import com.wisekrakr.androidmain.screens.LevelSelectScreen;
 import com.wisekrakr.androidmain.screens.LoadingScreen;
 import com.wisekrakr.androidmain.screens.MenuScreen;
 import com.wisekrakr.androidmain.screens.PlayScreen;
@@ -10,19 +12,23 @@ import com.wisekrakr.androidmain.screens.PreferencesScreen;
 
 public class AndroidGame extends Game {
 
+	private PooledEngine engine;
+
 	private MyAssetManager myAssetManager;
 	private GamePreferences gamePreferences;
 	private SpriteBatch spriteBatch;
 
 	private PreferencesScreen preferencesScreen;
 	private MenuScreen menuScreen;
+	private LevelSelectScreen levelSelectScreen;
 	private PlayScreen playScreen;
 	private EndScreen endScreen;
 
 	public final static int MENU = 0;
 	public final static int PREFERENCES = 1;
-	public final static int APPLICATION = 2;
-	public final static int ENDGAME = 3;
+	public final static int LEVELSELECTION = 2;
+	public final static int APPLICATION = 3;
+	public final static int ENDGAME = 4;
 
 	@Override
 	public void create() {
@@ -36,6 +42,8 @@ public class AndroidGame extends Game {
 
 		spriteBatch = new SpriteBatch();
 
+		engine = new PooledEngine();
+
 		setScreen(new LoadingScreen(this));
 	}
 
@@ -48,6 +56,10 @@ public class AndroidGame extends Game {
 			case PREFERENCES:
 				if(preferencesScreen == null) preferencesScreen = new PreferencesScreen(this);
 				this.setScreen(preferencesScreen);
+				break;
+			case LEVELSELECTION:
+				if (levelSelectScreen == null) levelSelectScreen = new LevelSelectScreen(this, playScreen);
+				this.setScreen(levelSelectScreen);
 				break;
 			case APPLICATION:
 				if(playScreen == null) playScreen = new PlayScreen(this);
@@ -71,4 +83,10 @@ public class AndroidGame extends Game {
 	public SpriteBatch getSpriteBatch() {
 		return spriteBatch;
 	}
+
+	public PooledEngine getEngine() {
+		return engine;
+	}
+
+
 }

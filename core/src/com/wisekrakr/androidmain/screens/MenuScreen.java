@@ -36,11 +36,11 @@ public class MenuScreen extends ScreenAdapter {
 
         Skin skin = game.assetManager().assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 
-        TextButton newGame = new TextButton("New Game", skin);
+        TextButton selectLevel = new TextButton("Select Level", skin);
         TextButton preferences = new TextButton("Preferences", skin);
         TextButton exit = new TextButton("Exit", skin);
 
-        table.add(newGame).uniformX();
+        table.add(selectLevel).uniformX();
         table.row();
         table.add(preferences).uniformX();
         table.row();
@@ -54,10 +54,10 @@ public class MenuScreen extends ScreenAdapter {
             }
         });
 
-        newGame.addListener(new ChangeListener() {
+        selectLevel.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.changeScreen(AndroidGame.APPLICATION);
+                game.changeScreen(AndroidGame.LEVELSELECTION);
             }
         });
 
