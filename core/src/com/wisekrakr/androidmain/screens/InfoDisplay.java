@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.components.PlayerComponent;
-import com.wisekrakr.androidmain.components.StateComponent;
+import com.wisekrakr.androidmain.components.TimeComponent;
 
 
 public class InfoDisplay implements Disposable {
@@ -30,7 +30,7 @@ public class InfoDisplay implements Disposable {
     private Stage stage;
     private float timeCounter;
 
-    InfoDisplay(AndroidGame game) {
+    public InfoDisplay(AndroidGame game) {
         this.game = game;
 
         worldTimer = 0;
@@ -59,19 +59,20 @@ public class InfoDisplay implements Disposable {
         stage.addActor(table);
     }
 
-    void renderDisplay(Entity player, float delta){
+    public void renderDisplay(Entity entity, float delta){
+
+        TimeComponent timeComponent = ComponentMapper.getFor(TimeComponent.class).get(entity);
+
         stage.act();
         stage.draw();
-
-        StateComponent stateComponent = ComponentMapper.getFor(StateComponent.class).get(player);
 
         timeCounter += delta;
         if (timeCounter >= 1) {
             timeCounter = 0;
-            worldTimer = (int) stateComponent.time;
+            worldTimer = (int)timeComponent.time;
 
             timeCountLabel.setText(String.format("%s",worldTimer));
-            scoreCountLabel.setText(Float.toString(player.getComponent(PlayerComponent.class).score));
+            scoreCountLabel.setText(Float.toString(entity.getComponent(PlayerComponent.class).score));
 
         }
     }

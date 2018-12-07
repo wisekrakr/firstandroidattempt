@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.GamePreferences;
+import com.wisekrakr.androidmain.components.LevelComponent;
 
 public class LevelSelectScreen extends ScreenAdapter {
 
@@ -24,9 +25,9 @@ public class LevelSelectScreen extends ScreenAdapter {
     private AndroidGame game;
     private Stage stage;
 
-    public LevelSelectScreen(AndroidGame game, PlayScreen playScreen) {
+
+    public LevelSelectScreen(AndroidGame game) {
         this.game = game;
-        this.playScreen = playScreen;
 
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()), game.getSpriteBatch());
 
@@ -68,45 +69,35 @@ public class LevelSelectScreen extends ScreenAdapter {
             public void changed(ChangeEvent event, Actor actor) {
                 game.changeScreen(AndroidGame.APPLICATION);
                 //app screen show level 1
-                game.getGamePreferences().setLevelOneCompleted(false);
-                if (game.getGamePreferences().levelOneDone()) {playScreen.dispose();}
+
                 dispose();
             }
         });
+        if (game.getGamePreferences().levelDone(1)) {
 
-        if (game.getGamePreferences().levelOneDone()) {
             levelTwo.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    game.changeScreen(AndroidGame.APPLICATION);
-                    //app screen shows level 2
-                    game.getGamePreferences().setLevelTwoCompleted(false);
-                    if (game.getGamePreferences().levelTwoDone()) {playScreen.dispose();}
+                    game.changeScreen(AndroidGame.APPLICATION); //app screen shows level 2
                     dispose();
                 }
             });
-        }
-        if (game.getGamePreferences().levelTwoDone()) {
+        }else if (game.getGamePreferences().levelDone(2)) {
+
             levelThree.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    game.changeScreen(AndroidGame.APPLICATION);
-                    //app screen shows level 3
+                    game.changeScreen(AndroidGame.APPLICATION);//app screen shows level 3
+
                     dispose();
                 }
             });
         }
-
     }
 
     @Override
     public void render(float delta) {
-        System.out.println(" and this " + game.getGamePreferences().levelOneDone());//todo remove
-//        if(Gdx.input.justTouched()) {
-//            game.changeScreen(AndroidGame.APPLICATION);
-//            playScreen.show();
-//            dispose();
-//        }
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();

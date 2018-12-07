@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.wisekrakr.androidmain.LevelFactory;
+import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.CollisionComponent;
@@ -19,13 +19,13 @@ public class CollisionSystem extends IteratingSystem {
     private ComponentMapper<BallComponent> ballComponentMapper;
     private ComponentMapper<SurfaceComponent> surfaceComponentMapper;
     private ComponentMapper<Box2dBodyComponent> box2dBodyComponentMapper;
-    private LevelFactory levelFactory;
+    private EntityCreator entityCreator;
 
     @SuppressWarnings("unchecked")
-    public CollisionSystem(LevelFactory levelFactory) {
+    public CollisionSystem(EntityCreator entityCreator) {
         // only need to worry about player collisions
         super(Family.all(CollisionComponent.class).get());
-        this.levelFactory = levelFactory;
+        this.entityCreator = entityCreator;
 
         collisionComponentMapper = ComponentMapper.getFor(CollisionComponent.class);
         playerComponentMapper = ComponentMapper.getFor(PlayerComponent.class);

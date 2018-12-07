@@ -8,11 +8,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
-import com.wisekrakr.androidmain.LevelFactory;
+import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
-import com.wisekrakr.androidmain.components.StateComponent;
 import com.wisekrakr.androidmain.controls.Controls;
 
 import java.util.Iterator;
@@ -22,30 +21,27 @@ public class PlayerControlSystem extends IteratingSystem {
     private ComponentMapper<BallComponent>ballComponentMapper;
     private ComponentMapper<PlayerComponent> playerComponentMapper;
     private ComponentMapper<Box2dBodyComponent> box2dBodyComponentMapper;
-    private ComponentMapper<StateComponent> stateComponentMapper;
     private Controls controller;
-    private LevelFactory levelFactory;
+    private EntityCreator entityCreator;
     private OrthographicCamera camera;
 
 
     @SuppressWarnings("unchecked")
-    public PlayerControlSystem(Controls controls, LevelFactory levelFactory, OrthographicCamera camera) {
+    public PlayerControlSystem(Controls controls, EntityCreator entityCreator, OrthographicCamera camera) {
         super(Family.all(PlayerComponent.class).get());
         controller = controls;
-        this.levelFactory = levelFactory;
+        this.entityCreator = entityCreator;
         this.camera = camera;
 
         playerComponentMapper = ComponentMapper.getFor(PlayerComponent.class);
         box2dBodyComponentMapper = ComponentMapper.getFor(Box2dBodyComponent.class);
         ballComponentMapper = ComponentMapper.getFor(BallComponent.class);
-        stateComponentMapper = ComponentMapper.getFor(StateComponent.class);
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         Box2dBodyComponent b2body = box2dBodyComponentMapper.get(entity);
         PlayerComponent playerComponent = playerComponentMapper.get(entity);
-        StateComponent state = stateComponentMapper.get(entity);
 
         if (playerComponent.isDead){
             b2body.isDead = true;

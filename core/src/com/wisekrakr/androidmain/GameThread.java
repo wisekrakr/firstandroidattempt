@@ -1,46 +1,47 @@
 package com.wisekrakr.androidmain;
 
-import com.wisekrakr.androidmain.screens.PlayScreen;
 
-public class GameThread extends Thread {
+import com.badlogic.ashley.core.PooledEngine;
+import com.wisekrakr.androidmain.controls.Controls;
+import com.wisekrakr.androidmain.systems.BallSystem;
+import com.wisekrakr.androidmain.systems.CollisionSystem;
+import com.wisekrakr.androidmain.systems.LevelGenerationSystem;
+import com.wisekrakr.androidmain.systems.PhysicsDebugSystem;
+import com.wisekrakr.androidmain.systems.PhysicsSystem;
+import com.wisekrakr.androidmain.systems.PlayerControlSystem;
+import com.wisekrakr.androidmain.systems.RenderingSystem;
+import com.wisekrakr.androidmain.systems.WallSystem;
 
+class GameThread {
+
+    private final EntityCreator entityCreator;
     private AndroidGame game;
-    private PlayScreen playScreen;
-    private boolean running;
+    private PooledEngine engine;
+    private RenderingSystem renderingSystem;
 
-
-    public GameThread(AndroidGame game, PlayScreen playScreen) {
+    GameThread(AndroidGame game) {
         this.game = game;
-        this.playScreen = playScreen;
+
+        entityCreator = new EntityCreator(game.getEngine(), game);
+        engine = game.getEngine();
+
+        renderingSystem = new RenderingSystem(game.getSpriteBatch());
+
+        init(renderingSystem);
     }
 
-    @Override
-    public void run() {
-        long startTime = System.nanoTime();
+    private void init(RenderingSystem renderingSystem) {
+        engine.addSystem(renderingSystem);
+        engine.addSystem(new PhysicsSystem(entityCreator.world));
+        engine.addSystem(new PhysicsDebugSystem(entityCreator.world, renderingSystem.getCamera()));
+        engine.addSystem(new CollisionSystem(entityCreator));
 
-        while(running)  {
-
-            long now = System.nanoTime() ;
-
-
-            long waitTime = (now - startTime)/1000000;
-            if(waitTime < 10)  {
-                waitTime= 10; // Millisecond.
-            }
-            System.out.print(" Wait Time="+ waitTime);
-
-            try {
-                // Sleep.
-                this.sleep(waitTime);
-            } catch(InterruptedException e)  {
-
-            }
-            startTime = System.nanoTime();
-            System.out.print(".");
-        }
-    }
-    public void setRunning(boolean running)  {
-        this.running= running;
+        engine.addSystem(new LevelGenerationSystem(game, entityCreator));
     }
 
+    RenderingSystem getRenderingSystem() {
+        return renderingSystem;
+    }
+
+    EntityCreator getEntityCreator(){return  entityCreator;}
 }

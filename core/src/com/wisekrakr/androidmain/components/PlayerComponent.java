@@ -11,7 +11,7 @@ public class PlayerComponent implements Component, Pool.Poolable {
 
     public boolean hasBall = false;
     public boolean isDead = false;
-    public float spawnDelay = 50f;
+    public float spawnDelay = 20f;
     public float timeSinceLastShot = 0f;
     public float score = 0f;
     public float angle = 0f;
@@ -23,7 +23,7 @@ public class PlayerComponent implements Component, Pool.Poolable {
 
         hasBall = false;
         isDead = false;
-        spawnDelay = 50f;
+        spawnDelay = 20f;
         timeSinceLastShot = 0f;
         score = 0f;
         angle = 0f;

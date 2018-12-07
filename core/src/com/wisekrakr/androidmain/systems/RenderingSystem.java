@@ -23,20 +23,6 @@ public class RenderingSystem extends SortedIteratingSystem {
 
     public static final float PIXELS_TO_METRES = 1f / PPM;
 
-    private static Vector2 meterDimensions = new Vector2();
-    private static Vector2 pixelDimensions = new Vector2();
-
-    public static Vector2 getScreenSizeInMeters(){
-        meterDimensions.set(Gdx.graphics.getWidth()*PIXELS_TO_METRES,
-                Gdx.graphics.getHeight()*PIXELS_TO_METRES);
-        return meterDimensions;
-    }
-
-    public static Vector2 getScreenSizeInPixels(){
-        pixelDimensions.set(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        return pixelDimensions;
-    }
-
     public static float PixelsToMeters(float pixelValue){
         return pixelValue * PIXELS_TO_METRES;
     }

@@ -13,45 +13,38 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.androidmain.AndroidGame;
+import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
-import com.wisekrakr.androidmain.LevelFactory;
 import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.controls.Controls;
 import com.wisekrakr.androidmain.systems.BallSystem;
-import com.wisekrakr.androidmain.systems.CollisionSystem;
-import com.wisekrakr.androidmain.systems.LevelGeneration;
-import com.wisekrakr.androidmain.systems.PhysicsDebugSystem;
-import com.wisekrakr.androidmain.systems.PhysicsSystem;
+import com.wisekrakr.androidmain.systems.LevelGenerationSystem;
 import com.wisekrakr.androidmain.systems.PlayerControlSystem;
-import com.wisekrakr.androidmain.systems.RenderingSystem;
-import com.wisekrakr.androidmain.systems.RowSystem;
 import com.wisekrakr.androidmain.systems.WallSystem;
 
 public class PlayScreen extends ScreenAdapter {
 
     private final InputMultiplexer inputMultiplexer;
 
-    private final LevelFactory levelFactory;
+    private EntityCreator entityCreator;
     private final SpriteBatch spriteBatch;
     private final Controls controls;
     private final PooledEngine engine;
     private OrthographicCamera camera;
 
-    private AndroidGame androidGame;
+    private AndroidGame game;
 
     private ShapeRenderer shapeRenderer;
 
     private Viewport viewport;
     private InfoDisplay infoDisplay;
 
-    public PlayScreen(AndroidGame androidGame) {
-        this.androidGame = androidGame;
+    public PlayScreen(AndroidGame game) {
+        this.game = game;
 
-        spriteBatch = androidGame.getSpriteBatch();
+        spriteBatch = game.getSpriteBatch();
 
-        RenderingSystem renderingSystem = new RenderingSystem(spriteBatch);
-
-        camera = renderingSystem.getCamera();
+        camera = game.getRenderingSystem().getCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
         controls = new Controls();
@@ -59,35 +52,34 @@ public class PlayScreen extends ScreenAdapter {
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(controls);
 
-        engine = androidGame.getEngine();
+        engine = game.getEngine();
 
-        levelFactory = new LevelFactory(engine, androidGame);
+        entityCreator = game.getEntityCreator();
 
         shapeRenderer = new ShapeRenderer();
 
-        addSystems(renderingSystem, controls);
+        addSystems();
     }
 
-    private void addSystems(RenderingSystem renderingSystem, Controls controls) {
-        engine.addSystem(renderingSystem);
-        engine.addSystem(new PhysicsSystem(levelFactory.world));
-        engine.addSystem(new PhysicsDebugSystem(levelFactory.world, renderingSystem.getCamera()));
-        engine.addSystem(new CollisionSystem(levelFactory));
-        engine.addSystem(new PlayerControlSystem(controls, levelFactory, camera));
-        engine.addSystem(new LevelGeneration(androidGame, levelFactory));
+    /*
+    Add remaining systems we did not need to add to the Gamethread.
+    These systems will be created anew every time we switch to a different level (we create a new playscreen every
+    level change.
+     */
+    private void addSystems() {
 
-        engine.addSystem(new BallSystem(levelFactory.getPlayer(), levelFactory));
-        engine.addSystem(new RowSystem(levelFactory, levelFactory.getPlayer()));
+        engine.addSystem(new PlayerControlSystem(controls, entityCreator, camera));
+        engine.addSystem(new BallSystem(entityCreator.getPlayer(), entityCreator));
         engine.addSystem(new WallSystem());
 
-        levelFactory.createWalls(0,0, 5f, Gdx.graphics.getHeight()*2);
-        levelFactory.createWalls(Gdx.graphics.getWidth(),0, 5f, Gdx.graphics.getHeight()*2);
-        levelFactory.createWalls(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), Gdx.graphics.getWidth()*2,10f);
-        levelFactory.createWalls(0,0, Gdx.graphics.getWidth()*2,5f);
+        entityCreator.createWalls(0,0, 5f, Gdx.graphics.getHeight()*2);
+        entityCreator.createWalls(Gdx.graphics.getWidth(),0, 5f, Gdx.graphics.getHeight()*2);
+        entityCreator.createWalls(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), Gdx.graphics.getWidth()*2,10f);
+        entityCreator.createWalls(0,0, Gdx.graphics.getWidth()*2,5f);
 
-//        levelFactory.createWaterFloor(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2, 80f,30f);
+//        entityCreator.createWaterFloor(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2, 80f,30f);
 
-        infoDisplay = new InfoDisplay(androidGame);
+        infoDisplay = new InfoDisplay(game);
     }
 
     @Override
@@ -112,16 +104,15 @@ public class PlayScreen extends ScreenAdapter {
 
         drawObjects();
 
-        infoDisplay.renderDisplay(levelFactory.getPlayer(), delta );
+        infoDisplay.renderDisplay(entityCreator.getPlayer(), delta );
 
     }
 
     private void drawObjects(){
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Entity entity: levelFactory.totalBalls()) {
+        for (Entity entity: entityCreator.totalBalls()) {
             entity.getComponent(BallComponent.class);
-
             if (entity.getComponent(BallComponent.class) != null) {
                 if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.MARS) {
                     shapeRenderer.setColor(Color.CYAN);

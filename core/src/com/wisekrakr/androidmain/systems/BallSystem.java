@@ -4,34 +4,31 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector3;
-import com.wisekrakr.androidmain.AndroidGame;
+
 import com.wisekrakr.androidmain.BodyFactory;
+import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
-import com.wisekrakr.androidmain.LevelFactory;
 import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
-import com.wisekrakr.androidmain.components.CollisionComponent;
-import com.wisekrakr.androidmain.components.PlayerComponent;
-import com.wisekrakr.androidmain.components.RowComponent;
-import com.wisekrakr.androidmain.components.TransformComponent;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.wisekrakr.androidmain.components.LevelComponent;
+import com.wisekrakr.androidmain.components.PlayerComponent;
+
+import java.util.Iterator;
+
 
 public class BallSystem extends IteratingSystem {
 
     private Entity player;
-    private LevelFactory levelFactory;
+    private EntityCreator entityCreator;
     private float waitingForASpot = 0;
     private float timeToStopMoving = 10f;
 
     @SuppressWarnings("unchecked")
-    public BallSystem(Entity player, LevelFactory levelFactory){
+    public BallSystem(Entity player, EntityCreator entityCreator){
         super(Family.all(BallComponent.class).get());
         this.player = player;
-        this.levelFactory = levelFactory;
+        this.entityCreator = entityCreator;
     }
 
     @Override
@@ -51,7 +48,7 @@ public class BallSystem extends IteratingSystem {
             playerComponent.timeSinceLastShot += deltaTime;
 
             if (playerComponent.timeSinceLastShot > playerComponent.spawnDelay) {
-                entity = levelFactory.createBall(
+                entity = entityCreator.createBall(
                         BodyFactory.Material.RUBBER,
                         positionX, positionY + GameUtilities.BALL_RADIUS,
                         0, 0);
@@ -59,13 +56,14 @@ public class BallSystem extends IteratingSystem {
                 playerComponent.balls.set(0, entity);
                 playerComponent.hasBall = true;
                 playerComponent.timeSinceLastShot = 0f;
-                levelFactory.totalBalls().add(entity);
+                entityCreator.totalBalls().add(entity);
             }
         }
+
         if (ballComponent.destroyed) {
             b2body.isDead = true;
             player.getComponent(PlayerComponent.class).score += 10;
-            levelFactory.totalBalls().remove(entity);
+            entityCreator.totalBalls().remove(entity);
         }
 
         if (!ballComponent.destroyed) {
@@ -81,8 +79,6 @@ public class BallSystem extends IteratingSystem {
         } else {
             System.out.println("ball died"); //todo: remove
             b2body.isDead = true;
-            System.out.println(levelFactory.totalBalls().size());//todo remove
         }
-
     }
 }

@@ -2,6 +2,7 @@ package com.wisekrakr.androidmain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.wisekrakr.androidmain.components.LevelComponent;
 
 public class GamePreferences {
 
@@ -10,13 +11,6 @@ public class GamePreferences {
     private static final String PREF_SOUND_ENABLED = "sound.enabled";
     private static final String PREF_SOUND_VOL = "sound";
     private static final String PREFS_NAME = "bigballs";
-
-    private static final String LEVEL_ONE = "level1";
-    private static final String LEVEL_TWO = "level2";
-    private static final String LEVEL_THREE = "level3";
-    private static final String LEVEL_FOUR = "level4";
-    private static final String LEVEL_FIVE = "level5";
-    private static final String LEVEL_SIX = "level6";
 
     private boolean completed = false;
 
@@ -65,25 +59,17 @@ public class GamePreferences {
     Level selection methods
      */
 
-
-    public void setLevelOneCompleted(boolean set) {
+    public void setLevelCompleted(int numberOfLevel, boolean set) {
         completed = set;
-        getPrefs().putBoolean(LEVEL_ONE, completed);
+        String string = Integer.toString(numberOfLevel);
+        getPrefs().putBoolean(string, completed);
         getPrefs().flush();
     }
 
-    public boolean levelOneDone() {
-        return getPrefs().getBoolean(LEVEL_ONE, completed);
+    public boolean levelDone(int numberOfLevel) {
+        String string = Integer.toString(numberOfLevel);
+        return getPrefs().getBoolean(string, completed);
     }
 
-    public void setLevelTwoCompleted(boolean set) {
-        completed = set;
-        getPrefs().putBoolean(LEVEL_TWO, completed);
-        getPrefs().flush();
-    }
-
-    public boolean levelTwoDone() {
-        return getPrefs().getBoolean(LEVEL_TWO, completed);
-    }
 
 }

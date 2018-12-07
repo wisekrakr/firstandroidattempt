@@ -57,7 +57,7 @@ public class MenuScreen extends ScreenAdapter {
         selectLevel.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.changeScreen(AndroidGame.LEVELSELECTION);
+                game.changeScreen(AndroidGame.APPLICATION);
             }
         });
 

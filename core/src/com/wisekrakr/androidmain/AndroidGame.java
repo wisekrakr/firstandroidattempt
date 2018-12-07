@@ -9,6 +9,7 @@ import com.wisekrakr.androidmain.screens.LoadingScreen;
 import com.wisekrakr.androidmain.screens.MenuScreen;
 import com.wisekrakr.androidmain.screens.PlayScreen;
 import com.wisekrakr.androidmain.screens.PreferencesScreen;
+import com.wisekrakr.androidmain.systems.RenderingSystem;
 
 public class AndroidGame extends Game {
 
@@ -29,6 +30,7 @@ public class AndroidGame extends Game {
 	public final static int LEVELSELECTION = 2;
 	public final static int APPLICATION = 3;
 	public final static int ENDGAME = 4;
+	private GameThread gameThread;
 
 	@Override
 	public void create() {
@@ -37,6 +39,7 @@ public class AndroidGame extends Game {
 
 	private void start(){
 		gamePreferences = new GamePreferences();
+		gamePreferences.setLevelCompleted(1, false); //TODO: this is bad...fix this bitch
 
 		myAssetManager = new MyAssetManager();
 
@@ -44,7 +47,11 @@ public class AndroidGame extends Game {
 
 		engine = new PooledEngine();
 
+		gameThread = new GameThread(this);
+
 		setScreen(new LoadingScreen(this));
+
+
 	}
 
 	public void changeScreen(int screen){
@@ -58,7 +65,7 @@ public class AndroidGame extends Game {
 				this.setScreen(preferencesScreen);
 				break;
 			case LEVELSELECTION:
-				if (levelSelectScreen == null) levelSelectScreen = new LevelSelectScreen(this, playScreen);
+				if (levelSelectScreen == null) levelSelectScreen = new LevelSelectScreen(this);
 				this.setScreen(levelSelectScreen);
 				break;
 			case APPLICATION:
@@ -70,6 +77,14 @@ public class AndroidGame extends Game {
 				this.setScreen(endScreen);
 				break;
 		}
+	}
+
+	public RenderingSystem getRenderingSystem(){
+		return gameThread.getRenderingSystem();
+	}
+
+	public EntityCreator getEntityCreator(){
+		return gameThread.getEntityCreator();
 	}
 
 	public GamePreferences getGamePreferences() {
@@ -87,6 +102,7 @@ public class AndroidGame extends Game {
 	public PooledEngine getEngine() {
 		return engine;
 	}
+
 
 
 }
