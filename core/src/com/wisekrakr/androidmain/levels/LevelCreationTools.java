@@ -41,7 +41,8 @@ public class LevelCreationTools {
                 for (int j = 1; j < columns; j++) {
                     for (int k = 1; k < rows; k++) {
                         entityCreator.createRowBall(j * GameUtilities.BALL_RADIUS,
-                                Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS);
+                                Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS
+                        );
                     }
                 }
             }

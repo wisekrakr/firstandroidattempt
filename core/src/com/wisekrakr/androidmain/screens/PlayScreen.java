@@ -16,9 +16,9 @@ import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.BallComponent;
+import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.controls.Controls;
 import com.wisekrakr.androidmain.systems.BallSystem;
-import com.wisekrakr.androidmain.systems.LevelGenerationSystem;
 import com.wisekrakr.androidmain.systems.PlayerControlSystem;
 import com.wisekrakr.androidmain.systems.WallSystem;
 
@@ -69,7 +69,7 @@ public class PlayScreen extends ScreenAdapter {
     private void addSystems() {
 
         engine.addSystem(new PlayerControlSystem(controls, entityCreator, camera));
-        engine.addSystem(new BallSystem(entityCreator.getPlayer(), entityCreator));
+        engine.addSystem(new BallSystem(game.getLevelGenerationSystem().getPlayer(), entityCreator));
         engine.addSystem(new WallSystem());
 
         entityCreator.createWalls(0,0, 5f, Gdx.graphics.getHeight()*2);
@@ -104,7 +104,8 @@ public class PlayScreen extends ScreenAdapter {
 
         drawObjects();
 
-        infoDisplay.renderDisplay(entityCreator.getPlayer(), delta );
+        infoDisplay.renderDisplay(game.getLevelGenerationSystem().getPlayer(), delta);
+
 
     }
 

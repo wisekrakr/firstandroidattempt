@@ -36,11 +36,15 @@ public class LevelGenerationSystem extends IteratingSystem {
         if (!game.getGamePreferences().levelDone(1)) {
 
             levelModel.updatingLevel(1, 4, 4, deltaTime);
-        }
-        if (!game.getGamePreferences().levelDone(2) && game.getGamePreferences().levelDone(1)) {
+        }else if (!game.getGamePreferences().levelDone(2) && game.getGamePreferences().levelDone(1)) {
 
             levelModel.updatingLevel(2, 5, 8, deltaTime);
         }
 
+
+    }
+
+    public Entity getPlayer() {
+        return levelModel.getPlayer();
     }
 }

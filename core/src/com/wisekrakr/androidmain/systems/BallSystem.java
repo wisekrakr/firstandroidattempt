@@ -11,10 +11,7 @@ import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 
-import com.wisekrakr.androidmain.components.LevelComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
-
-import java.util.Iterator;
 
 
 public class BallSystem extends IteratingSystem {
@@ -22,7 +19,6 @@ public class BallSystem extends IteratingSystem {
     private Entity player;
     private EntityCreator entityCreator;
     private float waitingForASpot = 0;
-    private float timeToStopMoving = 10f;
 
     @SuppressWarnings("unchecked")
     public BallSystem(Entity player, EntityCreator entityCreator){
@@ -53,11 +49,13 @@ public class BallSystem extends IteratingSystem {
                         positionX, positionY + GameUtilities.BALL_RADIUS,
                         0, 0);
 
-                playerComponent.balls.set(0, entity);
                 playerComponent.hasBall = true;
                 playerComponent.timeSinceLastShot = 0f;
-                entityCreator.totalBalls().add(entity);
+
+                entityCreator.totalBalls().add(0,entity);
             }
+        }else if (entityCreator.totalBalls().isEmpty()){
+
         }
 
         if (ballComponent.destroyed) {
@@ -69,6 +67,7 @@ public class BallSystem extends IteratingSystem {
         if (!ballComponent.destroyed) {
             if (ballComponent.hitBall) {
                 waitingForASpot += deltaTime;
+                float timeToStopMoving = 10f;
                 if (waitingForASpot > timeToStopMoving) {
                     ballComponent.velocityX = 0f;
                     ballComponent.velocityY = 0f;
@@ -81,4 +80,6 @@ public class BallSystem extends IteratingSystem {
             b2body.isDead = true;
         }
     }
+
+    private void add
 }

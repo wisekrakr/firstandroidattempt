@@ -9,6 +9,7 @@ import com.wisekrakr.androidmain.screens.LoadingScreen;
 import com.wisekrakr.androidmain.screens.MenuScreen;
 import com.wisekrakr.androidmain.screens.PlayScreen;
 import com.wisekrakr.androidmain.screens.PreferencesScreen;
+import com.wisekrakr.androidmain.systems.LevelGenerationSystem;
 import com.wisekrakr.androidmain.systems.RenderingSystem;
 
 public class AndroidGame extends Game {
@@ -103,6 +104,8 @@ public class AndroidGame extends Game {
 		return engine;
 	}
 
-
+	public LevelGenerationSystem getLevelGenerationSystem(){
+		return gameThread.getLevelGenerationSystem();
+	}
 
 }

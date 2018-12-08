@@ -6,7 +6,7 @@ import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.components.LevelComponent;
 
-public class LevelFactory extends Entity {
+public class LevelFactory extends AbstractLevelContext {
 
     private AndroidGame game;
     private EntityCreator entityCreator;
@@ -19,25 +19,32 @@ public class LevelFactory extends Entity {
         engine = game.getEngine();
     }
 
-
-
-    public Entity createLevel(float x, float y){
-
-
-
-        entityCreator.createRowBall(x,y);
-
-        Entity entity = engine.createEntity();
+    @Override
+    public void init(Entity entity) {
+        entity = engine.createEntity();
 
         LevelComponent levelComponent = engine.createComponent(LevelComponent.class);
 
         entity.add(levelComponent);
 
         engine.addEntity(entity);
+    }
 
-        return entity;
+    @Override
+    public void startLevel() {
 
     }
+
+    @Override
+    public void updateLevel(float delta) {
+        super.updateLevel(delta);
+    }
+
+    @Override
+    public void completeLevel() {
+        super.completeLevel();
+    }
+
 
 
 }

@@ -3,7 +3,6 @@ package com.wisekrakr.androidmain;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -30,16 +29,16 @@ import static com.wisekrakr.androidmain.components.TypeComponent.Type.WATER;
 
 public class EntityCreator {
 
-    private Entity player;
-
     private BodyFactory bodyFactory;
     public World world;
+    private AndroidGame game;
     private PooledEngine engine;
     private TextureAtlas atlas;
 
     private List<Entity> totalBalls = new ArrayList<Entity>();
 
-    public EntityCreator(PooledEngine pooledEngine, AndroidGame game){
+    public EntityCreator(AndroidGame game, PooledEngine pooledEngine){
+        this.game = game;
         engine = pooledEngine;
 
         //atlas = game.assetManager().assetManager.get("images/game/game.atlas", TextureAtlas.class);;
@@ -49,7 +48,7 @@ public class EntityCreator {
 
         bodyFactory = BodyFactory.getBodyFactoryInstance(world);
 
-        player = createPlayer(Gdx.graphics.getWidth()/2, 5);
+
 
     }
 
@@ -132,8 +131,7 @@ public class EntityCreator {
         entity.add(ballComponent);
 
         engine.addEntity(entity);
-        player.getComponent(PlayerComponent.class).balls.add(entity);
-
+        game.getLevelGenerationSystem().getPlayer().getComponent(PlayerComponent.class).balls.add(0, entity);
 
         return entity;
     }
@@ -209,7 +207,7 @@ public class EntityCreator {
 
     }
 
-    private Entity createPlayer(float x, float y){
+    public Entity createPlayer(float x, float y){
 
         Entity entity = engine.createEntity();
 
@@ -274,7 +272,7 @@ public class EntityCreator {
         return totalBalls;
     }
 
-    public Entity getPlayer() {
-        return player;
-    }
+//    public Entity getPlayer() {
+//        return player;
+//    }
 }

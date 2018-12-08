@@ -7,6 +7,7 @@ import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.BallComponent;
+import com.wisekrakr.androidmain.components.LevelComponent;
 import com.wisekrakr.androidmain.components.TimeComponent;
 
 import java.util.ArrayList;
@@ -15,11 +16,12 @@ import java.util.List;
 
 public class LevelModel {
 
+    private LevelComponent levelComponent;
+    private TimeComponent timeComponent;
+    private Entity player;
     private AndroidGame game;
     private EntityCreator entityCreator;
     private LevelFactory levelFactory;
-
-    private ArrayList<Integer> levelList = new ArrayList<Integer>();
 
     public LevelModel(AndroidGame game, EntityCreator entityCreator) {
         this.game = game;
@@ -27,19 +29,21 @@ public class LevelModel {
 
         levelFactory = new LevelFactory(game, entityCreator);
 
+        player = entityCreator.createPlayer(Gdx.graphics.getWidth()/2, 5);
     }
 
-    public void updatingLevel(int numberOfLevel, int rows, int columns, float deltaTime){
 
-        TimeComponent timeComponent = ComponentMapper.getFor(TimeComponent.class).get(entityCreator.getPlayer());
+    public void updatingLevel(int numberOfLevel, int rows, int columns, float deltaTime){
+        timeComponent = ComponentMapper.getFor(TimeComponent.class).get(getPlayer());
+        levelComponent = ComponentMapper.getFor(LevelComponent.class).get(getPlayer());
 
         timeComponent.time -= deltaTime;
 
         if (timeComponent.time != 0) {
-            if (levelList.size() == numberOfLevel - 1) {
+            if (levelComponent.levelList.size() == numberOfLevel - 1) {
                 level(rows, columns, numberOfLevel);
 
-            } else if (levelList.size() == numberOfLevel) {
+            } else if (levelComponent.levelList.size() == numberOfLevel) {
                 if (entityCreator.totalBalls().size() <= 8) {
                     game.getGamePreferences().setLevelCompleted(numberOfLevel, true);
                     if (game.getGamePreferences().levelDone(numberOfLevel)) {
@@ -51,20 +55,22 @@ public class LevelModel {
         }
         //TODO GEEN LEVELSELECT .... APP WORD GESTART MET LEVEL. ALS LEVEL KLAAR IS, CLEAR PLAYSCREEN, en TEKEN PLAYSCREEN OPNIEUW.
 
-        System.out.println(entityCreator.totalBalls().size() + "   " + levelList.size() + "   " + numberOfLevel + "   " + timeComponent.time); //todo remove
+        System.out.println(entityCreator.totalBalls().size() + "   " + levelComponent.levelList.size() + "   " + numberOfLevel + "   " + timeComponent.time); //todo remove
 
     }
 
     private void level(int rows, int columns, int levelNumber){
 
-        for (int j = 1; j < columns; j++) {
-            for (int k = 1; k < rows; k++) {
-                entityCreator.createRowBall(j * GameUtilities.BALL_RADIUS,
-                        Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS);
-            }
-        }
-        levelList.add(levelNumber - levelList.size());
+        if (levelNumber != 0) {
+            for (int j = 1; j < columns; j++) {
+                for (int k = 1; k < rows; k++) {
 
+                    entityCreator.createRowBall(j * GameUtilities.BALL_RADIUS,
+                            Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS);
+                }
+            }
+            levelComponent.levelList.add(levelNumber - levelComponent.levelList.size());
+        }
     }
 
 
@@ -73,10 +79,13 @@ public class LevelModel {
 
         //game.changeScreen(AndroidGame.APPLICATION);
         List<Entity>balls = entityCreator.totalBalls();
-        balls.remove(0);
+
         for (Entity entity: balls){
             entity.getComponent(BallComponent.class).destroyed = true;
         }
     }
 
+    public Entity getPlayer() {
+        return player;
+    }
 }
