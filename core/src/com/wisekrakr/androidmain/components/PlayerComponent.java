@@ -16,8 +16,6 @@ public class PlayerComponent implements Component, Pool.Poolable {
     public float score = 0f;
     public float angle = 0f;
 
-    public List<Entity> balls = new ArrayList<Entity>();
-
     @Override
     public void reset() {
 

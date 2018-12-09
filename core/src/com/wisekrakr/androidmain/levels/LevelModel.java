@@ -1,91 +1,117 @@
 package com.wisekrakr.androidmain.levels;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
-import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.BallComponent;
-import com.wisekrakr.androidmain.components.LevelComponent;
-import com.wisekrakr.androidmain.components.TimeComponent;
+import com.wisekrakr.androidmain.components.GameTimer;
+import com.wisekrakr.androidmain.components.PlayerComponent;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
-public class LevelModel {
+public class LevelModel extends AbstractLevelContext{
 
-    private LevelComponent levelComponent;
-    private TimeComponent timeComponent;
     private Entity player;
     private AndroidGame game;
     private EntityCreator entityCreator;
-    private LevelFactory levelFactory;
+    private GameTimer timer;
+
+    private boolean isAvailable;
 
     public LevelModel(AndroidGame game, EntityCreator entityCreator) {
         this.game = game;
         this.entityCreator = entityCreator;
 
-        levelFactory = new LevelFactory(game, entityCreator);
-
         player = entityCreator.createPlayer(Gdx.graphics.getWidth()/2, 5);
+
+        timer = new GameTimer();
     }
 
+    @Override
+    public void startLevel(int numberOfLevel, int rows, int columns) {
+        setAvailability(numberOfLevel, true);
 
-    public void updatingLevel(int numberOfLevel, int rows, int columns, float deltaTime){
-        timeComponent = ComponentMapper.getFor(TimeComponent.class).get(getPlayer());
-        levelComponent = ComponentMapper.getFor(LevelComponent.class).get(getPlayer());
-
-        timeComponent.time -= deltaTime;
-
-        if (timeComponent.time != 0) {
-            if (levelComponent.levelList.size() == numberOfLevel - 1) {
-                level(rows, columns, numberOfLevel);
-
-            } else if (levelComponent.levelList.size() == numberOfLevel) {
-                if (entityCreator.totalBalls().size() <= 8) {
-                    game.getGamePreferences().setLevelCompleted(numberOfLevel, true);
-                    if (game.getGamePreferences().levelDone(numberOfLevel)) {
-                        cleanUp();
-                        game.getGamePreferences().setLevelCompleted(numberOfLevel + 1, false);
-                    }
-                }
-            }
-        }
-        //TODO GEEN LEVELSELECT .... APP WORD GESTART MET LEVEL. ALS LEVEL KLAAR IS, CLEAR PLAYSCREEN, en TEKEN PLAYSCREEN OPNIEUW.
-
-        System.out.println(entityCreator.totalBalls().size() + "   " + levelComponent.levelList.size() + "   " + numberOfLevel + "   " + timeComponent.time); //todo remove
-
-    }
-
-    private void level(int rows, int columns, int levelNumber){
-
-        if (levelNumber != 0) {
-            for (int j = 1; j < columns; j++) {
-                for (int k = 1; k < rows; k++) {
-
-                    entityCreator.createRowBall(j * GameUtilities.BALL_RADIUS,
-                            Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS);
-                }
-            }
-            levelComponent.levelList.add(levelNumber - levelComponent.levelList.size());
+        if (isAvailable()) {
+            AbstractLevel.getLevel(LevelNumber.valueOf(numberOfLevel), entityCreator, rows, columns);
         }
     }
 
+    @Override
+    public void updateLevel(int numberOfLevel, float delta) {
 
+        timer.time -= delta;
+
+        if (numberOfLevel != 0) {
+            if (timer.time != 0) {
+                if (entityCreator.totalBalls().size() <= 24) {
+                    completeLevel(numberOfLevel);
+                } else if (timer.time <= 0) {
+                    gameOver();
+                }
+            }
+        }else {
+            System.out.println("No level number given ");
+        }
+
+//        System.out.println(entityCreator.totalBalls().size() +
+//                "   " + numberOfLevel + "   " +
+//                timer.time ); //todo remove
+
+    }
+
+    @Override
+    public void completeLevel(int numberOfLevel) {
+        game.getGamePreferences().setLevelCompleted(numberOfLevel, true);
+
+        setAvailability(numberOfLevel, false);
+
+        cleanUp();
+
+    }
+
+
+    private void gameOver() {
+
+        cleanUp();
+
+        game.changeScreen(AndroidGame.ENDGAME);
+    }
 
     private void cleanUp(){
 
-        //game.changeScreen(AndroidGame.APPLICATION);
         List<Entity>balls = entityCreator.totalBalls();
 
         for (Entity entity: balls){
             entity.getComponent(BallComponent.class).destroyed = true;
+            player.getComponent(PlayerComponent.class).hasBall = false;
         }
+
+        //game.changeScreen(AndroidGame.APPLICATION);
     }
 
     public Entity getPlayer() {
         return player;
+    }
+
+    public GameTimer getTimer() {
+        return timer;
+    }
+
+    private Map<Integer, Boolean> setAvailability(int number, boolean set){
+        isAvailable = set;
+
+        Map<Integer, Boolean>map = new HashMap<Integer, Boolean>();
+
+        map.put(number, set);
+
+        return map;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
     }
 }

@@ -40,7 +40,7 @@ public class AndroidGame extends Game {
 
 	private void start(){
 		gamePreferences = new GamePreferences();
-		gamePreferences.setLevelCompleted(1, false); //TODO: this is bad...fix this bitch
+		//gamePreferences.setLevelCompleted(1, false); //TODO: this is bad...fix this bitch
 
 		myAssetManager = new MyAssetManager();
 

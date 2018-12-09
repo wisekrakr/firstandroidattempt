@@ -8,29 +8,21 @@ import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.components.BallComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.CollisionComponent;
-import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.components.SurfaceComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
 
 
 public class CollisionSystem extends IteratingSystem {
     private ComponentMapper<CollisionComponent> collisionComponentMapper;
-    private ComponentMapper<PlayerComponent> playerComponentMapper;
     private ComponentMapper<BallComponent> ballComponentMapper;
-    private ComponentMapper<SurfaceComponent> surfaceComponentMapper;
     private ComponentMapper<Box2dBodyComponent> box2dBodyComponentMapper;
-    private EntityCreator entityCreator;
 
     @SuppressWarnings("unchecked")
-    public CollisionSystem(EntityCreator entityCreator) {
-        // only need to worry about player collisions
+    public CollisionSystem() {
         super(Family.all(CollisionComponent.class).get());
-        this.entityCreator = entityCreator;
 
         collisionComponentMapper = ComponentMapper.getFor(CollisionComponent.class);
-        playerComponentMapper = ComponentMapper.getFor(PlayerComponent.class);
         ballComponentMapper = ComponentMapper.getFor(BallComponent.class);
-        surfaceComponentMapper = ComponentMapper.getFor(SurfaceComponent.class);
         box2dBodyComponentMapper = ComponentMapper.getFor(Box2dBodyComponent.class);
     }
 
@@ -64,6 +56,7 @@ public class CollisionSystem extends IteratingSystem {
                             ballComponentMapper.get(entity).hitSurface = true;
                             ballComponentMapper.get(entity).velocityY = 0f;
                             ballComponentMapper.get(entity).velocityX = 0f;
+
 //                            System.out.println("ball hit surface " );
                             break;
                         case WATER:
@@ -91,7 +84,6 @@ public class CollisionSystem extends IteratingSystem {
                             System.out.println("wall hit other");
                             break;
                         case BALL:
-
                             System.out.println("wall hit ball");
                             break;
                         default:

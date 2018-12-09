@@ -1,6 +1,5 @@
 package com.wisekrakr.androidmain.screens;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -12,8 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.androidmain.AndroidGame;
+import com.wisekrakr.androidmain.components.GameTimer;
 import com.wisekrakr.androidmain.components.PlayerComponent;
-import com.wisekrakr.androidmain.components.TimeComponent;
 
 
 public class InfoDisplay implements Disposable {
@@ -45,7 +44,6 @@ public class InfoDisplay implements Disposable {
         scoreLabel = new Label("Score", new Label.LabelStyle(font, Color.WHITE));
         scoreCountLabel = new Label(String.format("%06d", score), new Label.LabelStyle(font, Color.GOLDENROD));
 
-
         Table table = new Table();
         table.setFillParent(true);
         table.bottom();
@@ -59,9 +57,7 @@ public class InfoDisplay implements Disposable {
         stage.addActor(table);
     }
 
-    public void renderDisplay(Entity entity, float delta){
-
-        TimeComponent timeComponent = ComponentMapper.getFor(TimeComponent.class).get(entity);
+    public void renderDisplay(Entity entity, GameTimer timer, float delta){
 
         stage.act();
         stage.draw();
@@ -69,7 +65,7 @@ public class InfoDisplay implements Disposable {
         timeCounter += delta;
         if (timeCounter >= 1) {
             timeCounter = 0;
-            worldTimer = (int)timeComponent.time;
+            worldTimer = (int) timer.time;
 
             timeCountLabel.setText(String.format("%s",worldTimer));
             scoreCountLabel.setText(Float.toString(entity.getComponent(PlayerComponent.class).score));

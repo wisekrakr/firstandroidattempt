@@ -32,9 +32,8 @@ class GameThread {
         engine.addSystem(renderingSystem);
         engine.addSystem(new PhysicsSystem(entityCreator.world));
         engine.addSystem(new PhysicsDebugSystem(entityCreator.world, renderingSystem.getCamera()));
-        engine.addSystem(new CollisionSystem(entityCreator));
+        engine.addSystem(new CollisionSystem());
 
-        engine.addSystem(levelGenerationSystem);
     }
 
     RenderingSystem getRenderingSystem() {

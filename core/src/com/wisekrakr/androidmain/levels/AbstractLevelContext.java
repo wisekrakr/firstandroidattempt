@@ -1,7 +1,6 @@
 package com.wisekrakr.androidmain.levels;
 
 import com.badlogic.ashley.core.Entity;
-import com.wisekrakr.androidmain.AndroidGame;
 
 public class AbstractLevelContext implements LevelContext {
 
@@ -12,17 +11,17 @@ public class AbstractLevelContext implements LevelContext {
     }
 
     @Override
-    public void startLevel() {
+    public void startLevel(int numberOfLevel, int rows, int columns) {
 
     }
 
     @Override
-    public void updateLevel(float delta) {
+    public void updateLevel(int numberOfLevel, float delta) {
 
     }
 
     @Override
-    public void completeLevel() {
+    public void completeLevel(int numberOfLevel) {
 
     }
 }

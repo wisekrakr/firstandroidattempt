@@ -3,13 +3,15 @@ package com.wisekrakr.androidmain.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Pool;
 
-public class TimeComponent implements Component, Pool.Poolable {
+public class GameTimer {
 
     public float time = 300;
+    private float savedTime = 0;
 
-
-    @Override
-    public void reset() {
-        time = 300;
+    public void getSavedTime(){
+        savedTime = time;
     }
+
+
+
 }

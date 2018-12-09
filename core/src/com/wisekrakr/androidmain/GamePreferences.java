@@ -2,7 +2,6 @@ package com.wisekrakr.androidmain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.wisekrakr.androidmain.components.LevelComponent;
 
 public class GamePreferences {
 
@@ -12,11 +11,20 @@ public class GamePreferences {
     private static final String PREF_SOUND_VOL = "sound";
     private static final String PREFS_NAME = "bigballs";
 
-    private boolean completed = false;
+    private static final String COMPLETED = "completed";
+    private static final String ONGOING = "ongoing";
 
+    private boolean completed = false;
+    private boolean onGoing = false;
 
     protected Preferences getPrefs() {
         return Gdx.app.getPreferences(PREFS_NAME);
+    }
+    protected Preferences getPrefsCompletion() {
+        return Gdx.app.getPreferences(COMPLETED);
+    }
+    protected Preferences getPrefsOnGoing() {
+        return Gdx.app.getPreferences(ONGOING);
     }
 
     public boolean isSoundEffectsEnabled() {
@@ -59,17 +67,30 @@ public class GamePreferences {
     Level selection methods
      */
 
-    public void setLevelCompleted(int numberOfLevel, boolean set) {
-        completed = set;
+    public void setLevelCompleted(int numberOfLevel, boolean setComplete) {
+        completed = setComplete;
         String string = Integer.toString(numberOfLevel);
-        getPrefs().putBoolean(string, completed);
-        getPrefs().flush();
+
+        getPrefsCompletion().putBoolean(string, completed);
+        getPrefsCompletion().flush();
+    }
+
+    public void setLevelGoing(int numberOfLevel, boolean setGoing) {
+        onGoing = setGoing;
+        String string = Integer.toString(numberOfLevel);
+
+        getPrefsOnGoing().putBoolean(string, onGoing);
+        getPrefsOnGoing().flush();
     }
 
     public boolean levelDone(int numberOfLevel) {
         String string = Integer.toString(numberOfLevel);
-        return getPrefs().getBoolean(string, completed);
+        return getPrefsCompletion().getBoolean(string, completed);
     }
 
+    public boolean levelGoing(int numberOfLevel){
+        String string = Integer.toString(numberOfLevel);
+        return getPrefsOnGoing().getBoolean(string, onGoing);
+    }
 
 }

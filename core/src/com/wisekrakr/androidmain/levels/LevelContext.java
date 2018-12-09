@@ -6,9 +6,9 @@ public interface LevelContext {
 
     void init(Entity entity);
 
-    void startLevel();
+    void startLevel(int numberOfLevel, int rows, int columns);
 
-    void updateLevel(float delta);
+    void updateLevel(int numberOfLevel, float delta);
 
-    void completeLevel();
+    void completeLevel(int numberOfLevel);
 }

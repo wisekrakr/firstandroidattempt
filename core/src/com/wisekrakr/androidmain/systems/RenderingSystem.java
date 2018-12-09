@@ -48,7 +48,7 @@ public class RenderingSystem extends SortedIteratingSystem {
         renderQueue = new Array<Entity>();
 
         camera = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
-        camera.position.set(FRUSTUM_WIDTH / 2f, FRUSTUM_HEIGHT / 2f, 0);
+        //camera.position.set(FRUSTUM_WIDTH / 2f, FRUSTUM_HEIGHT / 2f, 0);
     }
 
     @Override

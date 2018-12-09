@@ -1,6 +1,6 @@
 package com.wisekrakr.androidmain;
 
-public class GameTimer {
+public class TimeKeeper {
     public static final double ONE_SECOND = java.util.concurrent.TimeUnit.SECONDS.toNanos(1);
 
     private long start;
@@ -8,7 +8,7 @@ public class GameTimer {
     private int first, last;
     private int fps;
 
-    public GameTimer(){}
+    public TimeKeeper(){}
 
     public void start(){
         this.start = System.nanoTime();

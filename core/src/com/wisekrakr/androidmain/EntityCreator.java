@@ -13,7 +13,6 @@ import com.wisekrakr.androidmain.components.CollisionComponent;
 import com.wisekrakr.androidmain.components.LevelComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.components.TextureComponent;
-import com.wisekrakr.androidmain.components.TimeComponent;
 import com.wisekrakr.androidmain.components.TransformComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
 import com.wisekrakr.androidmain.components.SurfaceComponent;
@@ -47,9 +46,6 @@ public class EntityCreator {
         world.setContactListener(new PhysicalObjectContactListener());
 
         bodyFactory = BodyFactory.getBodyFactoryInstance(world);
-
-
-
     }
 
 
@@ -131,7 +127,6 @@ public class EntityCreator {
         entity.add(ballComponent);
 
         engine.addEntity(entity);
-        game.getLevelGenerationSystem().getPlayer().getComponent(PlayerComponent.class).balls.add(0, entity);
 
         return entity;
     }
@@ -217,7 +212,7 @@ public class EntityCreator {
         PlayerComponent player = engine.createComponent(PlayerComponent.class);
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
-        TimeComponent timeComponent = engine.createComponent(TimeComponent.class);
+
         LevelComponent levelComponent = engine.createComponent(LevelComponent.class);
 
         bodyComponent.body = bodyFactory.makeBoxPolyBody(x, y, 5, 20, BodyFactory.Material.STONE, BodyDef.BodyType.DynamicBody, true);
@@ -236,7 +231,7 @@ public class EntityCreator {
         entity.add(player);
         entity.add(collisionComponent);
         entity.add(type);
-        entity.add(timeComponent);
+
         entity.add(levelComponent);
 
         engine.addEntity(entity);
@@ -251,8 +246,7 @@ public class EntityCreator {
         TextureComponent texture = engine.createComponent(TextureComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
 
-
-        bodyComponent.body = bodyFactory.makeBoxPolyBody(posX, posY, width, height, BodyFactory.Material.STONE, BodyDef.BodyType.StaticBody, false);
+        bodyComponent.body = bodyFactory.makeBoxPolyBody(posX, posY, width, height, BodyFactory.Material.STEEL, BodyDef.BodyType.StaticBody, false);
 
         //texture.region = wallRegion;
 

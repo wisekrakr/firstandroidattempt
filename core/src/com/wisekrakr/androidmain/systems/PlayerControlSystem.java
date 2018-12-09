@@ -72,10 +72,11 @@ public class PlayerControlSystem extends IteratingSystem {
                         yVelocity = yVelocity / length;  // get required y velocity to aim at target
                     }
 
-                    Iterator<Entity> iterator = playerComponent.balls.iterator();
+                    Iterator<Entity> iterator = entityCreator.totalBalls().iterator();
                     if (iterator.hasNext()) {
-                        playerComponent.balls.get(0).getComponent(BallComponent.class).velocityX = xVelocity * speed;
-                        playerComponent.balls.get(0).getComponent(BallComponent.class).velocityY = yVelocity * speed;
+
+                        entityCreator.totalBalls().get(0).getComponent(BallComponent.class).velocityX = xVelocity * speed;
+                        entityCreator.totalBalls().get(0).getComponent(BallComponent.class).velocityY = yVelocity * speed;
                     } else {
                         playerComponent.hasBall = false;
                     }

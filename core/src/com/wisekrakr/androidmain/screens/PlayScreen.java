@@ -16,7 +16,7 @@ import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.BallComponent;
-import com.wisekrakr.androidmain.components.PlayerComponent;
+import com.wisekrakr.androidmain.components.GameTimer;
 import com.wisekrakr.androidmain.controls.Controls;
 import com.wisekrakr.androidmain.systems.BallSystem;
 import com.wisekrakr.androidmain.systems.PlayerControlSystem;
@@ -69,7 +69,7 @@ public class PlayScreen extends ScreenAdapter {
     private void addSystems() {
 
         engine.addSystem(new PlayerControlSystem(controls, entityCreator, camera));
-        engine.addSystem(new BallSystem(game.getLevelGenerationSystem().getPlayer(), entityCreator));
+        engine.addSystem(new BallSystem(game.getLevelGenerationSystem().getLevelModel().getPlayer(), entityCreator));
         engine.addSystem(new WallSystem());
 
         entityCreator.createWalls(0,0, 5f, Gdx.graphics.getHeight()*2);
@@ -80,6 +80,7 @@ public class PlayScreen extends ScreenAdapter {
 //        entityCreator.createWaterFloor(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2, 80f,30f);
 
         infoDisplay = new InfoDisplay(game);
+
     }
 
     @Override
@@ -102,9 +103,14 @@ public class PlayScreen extends ScreenAdapter {
 
         spriteBatch.setProjectionMatrix(camera.combined);
 
+        game.getLevelGenerationSystem().updateLevels(delta);
+
         drawObjects();
 
-        infoDisplay.renderDisplay(game.getLevelGenerationSystem().getPlayer(), delta);
+        infoDisplay.renderDisplay(game.getLevelGenerationSystem().getLevelModel().getPlayer(),
+                game.getLevelGenerationSystem().getLevelModel().getTimer(),
+                delta
+        );
 
 
     }
