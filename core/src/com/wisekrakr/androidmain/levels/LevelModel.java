@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
-import com.wisekrakr.androidmain.components.BallComponent;
+import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.GameTimer;
 import com.wisekrakr.androidmain.components.PlayerComponent;
 
@@ -47,7 +47,7 @@ public class LevelModel extends AbstractLevelContext{
 
         if (numberOfLevel != 0) {
             if (timer.time != 0) {
-                if (entityCreator.totalBalls().size() <= 24) {
+                if (entityCreator.totalEntities().size() <= 24) {
                     completeLevel(numberOfLevel);
                 } else if (timer.time <= 0) {
                     gameOver();
@@ -57,7 +57,7 @@ public class LevelModel extends AbstractLevelContext{
             System.out.println("No level number given ");
         }
 
-//        System.out.println(entityCreator.totalBalls().size() +
+//        System.out.println(entityCreator.totalEntities().size() +
 //                "   " + numberOfLevel + "   " +
 //                timer.time ); //todo remove
 
@@ -66,6 +66,8 @@ public class LevelModel extends AbstractLevelContext{
     @Override
     public void completeLevel(int numberOfLevel) {
         game.getGamePreferences().setLevelCompleted(numberOfLevel, true);
+
+        timer.time += 30f;
 
         setAvailability(numberOfLevel, false);
 
@@ -83,11 +85,11 @@ public class LevelModel extends AbstractLevelContext{
 
     private void cleanUp(){
 
-        List<Entity>balls = entityCreator.totalBalls();
+        List<Entity>balls = entityCreator.totalEntities();
 
         for (Entity entity: balls){
-            entity.getComponent(BallComponent.class).destroyed = true;
-            player.getComponent(PlayerComponent.class).hasBall = false;
+            entity.getComponent(EntityComponent.class).destroyed = true;
+            player.getComponent(PlayerComponent.class).hasEntityToShoot = false;
         }
 
         //game.changeScreen(AndroidGame.APPLICATION);

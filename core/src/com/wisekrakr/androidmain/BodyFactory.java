@@ -3,6 +3,7 @@ package com.wisekrakr.androidmain;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,6 +140,29 @@ public class BodyFactory {
         return boxBody;
     }
 
+    public Body makeTrianglePolyBody(float positionX, float positionY, float width, float height, Material material, BodyDef.BodyType bodyType, boolean fixedRotation){
+
+        BodyDef triangleBodyDef = new BodyDef();
+        triangleBodyDef.type = bodyType;
+        triangleBodyDef.position.x = positionX;
+        triangleBodyDef.position.y = positionY;
+        triangleBodyDef.fixedRotation = fixedRotation;
+
+        Body triangleBody = world.createBody(triangleBodyDef);
+        PolygonShape poly = new PolygonShape();
+
+        Vector2[]vector2s = new Vector2[3];
+        vector2s[0] = new Vector2(0, height);
+        vector2s[1] = new Vector2(-width/2, 0);
+        vector2s[2] = new Vector2(width/2, 0);
+
+        poly.set(vector2s);
+
+        triangleBody.createFixture(makeDefaultFixture(material,poly));
+        poly.dispose();
+
+        return triangleBody;
+    }
 
     public void makeConeSensor(Body body, float viewRadius){
 

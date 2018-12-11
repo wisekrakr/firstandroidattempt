@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.wisekrakr.androidmain.EntityCreator;
-import com.wisekrakr.androidmain.components.BallComponent;
+import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.controls.Controls;
@@ -18,7 +18,7 @@ import java.util.Iterator;
 
 public class PlayerControlSystem extends IteratingSystem {
 
-    private ComponentMapper<BallComponent>ballComponentMapper;
+    private ComponentMapper<EntityComponent>ballComponentMapper;
     private ComponentMapper<PlayerComponent> playerComponentMapper;
     private ComponentMapper<Box2dBodyComponent> box2dBodyComponentMapper;
     private Controls controller;
@@ -35,7 +35,7 @@ public class PlayerControlSystem extends IteratingSystem {
 
         playerComponentMapper = ComponentMapper.getFor(PlayerComponent.class);
         box2dBodyComponentMapper = ComponentMapper.getFor(Box2dBodyComponent.class);
-        ballComponentMapper = ComponentMapper.getFor(BallComponent.class);
+        ballComponentMapper = ComponentMapper.getFor(EntityComponent.class);
     }
 
     @Override
@@ -58,12 +58,12 @@ public class PlayerControlSystem extends IteratingSystem {
             }
 
             if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
-                if (playerComponent.hasBall) {
-                    playerComponent.hasBall = false;
+                if (playerComponent.hasEntityToShoot) {
+                    playerComponent.hasEntityToShoot = false;
 
                     Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                     camera.unproject(mousePos); // convert position from screen to box2d world position
-                    float speed = 9000f;  // set the speed of the ball
+                    float speed = 100000000f;  // set the speed of the ball
                     float xVelocity = mousePos.x - b2body.body.getPosition().x; // get distance from shooter to target on x plain
                     float yVelocity = mousePos.y - b2body.body.getPosition().y; // get distance from shooter to target on y plain
                     float length = (float) Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // get distance to target direct
@@ -72,13 +72,12 @@ public class PlayerControlSystem extends IteratingSystem {
                         yVelocity = yVelocity / length;  // get required y velocity to aim at target
                     }
 
-                    Iterator<Entity> iterator = entityCreator.totalBalls().iterator();
+                    Iterator<Entity> iterator = entityCreator.totalEntities().iterator();
                     if (iterator.hasNext()) {
-
-                        entityCreator.totalBalls().get(0).getComponent(BallComponent.class).velocityX = xVelocity * speed;
-                        entityCreator.totalBalls().get(0).getComponent(BallComponent.class).velocityY = yVelocity * speed;
+                        entityCreator.totalEntities().get(0).getComponent(EntityComponent.class).velocityX = xVelocity * speed;
+                        entityCreator.totalEntities().get(0).getComponent(EntityComponent.class).velocityY = yVelocity * speed;
                     } else {
-                        playerComponent.hasBall = false;
+                        playerComponent.hasEntityToShoot = false;
                     }
                 }
             }

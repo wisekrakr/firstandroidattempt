@@ -1,8 +1,10 @@
 package com.wisekrakr.androidmain.levels;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
+import com.wisekrakr.androidmain.components.TypeComponent;
 
 class AbstractLevel {
 
@@ -14,49 +16,129 @@ class AbstractLevel {
         setColumns(columns);
         switch (levelNumber){
             case ONE:
-                System.out.println("Making level 1, with a total of balls: " + getInitialBalls()); //todo remove
+                System.out.println("Making level 1, with a total of balls: " + getInitialEntities()); //todo remove
                 for (int j = 1; j < getRows(); j++) {
                     for (int k = 1; k < getColumns(); k++) {
 
-                        entityCreator.createRowBall(j * GameUtilities.BALL_RADIUS,
-                                Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS);
+                        entityCreator.createRowEntity(TypeComponent.Type.BALL, BodyDef.BodyType.StaticBody,
+                                j * GameUtilities.BALL_RADIUS, Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS);
                     }
                 }
                 break;
             case TWO:
-                System.out.println("Making level 2, with a total of balls: " + getInitialBalls()); //todo remove
                 for(int i = 1; i < getRows(); i++){
                     for (int j = 1; j < getColumns(); j++) {
-                        entityCreator.createRowBall(i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2,
-                                Gdx.graphics.getHeight() - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2);
+                        entityCreator.createRowEntity(TypeComponent.Type.BALL, BodyDef.BodyType.StaticBody,
+                                i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2, Gdx.graphics.getHeight() - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2);
                     }
                 }
                 break;
             case THREE:
-                System.out.println("Making level 3, with a total of balls: " + getInitialBalls()); //todo remove
                 for(int i = 1; i < getRows(); i++) {
                     for (int j = 1; j < getColumns(); j++) {
-                        entityCreator.createRowBall(i * GameUtilities.BALL_RADIUS,
-                               j * GameUtilities.BALL_RADIUS * 2);
+                        entityCreator.createRowEntity(TypeComponent.Type.BALL, BodyDef.BodyType.StaticBody,
+                                i * GameUtilities.BALL_RADIUS, j * GameUtilities.BALL_RADIUS * 2);
 
 
                     }
                 }
                 break;
             case FOUR:
-                System.out.println("Making level 4, with a total of balls: " + getInitialBalls()); //todo remove
                 for (int j = 1; j < getRows(); j++) {
                     for (int k = 1; k < getColumns(); k++) {
 
-                        entityCreator.createRowBall(j * GameUtilities.BALL_RADIUS,
-                                Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS);
+                        entityCreator.createRowEntity(TypeComponent.Type.BALL, BodyDef.BodyType.StaticBody,
+                                j * GameUtilities.BALL_RADIUS, Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS);
                     }
                 }
                 break;
             case FIVE:
+                for (int j = 1; j < getRows(); j++) {
+                    for (int k = 1; k < getColumns(); k++) {
+
+                        entityCreator.createRowEntity(TypeComponent.Type.SQUARE, BodyDef.BodyType.StaticBody,
+                                j * GameUtilities.BALL_RADIUS, Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS);
+                    }
+                }
 
                 break;
             case SIX:
+                for(int i = 1; i < getRows(); i++){
+                    for (int j = 1; j < getColumns(); j++) {
+                        entityCreator.createRowEntity(TypeComponent.Type.SQUARE, BodyDef.BodyType.StaticBody,
+                                i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2, Gdx.graphics.getHeight() - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2);
+                    }
+                }
+
+                break;
+            case SEVEN:
+                for(int i = 1; i < getRows(); i++) {
+                    for (int j = 1; j < getColumns(); j++) {
+                        entityCreator.createRowEntity(TypeComponent.Type.SQUARE, BodyDef.BodyType.StaticBody,
+                                i * GameUtilities.BALL_RADIUS, j * GameUtilities.BALL_RADIUS * 2);
+
+
+                    }
+                }
+                break;
+            case EIGHT:
+                for (int j = 1; j < getRows(); j++) {
+                    for (int k = 1; k < getColumns(); k++) {
+
+                        entityCreator.createRowEntity(TypeComponent.Type.SQUARE, BodyDef.BodyType.StaticBody,
+                                j * GameUtilities.BALL_RADIUS, Gdx.graphics.getHeight() - k * GameUtilities.BALL_RADIUS);
+                    }
+                }
+                break;
+            case NINE:
+
+                break;
+            case TEN:
+
+                break;
+            case ELEVEN:
+
+                break;
+            case TWELVE:
+
+                break;
+            case THIRTEEN:
+
+                break;
+            case FOURTEEN:
+
+                break;
+            case FIFTEEN:
+
+                break;
+            case SIXTEEN:
+
+                break;
+            case SEVENTEEN:
+
+                break;
+            case EIGHTEEN:
+
+                break;
+            case NINETEEN:
+
+                break;
+            case TWENTY:
+
+                break;
+            case TWENTY_ONE:
+
+                break;
+            case TWENTY_TWO:
+
+                break;
+            case TWENTY_THREE:
+
+                break;
+            case TWENTY_FOUR:
+
+                break;
+            case TWENTY_FIVE:
 
                 break;
                 default:
@@ -85,7 +167,7 @@ class AbstractLevel {
         columns=0;
     }
 
-    static int getInitialBalls(){
+    static int getInitialEntities(){
         return (rows - 1) * (columns - 1);
     }
 

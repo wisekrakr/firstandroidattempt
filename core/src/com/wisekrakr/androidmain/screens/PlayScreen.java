@@ -15,10 +15,12 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
-import com.wisekrakr.androidmain.components.BallComponent;
-import com.wisekrakr.androidmain.components.GameTimer;
+import com.wisekrakr.androidmain.components.Box2dBodyComponent;
+import com.wisekrakr.androidmain.components.EntityComponent;
+import com.wisekrakr.androidmain.components.TransformComponent;
+import com.wisekrakr.androidmain.components.TypeComponent;
 import com.wisekrakr.androidmain.controls.Controls;
-import com.wisekrakr.androidmain.systems.BallSystem;
+import com.wisekrakr.androidmain.systems.EntitySystem;
 import com.wisekrakr.androidmain.systems.PlayerControlSystem;
 import com.wisekrakr.androidmain.systems.WallSystem;
 
@@ -69,8 +71,7 @@ public class PlayScreen extends ScreenAdapter {
     private void addSystems() {
 
         engine.addSystem(new PlayerControlSystem(controls, entityCreator, camera));
-        engine.addSystem(new BallSystem(game.getLevelGenerationSystem().getLevelModel().getPlayer(), entityCreator));
-        engine.addSystem(new WallSystem());
+        engine.addSystem(new EntitySystem(game.getLevelGenerationSystem().getLevelModel().getPlayer(), entityCreator));
 
         entityCreator.createWalls(0,0, 5f, Gdx.graphics.getHeight()*2);
         entityCreator.createWalls(Gdx.graphics.getWidth(),0, 5f, Gdx.graphics.getHeight()*2);
@@ -118,25 +119,61 @@ public class PlayScreen extends ScreenAdapter {
     private void drawObjects(){
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Entity entity: entityCreator.totalBalls()) {
-            entity.getComponent(BallComponent.class);
-            if (entity.getComponent(BallComponent.class) != null) {
-                if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.MARS) {
-                    shapeRenderer.setColor(Color.CYAN);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.MERCURY) {
-                    shapeRenderer.setColor(Color.RED);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.JUPITER) {
-                    shapeRenderer.setColor(Color.YELLOW);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.EARTH) {
-                    shapeRenderer.setColor(Color.BLUE);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.NEPTUNE) {
-                    shapeRenderer.setColor(Color.GREEN);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.SATURN) {
-                    shapeRenderer.setColor(Color.PURPLE);
-                } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.URANUS) {
-                    shapeRenderer.setColor(Color.GOLD);
+        for (Entity entity: entityCreator.totalEntities()) {
+            entity.getComponent(EntityComponent.class);
+            if (entity.getComponent(EntityComponent.class) != null) {
+
+                switch (entity.getComponent(EntityComponent.class).entityColor){
+                    case RED:
+                        shapeRenderer.setColor(Color.RED);
+                        break;
+                    case BLUE:
+                        shapeRenderer.setColor(Color.BLUE);
+                        break;
+                    case CYAN:
+                        shapeRenderer.setColor(Color.CYAN);
+                        break;
+                    case GREEN:
+                        shapeRenderer.setColor(Color.GREEN);
+                        break;
+                    case PURPLE:
+                        shapeRenderer.setColor(Color.PURPLE);
+                        break;
+                    case YELLOW:
+                        shapeRenderer.setColor(Color.YELLOW);
+                        break;
+                    case PINK:
+                        shapeRenderer.setColor(Color.ORANGE);
+                        break;
                 }
-                shapeRenderer.circle(entity.getComponent(BallComponent.class).position.x, entity.getComponent(BallComponent.class).position.y, GameUtilities.BALL_RADIUS / 2);
+
+                if (entity.getComponent(TypeComponent.class).type == TypeComponent.Type.BALL) {
+
+                    shapeRenderer.circle(entity.getComponent(EntityComponent.class).position.x,
+                            entity.getComponent(EntityComponent.class).position.y, GameUtilities.BALL_RADIUS / 2
+                    );
+
+                }else if (entity.getComponent(TypeComponent.class).type == TypeComponent.Type.SQUARE) {
+
+                    shapeRenderer.rect(entity.getComponent(EntityComponent.class).position.x - GameUtilities.BALL_RADIUS/2,
+                            entity.getComponent(EntityComponent.class).position.y - GameUtilities.BALL_RADIUS/2,
+                            GameUtilities.BALL_RADIUS/2,
+                            GameUtilities.BALL_RADIUS/2,
+                            GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS,
+                            1,1,
+                            entity.getComponent(TransformComponent.class).rotation);
+                }else if (entity.getComponent(TypeComponent.class).type == TypeComponent.Type.TRIANGLE){
+
+
+                    shapeRenderer.triangle(entity.getComponent(EntityComponent.class).position.x - GameUtilities.BALL_RADIUS/2,
+                            entity.getComponent(EntityComponent.class).position.y ,
+                            entity.getComponent(EntityComponent.class).position.x - GameUtilities.BALL_RADIUS/2 + GameUtilities.BALL_RADIUS/2,
+                            entity.getComponent(EntityComponent.class).position.y + GameUtilities.BALL_RADIUS,
+                            entity.getComponent(EntityComponent.class).position.x + GameUtilities.BALL_RADIUS/2,
+                            entity.getComponent(EntityComponent.class).position.y )
+                    ;
+
+                }
             }
         }
 

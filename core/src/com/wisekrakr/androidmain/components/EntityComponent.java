@@ -1,7 +1,6 @@
 package com.wisekrakr.androidmain.components;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
 
 
 import com.badlogic.gdx.math.Vector2;
@@ -9,24 +8,25 @@ import com.badlogic.gdx.utils.Pool;
 
 import com.wisekrakr.androidmain.GameHelper;
 
-public class BallComponent implements Component, Pool.Poolable {
+public class EntityComponent implements Component, Pool.Poolable {
 
-    public enum BallColor{
-        MERCURY, EARTH, JUPITER, NEPTUNE, SATURN, URANUS, MARS
+    public enum EntityColor {
+        RED, BLUE, YELLOW, GREEN, PURPLE, PINK, CYAN
     }
 
-    private BallColor[]ballColors = BallColor.values();
+    private EntityColor[] entityColors = EntityColor.values();
 
-    public BallColor randomBallColor(){
-        return ballColors[GameHelper.randomGenerator.nextInt(ballColors.length)];
+    public EntityColor randomBallColor(){
+        return entityColors[GameHelper.randomGenerator.nextInt(entityColors.length)];
     }
 
-    public BallColor ballColor;
+    public EntityColor entityColor;
     public float velocityX = 0f;
     public float velocityY = 0f;
+
     public boolean hitSurface = false;
     public boolean destroyed = false;
-    public boolean hitBall = false;
+    public boolean hitEntity = false;
 
     public Vector2 position = new Vector2();
 
@@ -38,6 +38,6 @@ public class BallComponent implements Component, Pool.Poolable {
 
         hitSurface = false;
         destroyed = false;
-        hitBall = false;
+        hitEntity = false;
     }
 }

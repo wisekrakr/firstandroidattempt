@@ -1,13 +1,12 @@
 package com.wisekrakr.androidmain;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.wisekrakr.androidmain.components.BallComponent;
+import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.CollisionComponent;
 import com.wisekrakr.androidmain.components.LevelComponent;
@@ -23,6 +22,8 @@ import java.util.List;
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.BALL;
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.PLAYER;
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.SCENERY;
+import static com.wisekrakr.androidmain.components.TypeComponent.Type.SQUARE;
+import static com.wisekrakr.androidmain.components.TypeComponent.Type.TRIANGLE;
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.WATER;
 
 
@@ -34,7 +35,7 @@ public class EntityCreator {
     private PooledEngine engine;
     private TextureAtlas atlas;
 
-    private List<Entity> totalBalls = new ArrayList<Entity>();
+    private List<Entity> totalEntities = new ArrayList<Entity>();
 
     public EntityCreator(AndroidGame game, PooledEngine pooledEngine){
         this.game = game;
@@ -75,128 +76,126 @@ public class EntityCreator {
 
     }
 
-    public Entity createBall(BodyFactory.Material material, float x, float y, float xVelocity, float yVelocity){
+    public Entity createEntity(TypeComponent.Type type, float x, float y, float xVelocity, float yVelocity, float angle){
 
-        Entity entity = engine.createEntity();
-
-        Box2dBodyComponent ballBodyComponent = engine.createComponent(Box2dBodyComponent.class);
-        TextureComponent texture = engine.createComponent(TextureComponent.class);
-        TypeComponent type = engine.createComponent(TypeComponent.class);
-        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
-        CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
-        BallComponent ballComponent = engine.createComponent(BallComponent.class);
-
-        ballBodyComponent.body = bodyFactory.makeCirclePolyBody(x, y, GameUtilities.BALL_RADIUS, material, BodyDef.BodyType.DynamicBody, false);
-        ballBodyComponent.body.setBullet(true); // increase physics computation to limit body travelling through other objects
-        //BodyFactory.makeAllFixturesSensors(ballBodyComponent.body); // make bullets sensors so they don't move player
-
-        transformComponent.position.set(x, y, 0);
-
-//        if (entity.getComponent(BallComponent.class) != null) {
-//            if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.MARS) {
-//                texture.region = atlas.findRegion("mars");
-//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.MERCURY) {
-//                texture.region = atlas.findRegion("mercury");
-//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.JUPITER) {
-//                texture.region = atlas.findRegion("jupiter");
-//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.EARTH) {
-//                texture.region = atlas.findRegion("earth");
-//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.NEPTUNE) {
-//                texture.region = atlas.findRegion("neptune");
-//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.SATURN) {
-//                texture.region = atlas.findRegion("saturn");
-//            } else if (entity.getComponent(BallComponent.class).ballColor == BallComponent.BallColor.URANUS) {
-//                texture.region = atlas.findRegion("uranus");
-//            }
-//        }
-
-        type.type = BALL;
-
-        ballBodyComponent.body.setUserData(entity);
-        ballComponent.velocityX = xVelocity;
-        ballComponent.velocityY = yVelocity;
-        ballComponent.position = ballBodyComponent.body.getPosition();
-
-        ballComponent.ballColor = ballComponent.randomBallColor();
-
-        entity.add(ballBodyComponent);
-        entity.add(texture);
-        entity.add(type);
-        entity.add(transformComponent);
-        entity.add(collisionComponent);
-        entity.add(ballComponent);
-
-        engine.addEntity(entity);
-
-        return entity;
-    }
-
-    public Entity createEntity(float x, float y, Component component, TypeComponent.Type typeOfComponent){
         Entity entity = engine.createEntity();
 
         Box2dBodyComponent bodyComponent = engine.createComponent(Box2dBodyComponent.class);
         TextureComponent texture = engine.createComponent(TextureComponent.class);
-        TypeComponent type = engine.createComponent(TypeComponent.class);
+        TypeComponent typeComponent = engine.createComponent(TypeComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
-        engine.createComponent(component.getClass());
+        EntityComponent entityComponent = engine.createComponent(EntityComponent.class);
 
-        bodyComponent.body = bodyFactory.makeCirclePolyBody(x, y, GameUtilities.BALL_RADIUS, BodyFactory.Material.RUBBER, BodyDef.BodyType.KinematicBody, false);
+        typeComponent.type = type;
 
-        type.type = typeOfComponent;
+        if (type == BALL){
+            bodyComponent.body = bodyFactory.makeCirclePolyBody(x, y,
+                    GameUtilities.BALL_RADIUS,
+                    BodyFactory.Material.RUBBER,
+                    BodyDef.BodyType.DynamicBody,
+                    false
+            );
+        }else if (type == SQUARE){
+            bodyComponent.body = bodyFactory.makeBoxPolyBody(x,y,
+                    GameUtilities.BALL_RADIUS,
+                    GameUtilities.BALL_RADIUS,
+                    BodyFactory.Material.RUBBER,
+                    BodyDef.BodyType.DynamicBody,
+                    false
+            );
+        }else if (type == TRIANGLE){
+            bodyComponent.body = bodyFactory.makeTrianglePolyBody(x,y,
+                    GameUtilities.BALL_RADIUS,
+                    GameUtilities.BALL_RADIUS,
+                    BodyFactory.Material.RUBBER,
+                    BodyDef.BodyType.DynamicBody,
+                    false
+            );
+        }
+
+        bodyComponent.body.setBullet(true); // increase physics computation to limit body travelling through other objects
+        //BodyFactory.makeAllFixturesSensors(bodyComponent.body); // make bullets sensors so they don't move player
 
         transformComponent.position.set(x, y, 0);
+        transformComponent.rotation = angle;
 
         bodyComponent.body.setUserData(entity);
-        //position and velocity... also color of entity
+        entityComponent.velocityX = xVelocity;
+        entityComponent.velocityY = yVelocity;
+        entityComponent.position = bodyComponent.body.getPosition();
+
+        entityComponent.entityColor = entityComponent.randomBallColor();
 
         entity.add(bodyComponent);
         entity.add(texture);
-        entity.add(type);
+        entity.add(typeComponent);
         entity.add(transformComponent);
         entity.add(collisionComponent);
-        entity.add(component);
+        entity.add(entityComponent);
 
         engine.addEntity(entity);
-
-        //add to a different list than totalBalls?
 
         return entity;
     }
 
-    public Entity createRowBall(float x, float y){
+    public Entity createRowEntity(TypeComponent.Type type, BodyDef.BodyType bodyType, float x, float y){
         Entity entity = engine.createEntity();
 
         Box2dBodyComponent ballBodyComponent = engine.createComponent(Box2dBodyComponent.class);
         TextureComponent texture = engine.createComponent(TextureComponent.class);
-        TypeComponent type = engine.createComponent(TypeComponent.class);
+        TypeComponent typeComponent = engine.createComponent(TypeComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
-        BallComponent ballComponent = engine.createComponent(BallComponent.class);
+        EntityComponent entityComponent = engine.createComponent(EntityComponent.class);
 
-        ballBodyComponent.body = bodyFactory.makeCirclePolyBody(x, y, GameUtilities.BALL_RADIUS, BodyFactory.Material.RUBBER, BodyDef.BodyType.KinematicBody, false);
+        typeComponent.type = type;
 
-        type.type = BALL;
+        if (type == BALL) {
+            ballBodyComponent.body = bodyFactory.makeCirclePolyBody(x, y,
+                    GameUtilities.BALL_RADIUS,
+                    BodyFactory.Material.RUBBER,
+                    bodyType,
+                    false
+            );
+            System.out.println(bodyType);
+        }else if (type == SQUARE){
+            ballBodyComponent.body = bodyFactory.makeBoxPolyBody(x,y,
+                    GameUtilities.BALL_RADIUS,
+                    GameUtilities.BALL_RADIUS,
+                    BodyFactory.Material.RUBBER,
+                    bodyType,
+                    false
+            );
+        }else if (type == TRIANGLE){
+            ballBodyComponent.body = bodyFactory.makeTrianglePolyBody(x,y,
+                    GameUtilities.BALL_RADIUS,
+                    GameUtilities.BALL_RADIUS,
+                    BodyFactory.Material.RUBBER,
+                    bodyType,
+                    false
+            );
+        }
 
         transformComponent.position.set(x, y, 0);
 
         ballBodyComponent.body.setUserData(entity);
-        ballComponent.position = ballBodyComponent.body.getPosition();
-        ballComponent.velocityX = 0f;
-        ballComponent.velocityY = 0f;
+        entityComponent.position = ballBodyComponent.body.getPosition();
+        entityComponent.velocityX = 0f;
+        entityComponent.velocityY = 0f;
 
-        ballComponent.ballColor = ballComponent.randomBallColor();
+        entityComponent.entityColor = entityComponent.randomBallColor();
 
         entity.add(ballBodyComponent);
         entity.add(texture);
-        entity.add(type);
+        entity.add(typeComponent);
         entity.add(transformComponent);
         entity.add(collisionComponent);
-        entity.add(ballComponent);
+        entity.add(entityComponent);
 
         engine.addEntity(entity);
 
-        totalBalls.add(entity);
+        totalEntities.add(entity);
 
         return entity;
 
@@ -245,8 +244,9 @@ public class EntityCreator {
         Box2dBodyComponent bodyComponent = engine.createComponent(Box2dBodyComponent.class);
         TextureComponent texture = engine.createComponent(TextureComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
+        CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
 
-        bodyComponent.body = bodyFactory.makeBoxPolyBody(posX, posY, width, height, BodyFactory.Material.STEEL, BodyDef.BodyType.StaticBody, false);
+        bodyComponent.body = bodyFactory.makeBoxPolyBody(posX, posY, width, height, BodyFactory.Material.STEEL, BodyDef.BodyType.StaticBody);
 
         //texture.region = wallRegion;
 
@@ -257,13 +257,14 @@ public class EntityCreator {
         entity.add(bodyComponent);
         entity.add(texture);
         entity.add(type);
+        entity.add(collisionComponent);
 
         engine.addEntity(entity);
 
     }
 
-    public List<Entity> totalBalls(){
-        return totalBalls;
+    public List<Entity> totalEntities(){
+        return totalEntities;
     }
 
 //    public Entity getPlayer() {

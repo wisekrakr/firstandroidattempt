@@ -5,26 +5,24 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 
-import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.androidmain.BodyFactory;
 import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
-import com.wisekrakr.androidmain.components.BallComponent;
+import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 
-import com.wisekrakr.androidmain.components.LevelComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
+import com.wisekrakr.androidmain.components.TypeComponent;
 
 
-public class BallSystem extends IteratingSystem {
+public class EntitySystem extends IteratingSystem {
 
     private Entity player;
     private EntityCreator entityCreator;
     private float waitingForASpot = 0;
 
     @SuppressWarnings("unchecked")
-    public BallSystem(Entity player, EntityCreator entityCreator){
-        super(Family.all(BallComponent.class).get());
+    public EntitySystem(Entity player, EntityCreator entityCreator){
+        super(Family.all(EntityComponent.class).get());
         this.player = player;
         this.entityCreator = entityCreator;
     }
@@ -33,62 +31,61 @@ public class BallSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
 
         Box2dBodyComponent b2body = ComponentMapper.getFor(Box2dBodyComponent.class).get(entity);
-        BallComponent ballComponent = ComponentMapper.getFor(BallComponent.class).get(entity);
+        EntityComponent entityComponent = ComponentMapper.getFor(EntityComponent.class).get(entity);
         PlayerComponent playerComponent = ComponentMapper.getFor(PlayerComponent.class).get(player);
 
-        b2body.body.setLinearVelocity(ballComponent.velocityX, ballComponent.velocityY);
+        b2body.body.applyForceToCenter(entityComponent.velocityX, entityComponent.velocityY, true);
+        //b2body.body.setLinearVelocity(entityComponent.velocityX, entityComponent.velocityY);
 
         Box2dBodyComponent playerBodyComp = ComponentMapper.getFor(Box2dBodyComponent.class).get(player);
         float positionX = playerBodyComp.body.getPosition().x;
         float positionY = playerBodyComp.body.getPosition().y;
 
-        if (!playerComponent.hasBall) {
+        if (!playerComponent.hasEntityToShoot) {
             playerComponent.timeSinceLastShot += deltaTime;
 
             if (playerComponent.timeSinceLastShot > playerComponent.spawnDelay) {
-                entity = entityCreator.createBall(
-                        BodyFactory.Material.RUBBER,
+
+                entity = entityCreator.createEntity(TypeComponent.Type.BALL,
                         positionX, positionY + GameUtilities.BALL_RADIUS,
-                        0, 0);
+                        0, 0, b2body.body.getAngle());
 
+                playerComponent.hasEntityToShoot = true;
 
-                playerComponent.hasBall = true;
                 playerComponent.timeSinceLastShot = 0f;
 
-                entityCreator.totalBalls().add(0, entity);
+                entityCreator.totalEntities().add(0, entity);
             }
         }
 
-        if (ballComponent.destroyed) {
-            if (ballComponent.hitBall) {
+        if (entityComponent.destroyed) {
+            if (entityComponent.hitEntity) {
                 whenDestroyed();
             }
             b2body.isDead = true;
-            entityCreator.totalBalls().remove(entity);
+            entityCreator.totalEntities().remove(entity);
         }
 
-        if (!ballComponent.destroyed) {
-            if (ballComponent.hitBall) {
-                notYetDestroyed(ballComponent, deltaTime);
+        if (!entityComponent.destroyed) {
+            if (entityComponent.hitEntity) {
+                notYetDestroyed(entityComponent, deltaTime);
             }
         } else {
             System.out.println("ball died"); //todo: remove
             b2body.isDead = true;
         }
-
-
     }
 
     private void whenDestroyed(){
         player.getComponent(PlayerComponent.class).score += 10;
     }
 
-    private void notYetDestroyed(BallComponent ballComponent, float deltaTime){
+    private void notYetDestroyed(EntityComponent entityComponent, float deltaTime){
         waitingForASpot += deltaTime;
-        float timeToStopMoving = 5f;
+        float timeToStopMoving = 0.3f;
         if (waitingForASpot > timeToStopMoving) {
-            ballComponent.velocityX = 0f;
-            ballComponent.velocityY = 0f;
+            entityComponent.velocityX = 0f;
+            entityComponent.velocityY = 0f;
 
             waitingForASpot = 0f;
         }
