@@ -17,7 +17,7 @@ public class SimplexNoise {
      * @param persistence
      * @param seed the random seed to use
      */
-    public SimplexNoise(int largestFeature,double persistence, int seed){
+    public SimplexNoise(int largestFeature, double persistence, int seed){
         this.largestFeature=largestFeature;
         this.persistence=persistence;
         this.seed=seed;
@@ -29,10 +29,10 @@ public class SimplexNoise {
         frequencys = new double[numberOfOctaves];
         amplitudes = new double[numberOfOctaves];
 
-        Random rnd = new Random(seed);
+        Random random = new Random(seed);
 
         for(int i = 0 ; i < numberOfOctaves ;i++){
-            octaves[i] = new SimplexNoise_octave(rnd.nextInt());
+            octaves[i] = new SimplexNoise_octave(random.nextInt());
 
             frequencys[i] = Math.pow(2,i);
             //System.out.println("F="+frequencys[i]+" "+i);

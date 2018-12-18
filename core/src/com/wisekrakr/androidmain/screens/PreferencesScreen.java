@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.androidmain.AndroidGame;
+import com.wisekrakr.androidmain.GameUtilities;
 
 public class PreferencesScreen extends ScreenAdapter {
 
@@ -19,7 +20,7 @@ public class PreferencesScreen extends ScreenAdapter {
 
     public PreferencesScreen(AndroidGame game) {
         this.game = game;
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        stage = new Stage(new FitViewport(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT));
     }
 
     @Override

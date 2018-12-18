@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,23 +15,20 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.GamePreferences;
-import com.wisekrakr.androidmain.components.LevelComponent;
+import com.wisekrakr.androidmain.GameUtilities;
 
 public class LevelSelectScreen extends ScreenAdapter {
 
     private final GamePreferences preferences;
-    private PlayScreen playScreen;
     private AndroidGame game;
     private Stage stage;
-
 
     public LevelSelectScreen(AndroidGame game) {
         this.game = game;
 
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()), game.getSpriteBatch());
+        stage = new Stage(new FitViewport(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT), game.getSpriteBatch());
 
         preferences = game.getGamePreferences();
-
     }
 
     @Override
@@ -45,7 +41,7 @@ public class LevelSelectScreen extends ScreenAdapter {
         stage.addActor(table);
 
         BitmapFont font = game.assetManager().assetManager.get("font/gamerFont.fnt");
-        font.getData().setScale(1f);
+        font.getData().setScale((GameUtilities.WORLD_WIDTH/100)/5);
 
         Skin skin = game.assetManager().assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 

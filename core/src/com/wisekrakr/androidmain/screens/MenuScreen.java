@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.androidmain.AndroidGame;
+import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.systems.RenderingSystem;
 
 public class MenuScreen extends ScreenAdapter {
@@ -22,7 +23,8 @@ public class MenuScreen extends ScreenAdapter {
 
     public MenuScreen(AndroidGame game) {
         this.game = game;
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth() , Gdx.graphics.getHeight(), new OrthographicCamera()));
+        stage = new Stage(new FitViewport(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT));
+
     }
 
     @Override

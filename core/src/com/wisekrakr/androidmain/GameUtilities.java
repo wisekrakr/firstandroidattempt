@@ -5,7 +5,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GameUtilities {
@@ -127,8 +126,15 @@ public class GameUtilities {
     }
 
     /*
+    Viewport constants
+     */
+
+    public static float WORLD_WIDTH = 256;
+    public static float WORLD_HEIGHT = 512;
+
+    /*
     Some constants for game objects
      */
 
-    public static float BALL_RADIUS = Gdx.graphics.getWidth() /10;
+    public static float BALL_RADIUS = WORLD_WIDTH /15;
 }

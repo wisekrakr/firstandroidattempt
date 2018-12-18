@@ -61,15 +61,13 @@ public class MyAssetManager implements Disposable {
      */
     public void loadTextures() {
 
-        assetManager.load("images/dudes/dude_front.png", Texture.class);
-        assetManager.load("images/dudes/dude_back.png", Texture.class);
-        assetManager.load("images/dudes/dude_left.png", Texture.class);
-        assetManager.load("images/dudes/dude_right.png", Texture.class);
-
-        assetManager.load("images/objects/pokeball.png", Texture.class);
-        assetManager.load("images/objects/earthball.png", Texture.class);
-        assetManager.load("images/objects/starball.png", Texture.class);
-
+        assetManager.load("images/game/earth.png", Texture.class);
+        assetManager.load("images/game/jupiter.png", Texture.class);
+        assetManager.load("images/game/mars.png", Texture.class);
+        assetManager.load("images/game/neptune.png", Texture.class);
+        assetManager.load("images/game/saturn.png", Texture.class);
+        assetManager.load("images/game/venus.png", Texture.class);
+        assetManager.load("images/game/mercury.png", Texture.class);
 
         assetManager.finishLoading();
     }
@@ -82,7 +80,7 @@ public class MyAssetManager implements Disposable {
         assetManager.finishLoading();
     }
 
-    public void queuePlayerImages(){
+    public void queueGameImages(){
         assetManager.load("images/game/game.atlas", TextureAtlas.class);
     }
 

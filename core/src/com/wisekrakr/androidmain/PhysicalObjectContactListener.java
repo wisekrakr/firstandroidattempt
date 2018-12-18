@@ -54,6 +54,17 @@ public class PhysicalObjectContactListener implements ContactListener {
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
-
+//        Fixture fixtureA = contact.getFixtureA();
+//        Fixture fixtureB = contact.getFixtureB();
+//
+//        //System.out.println(StringHelper.ANSI_RED_BACKGROUND + "Contact : " + StringHelper.ANSI_RESET + fixtureA.getBody().getUserData() + " and " + fixtureB.getBody().getUserData());
+//
+//        if (fixtureA.getBody().getUserData() instanceof Entity){
+//            Entity entity = (Entity) fixtureA.getBody().getUserData();
+//            entityCollision(entity, fixtureB);
+//        }else if (fixtureB.getBody().getUserData() instanceof Entity){
+//            Entity entity = (Entity) fixtureB.getBody().getUserData();
+//            entityCollision(entity, fixtureA);
+//        }
     }
 }

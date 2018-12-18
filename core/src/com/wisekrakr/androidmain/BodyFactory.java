@@ -1,5 +1,6 @@
 package com.wisekrakr.androidmain;
 
+import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -12,7 +13,6 @@ public class BodyFactory {
 
     private World world;
     private static BodyFactory thisInstance;
-    public Material material = Material.RUBBER;
 
     private static List<Body>bodies = new ArrayList<Body>();
 
@@ -20,7 +20,7 @@ public class BodyFactory {
         this.world = world;
     }
 
-    public static BodyFactory getBodyFactoryInstance(World world){
+    static BodyFactory getBodyFactoryInstance(World world){
         if (thisInstance == null){
             thisInstance = new BodyFactory(world);
         }
@@ -40,7 +40,6 @@ public class BodyFactory {
             }
         }
     }
-
 
     public enum Material{
         STEEL, WOOD, RUBBER, STONE
@@ -77,11 +76,11 @@ public class BodyFactory {
         return fixtureDef;
     }
 
-    public Body makeCirclePolyBody(float positionX, float positionY, float radius, Material material, BodyDef.BodyType bodyType){
+    Body makeCirclePolyBody(float positionX, float positionY, float radius, Material material, BodyDef.BodyType bodyType){
         return makeCirclePolyBody(positionX, positionY, radius, material, bodyType, false);
     }
 
-    public Body makeCirclePolyBody(float positionX, float positionY, float radius, Material material, BodyDef.BodyType bodyType, boolean fixedRotation){
+    Body makeCirclePolyBody(float positionX, float positionY, float radius, Material material, BodyDef.BodyType bodyType, boolean fixedRotation){
 
         BodyDef boxBodyDef = new BodyDef();
         boxBodyDef.type = bodyType;
@@ -97,33 +96,11 @@ public class BodyFactory {
         return boxBody;
     }
 
-//    public Body addCircleBody(PhysicalObject object, float radius, Material material, BodyDef.BodyType bodyType){
-//
-//        BodyDef bodyDef = new BodyDef();
-//        bodyDef.type = bodyType;
-//        bodyDef.position.set(object.getPosition().x, object.getPosition().y);
-//        bodyDef.angularVelocity = object.getAngle();
-//        bodyDef.linearVelocity.x = object.getVelocity().x;
-//        bodyDef.linearVelocity.y = object.getVelocity().y;
-//
-//        Body body = world.createBody(bodyDef);
-//        bodies.add(body);
-//
-//        CircleShape circleShape = new CircleShape();
-//        circleShape.setRadius(radius/2);
-//
-//        body.createFixture(makeDefaultFixture(material, circleShape));
-//
-//        circleShape.dispose();
-//
-//        return body;
-//    }
-
-    public Body makeBoxPolyBody(float positionX, float positionY, float width, float height, Material material, BodyDef.BodyType bodyType){
+    Body makeBoxPolyBody(float positionX, float positionY, float width, float height, Material material, BodyDef.BodyType bodyType){
         return makeBoxPolyBody(positionX, positionY, width, height, material, bodyType, false);
     }
 
-    public Body makeBoxPolyBody(float positionX, float positionY, float width, float height, Material material, BodyDef.BodyType bodyType, boolean fixedRotation){
+    Body makeBoxPolyBody(float positionX, float positionY, float width, float height, Material material, BodyDef.BodyType bodyType, boolean fixedRotation){
 
         BodyDef boxBodyDef = new BodyDef();
         boxBodyDef.type = bodyType;
@@ -140,7 +117,7 @@ public class BodyFactory {
         return boxBody;
     }
 
-    public Body makeTrianglePolyBody(float positionX, float positionY, float width, float height, Material material, BodyDef.BodyType bodyType, boolean fixedRotation){
+    Body makeTrianglePolyBody(float positionX, float positionY, float width, float height, Material material, BodyDef.BodyType bodyType, boolean fixedRotation){
 
         BodyDef triangleBodyDef = new BodyDef();
         triangleBodyDef.type = bodyType;
@@ -164,7 +141,33 @@ public class BodyFactory {
         return triangleBody;
     }
 
-    public void makeConeSensor(Body body, float viewRadius){
+    Body makeCrazyPolyBody(float positionX, float positionY, float width, float height, Material material, BodyDef.BodyType bodyType, boolean fixedRotation){
+
+        BodyDef triangleBodyDef = new BodyDef();
+        triangleBodyDef.type = bodyType;
+        triangleBodyDef.position.x = positionX;
+        triangleBodyDef.position.y = positionY;
+        triangleBodyDef.fixedRotation = fixedRotation;
+
+        Body triangleBody = world.createBody(triangleBodyDef);
+        PolygonShape poly = new PolygonShape();
+
+        Vector2[]vector2s = new Vector2[5];
+        vector2s[0] = new Vector2(0, height);
+        vector2s[1] = new Vector2(-width/2, 0);
+        vector2s[2] = new Vector2(width/2, 0);
+        vector2s[3] = new Vector2(0, height/2);
+        vector2s[4] = new Vector2(width/2, height);
+
+        poly.set(vector2s);
+
+        triangleBody.createFixture(makeDefaultFixture(material,poly));
+        poly.dispose();
+
+        return triangleBody;
+    }
+
+    void makeConeSensor(Body body, float viewRadius){
 
         FixtureDef fixtureDef = new FixtureDef();
         //fixtureDef.isSensor = true; // when this is on it can notice something touching it
@@ -187,7 +190,5 @@ public class BodyFactory {
         polygon.dispose();
     }
 
-    public static List<Body> getBodies() {
-        return bodies;
-    }
+
 }

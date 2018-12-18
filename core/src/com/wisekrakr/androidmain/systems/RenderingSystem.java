@@ -4,22 +4,18 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.TextureComponent;
 import com.wisekrakr.androidmain.components.TransformComponent;
 
-import java.util.Collections;
 import java.util.Comparator;
 
 public class RenderingSystem extends SortedIteratingSystem {
 
     public static final float PPM = 64.0f;
-    private static final float FRUSTUM_WIDTH = Gdx.graphics.getWidth()/PPM;
-    private static final float FRUSTUM_HEIGHT = Gdx.graphics.getHeight()/PPM;
 
     public static final float PIXELS_TO_METRES = 1f / PPM;
 
@@ -47,8 +43,9 @@ public class RenderingSystem extends SortedIteratingSystem {
 
         renderQueue = new Array<Entity>();
 
-        camera = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
-        //camera.position.set(FRUSTUM_WIDTH / 2f, FRUSTUM_HEIGHT / 2f, 0);
+        camera = new OrthographicCamera(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT);
+//        camera.position.set(GameUtilities.WORLD_WIDTH/2, GameUtilities.WORLD_HEIGHT/2,0);
+
     }
 
     @Override
@@ -96,4 +93,6 @@ public class RenderingSystem extends SortedIteratingSystem {
     public OrthographicCamera getCamera() {
         return camera;
     }
+
+
 }

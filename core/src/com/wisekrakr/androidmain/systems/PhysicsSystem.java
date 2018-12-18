@@ -40,7 +40,7 @@ public class PhysicsSystem extends IteratingSystem {
         accumulator += frameTime;
 
         if(accumulator >= MAX_STEP_TIME) {
-            world.step(MAX_STEP_TIME, 6, 2);
+            world.step(MAX_STEP_TIME, 2, 2);
             accumulator -= MAX_STEP_TIME;
 
             for (Entity entity : bodiesQueue) {
@@ -54,11 +54,8 @@ public class PhysicsSystem extends IteratingSystem {
                 transformComponent.rotation = bodyComponent.body.getAngle() * MathUtils.radiansToDegrees;
 
                 if (bodyComponent.isDead){
-                    System.out.println("Removing body and entity"); //todo: remove
-
                     world.destroyBody(bodyComponent.body);
                     getEngine().removeEntity(entity);
-
                 }
             }
         }

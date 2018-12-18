@@ -13,7 +13,6 @@ import com.wisekrakr.androidmain.components.TypeComponent;
 public class CollisionSystem extends IteratingSystem {
     private ComponentMapper<CollisionComponent> collisionComponentMapper;
     private ComponentMapper<EntityComponent> entityComponentMapper;
-    private ComponentMapper<Box2dBodyComponent> box2dBodyComponentMapper;
 
     @SuppressWarnings("unchecked")
     public CollisionSystem() {
@@ -21,14 +20,12 @@ public class CollisionSystem extends IteratingSystem {
 
         collisionComponentMapper = ComponentMapper.getFor(CollisionComponent.class);
         entityComponentMapper = ComponentMapper.getFor(EntityComponent.class);
-        box2dBodyComponentMapper = ComponentMapper.getFor(Box2dBodyComponent.class);
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
 
         CollisionComponent collisionComponent = collisionComponentMapper.get(entity);
-        Box2dBodyComponent box2dBodyComponent = box2dBodyComponentMapper.get(entity);
 
         Entity collidedEntity = collisionComponent.collisionEntity;
 
@@ -43,13 +40,33 @@ public class CollisionSystem extends IteratingSystem {
                             entityComponentMapper.get(entity).hitEntity = true;
 
                             if (entityComponentMapper.get(entity).entityColor == collisionComponent.collisionEntity.getComponent(EntityComponent.class).entityColor) {
-                                entityComponentMapper.get(entity).destroyed = true;
-                                collisionComponent.collisionEntity.getComponent(EntityComponent.class).destroyed = true;
+                                entityComponentMapper.get(entity).destroy = true;
+                                collisionComponent.collisionEntity.getComponent(EntityComponent.class).destroy = true;
                             }
                             break;
                         case SQUARE:
+                            entityComponentMapper.get(entity).hitEntity = true;
+
+                            if (entityComponentMapper.get(entity).entityColor == collisionComponent.collisionEntity.getComponent(EntityComponent.class).entityColor) {
+                                entityComponentMapper.get(entity).destroy = true;
+                                collisionComponent.collisionEntity.getComponent(EntityComponent.class).destroy = true;
+                            }
                             break;
                         case TRIANGLE:
+                            entityComponentMapper.get(entity).hitEntity = true;
+
+                            if (entityComponentMapper.get(entity).entityColor == collisionComponent.collisionEntity.getComponent(EntityComponent.class).entityColor) {
+                                entityComponentMapper.get(entity).destroy = true;
+                                collisionComponent.collisionEntity.getComponent(EntityComponent.class).destroy = true;
+                            }
+                            break;
+                        case OBSTACLE:
+                            //stick to it
+                            //bounce off it
+                            //delete entity without points
+                            //speed up or slow down entity
+                            //entity changes color
+
                             break;
                         case SCENERY:
 //                            entityComponentMapper.get(entity).velocityY = 0f;
@@ -58,11 +75,11 @@ public class CollisionSystem extends IteratingSystem {
 //                            System.out.println("ball hit surface " );
                             break;
                         default:
-                            System.out.println("ball: No matching type found " );
+                            //System.out.println("ball: No matching type found " );
                     }
                     //collisionComponent.collisionEntity = null;
                 }else {
-                    System.out.println("type == null");
+                    //System.out.println("type == null");
                 }
             }
         }else if (thisType.type == TypeComponent.Type.SQUARE){
@@ -73,16 +90,16 @@ public class CollisionSystem extends IteratingSystem {
                         case SQUARE:
                             entityComponentMapper.get(entity).hitEntity = true;
                             if (entityComponentMapper.get(entity).entityColor == collisionComponent.collisionEntity.getComponent(EntityComponent.class).entityColor) {
-                                entityComponentMapper.get(entity).destroyed = true;
-                                collisionComponent.collisionEntity.getComponent(EntityComponent.class).destroyed = true;
+                                entityComponentMapper.get(entity).destroy = true;
+                                collisionComponent.collisionEntity.getComponent(EntityComponent.class).destroy = true;
                             }
                             break;
                         case BALL:
-                            System.out.println("square hit ball");
-                            break;
-                        case SCENERY:
-                            entityComponentMapper.get(entity).velocityY = 0f;
-                            entityComponentMapper.get(entity).velocityX = 0f;
+                            entityComponentMapper.get(entity).hitEntity = true;
+                            if (entityComponentMapper.get(entity).entityColor == collisionComponent.collisionEntity.getComponent(EntityComponent.class).entityColor) {
+                                entityComponentMapper.get(entity).destroy = true;
+                                collisionComponent.collisionEntity.getComponent(EntityComponent.class).destroy = true;
+                            }
                             break;
                         default:
                             System.out.println("square: No matching type found");
@@ -101,17 +118,17 @@ public class CollisionSystem extends IteratingSystem {
                             break;
                         case TRIANGLE:
                             entityComponentMapper.get(entity).hitEntity = true;
-
                             if (entityComponentMapper.get(entity).entityColor == collisionComponent.collisionEntity.getComponent(EntityComponent.class).entityColor) {
-                                entityComponentMapper.get(entity).destroyed = true;
-                                collisionComponent.collisionEntity.getComponent(EntityComponent.class).destroyed = true;
+                                entityComponentMapper.get(entity).destroy = true;
+                                collisionComponent.collisionEntity.getComponent(EntityComponent.class).destroy = true;
                             }
                             break;
                         case BALL:
-                            break;
-                        case SCENERY:
-                            entityComponentMapper.get(entity).velocityY = 0f;
-                            entityComponentMapper.get(entity).velocityX = 0f;
+                            entityComponentMapper.get(entity).hitEntity = true;
+                            if (entityComponentMapper.get(entity).entityColor == collisionComponent.collisionEntity.getComponent(EntityComponent.class).entityColor) {
+                                entityComponentMapper.get(entity).destroy = true;
+                                collisionComponent.collisionEntity.getComponent(EntityComponent.class).destroy = true;
+                            }
                             break;
                         default:
                             System.out.println("triangle: No matching type found");
@@ -137,6 +154,31 @@ public class CollisionSystem extends IteratingSystem {
                             break;
                         default:
                             System.out.println("walls: No matching type found");
+                    }
+//                    collisionComponent.collisionEntity = null;
+                } else {
+                    System.out.println("type == null");
+                }
+            }
+        }else if (thisType.type == TypeComponent.Type.OBSTACLE) {
+            if (collidedEntity != null) {
+                TypeComponent typeComponent = collidedEntity.getComponent(TypeComponent.class);
+                if (typeComponent != null) {
+                    switch (typeComponent.type) {
+                        case SQUARE:
+                            entityComponentMapper.get(collidedEntity).hitObstacle = true;
+
+                            break;
+                        case TRIANGLE:
+                            entityComponentMapper.get(collidedEntity).hitObstacle = true;
+
+                            break;
+                        case BALL:
+                            entityComponentMapper.get(collidedEntity).hitObstacle = true;
+
+                            break;
+                        default:
+                            System.out.println("obstacle: No matching type found");
                     }
 //                    collisionComponent.collisionEntity = null;
                 } else {

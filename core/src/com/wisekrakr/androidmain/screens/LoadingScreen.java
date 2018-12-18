@@ -9,12 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.wisekrakr.androidmain.AndroidGame;
-import com.wisekrakr.androidmain.systems.RenderingSystem;
+import com.wisekrakr.androidmain.GameUtilities;
 
 public class LoadingScreen implements Screen {
 
@@ -37,7 +34,7 @@ public class LoadingScreen implements Screen {
     public LoadingScreen(AndroidGame game) {
         this.game = game;
 
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()));
+        stage = new Stage(new FitViewport(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT));
 
         spriteBatch = new SpriteBatch();
         spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
@@ -60,8 +57,12 @@ public class LoadingScreen implements Screen {
 
     private void drawLoadingBar(int stage, TextureRegion currentFrame){
         for(int i = 0; i < stage;i++){
-            spriteBatch.draw(currentFrame, Gdx.graphics.getWidth()/2 - title.getRegionWidth()/2 + (i * 60), Gdx.graphics.getHeight()/2 - title.getRegionHeight()/2, 40, 40);
-            spriteBatch.draw(dash, Gdx.graphics.getWidth()/2 - title.getRegionWidth()/2 + (i * 60), Gdx.graphics.getHeight()/2 - title.getRegionHeight()/2, 40, 40);
+            spriteBatch.draw(currentFrame, GameUtilities.WORLD_WIDTH - title.getRegionWidth()/2 + (i * 60),
+                    GameUtilities.WORLD_HEIGHT - title.getRegionHeight()/2,
+                    40, 40);
+            spriteBatch.draw(dash, GameUtilities.WORLD_WIDTH - title.getRegionWidth()/2 + (i * 60),
+                    GameUtilities.WORLD_HEIGHT - title.getRegionHeight()/2,
+                    40, 40);
         }
     }
 
@@ -81,7 +82,7 @@ public class LoadingScreen implements Screen {
 
         spriteBatch.begin();
         drawLoadingBar(currentLoadingStage , currentFrame);
-        spriteBatch.draw(title, Gdx.graphics.getWidth()/2 - title.getRegionWidth()/2, Gdx.graphics.getHeight()/2 - title.getRegionHeight()/2 );
+        spriteBatch.draw(title, GameUtilities.WORLD_WIDTH - title.getRegionWidth()/2, GameUtilities.WORLD_HEIGHT - title.getRegionHeight()/2 );
         spriteBatch.end();
 
 
@@ -90,7 +91,7 @@ public class LoadingScreen implements Screen {
             switch (currentLoadingStage){
                 case IMAGE:
                     System.out.println("Loading images...");
-                    game.assetManager().queuePlayerImages();
+                    game.assetManager().queueGameImages();
                     game.assetManager().loadTextures();
 
                     break;

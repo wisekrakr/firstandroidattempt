@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.androidmain.AndroidGame;
+import com.wisekrakr.androidmain.GameUtilities;
 
 public class EndScreen extends ScreenAdapter {
 
@@ -26,7 +27,7 @@ public class EndScreen extends ScreenAdapter {
     public EndScreen(AndroidGame game) {
         this.game = game;
 
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()), game.getSpriteBatch());
+        stage = new Stage(new FitViewport(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT), game.getSpriteBatch());
     }
 
     @Override
@@ -39,7 +40,7 @@ public class EndScreen extends ScreenAdapter {
         stage.addActor(table);
 
         BitmapFont font = game.assetManager().assetManager.get("font/gamerFont.fnt");
-        font.getData().setScale(1f);
+        font.getData().setScale((GameUtilities.WORLD_WIDTH/100)/5);
 
         Skin skin = game.assetManager().assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 

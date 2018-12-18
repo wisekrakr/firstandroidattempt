@@ -73,7 +73,17 @@ public class LevelGenerationSystem {
     private void building(){
 
         if (!game.getGamePreferences().levelGoing(mainLevel)) {
-            levelModel.startLevel(mainLevel, 6, 6);
+            if (mainLevel <= 4) {
+                levelModel.startLevel(mainLevel, 10, 10);
+            }else if (mainLevel >= 5 && mainLevel <=8){
+                levelModel.startLevel(mainLevel, 11, 18);
+            }else if (mainLevel >= 9 && mainLevel <=12){
+                levelModel.startLevel(mainLevel, 12, 25);
+            }else if (mainLevel >= 13 && mainLevel <=16){
+                levelModel.startLevel(mainLevel, 13, 33);
+            }else if (mainLevel >= 17 && mainLevel <=20){
+                levelModel.startLevel(mainLevel, 14, 45);
+            }
 
             game.getGamePreferences().setLevelGoing(mainLevel, true);
 
@@ -100,6 +110,8 @@ public class LevelGenerationSystem {
 
         for (LevelNumber levelNumber: levelCompleted) {
             levelsToDo.remove(levelNumber);
+
+            game.getGameTimer().reset();
         }
         state = State.START;
     }

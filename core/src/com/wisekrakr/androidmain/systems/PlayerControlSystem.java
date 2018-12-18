@@ -57,28 +57,32 @@ public class PlayerControlSystem extends IteratingSystem {
 //                b2body.body.setTransform(b2body.body.getPosition().x,b2body.body.getPosition().y, b2body.body.getAngle() + -15f * deltaTime);
             }
 
+
             if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
                 if (playerComponent.hasEntityToShoot) {
-                    playerComponent.hasEntityToShoot = false;
 
                     Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+
                     camera.unproject(mousePos); // convert position from screen to box2d world position
-                    float speed = 100000000f;  // set the speed of the ball
+
+                    float speed = 10000000f;  // set the speed of the ball
+
                     float xVelocity = mousePos.x - b2body.body.getPosition().x; // get distance from shooter to target on x plain
                     float yVelocity = mousePos.y - b2body.body.getPosition().y; // get distance from shooter to target on y plain
+
                     float length = (float) Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // get distance to target direct
+
                     if (length != 0) {
                         xVelocity = xVelocity / length;  // get required x velocity to aim at target
                         yVelocity = yVelocity / length;  // get required y velocity to aim at target
                     }
 
-                    Iterator<Entity> iterator = entityCreator.totalEntities().iterator();
+                    Iterator<Entity> iterator = entityCreator.getTotalEntities().iterator();
                     if (iterator.hasNext()) {
-                        entityCreator.totalEntities().get(0).getComponent(EntityComponent.class).velocityX = xVelocity * speed;
-                        entityCreator.totalEntities().get(0).getComponent(EntityComponent.class).velocityY = yVelocity * speed;
-                    } else {
-                        playerComponent.hasEntityToShoot = false;
+                        entityCreator.getTotalEntities().get(0).getComponent(EntityComponent.class).velocityX = xVelocity * speed;
+                        entityCreator.getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = yVelocity * speed;
                     }
+                    playerComponent.hasEntityToShoot = false;
                 }
             }
         }

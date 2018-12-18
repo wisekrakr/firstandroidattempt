@@ -4,6 +4,11 @@ import com.badlogic.ashley.core.Entity;
 
 public class AbstractLevelContext implements LevelContext {
 
+    private LevelCreator levelCreator = new LevelCreator();
+
+    public LevelCreator getLevelCreator(){
+        return levelCreator;
+    }
 
     @Override
     public void init(Entity entity) {

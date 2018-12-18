@@ -2,7 +2,9 @@ package com.wisekrakr.androidmain;
 
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.wisekrakr.androidmain.components.GameTimer;
 import com.wisekrakr.androidmain.screens.EndScreen;
 import com.wisekrakr.androidmain.screens.LevelSelectScreen;
 import com.wisekrakr.androidmain.screens.LoadingScreen;
@@ -40,19 +42,16 @@ public class AndroidGame extends Game {
 
 	private void start(){
 		gamePreferences = new GamePreferences();
-		//gamePreferences.setLevelCompleted(1, false); //TODO: this is bad...fix this bitch
 
 		myAssetManager = new MyAssetManager();
 
-		spriteBatch = new SpriteBatch();
-
 		engine = new PooledEngine();
-
-		gameThread = new GameThread(this);
 
 		setScreen(new LoadingScreen(this));
 
+		spriteBatch = new SpriteBatch();
 
+		gameThread = new GameThread(this);
 	}
 
 	public void changeScreen(int screen){
@@ -80,6 +79,8 @@ public class AndroidGame extends Game {
 		}
 	}
 
+
+
 	public RenderingSystem getRenderingSystem(){
 		return gameThread.getRenderingSystem();
 	}
@@ -106,6 +107,10 @@ public class AndroidGame extends Game {
 
 	public LevelGenerationSystem getLevelGenerationSystem(){
 		return gameThread.getLevelGenerationSystem();
+	}
+
+	public GameTimer getGameTimer(){
+		return gameThread.getTimer();
 	}
 
 }

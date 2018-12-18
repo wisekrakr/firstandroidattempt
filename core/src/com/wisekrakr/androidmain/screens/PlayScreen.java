@@ -2,6 +2,7 @@ package com.wisekrakr.androidmain.screens;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
@@ -15,18 +16,19 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
-import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.EntityComponent;
+import com.wisekrakr.androidmain.components.GameTimer;
 import com.wisekrakr.androidmain.components.TransformComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
 import com.wisekrakr.androidmain.controls.Controls;
 import com.wisekrakr.androidmain.systems.EntitySystem;
+import com.wisekrakr.androidmain.systems.ObstacleSystem;
 import com.wisekrakr.androidmain.systems.PlayerControlSystem;
-import com.wisekrakr.androidmain.systems.WallSystem;
 
 public class PlayScreen extends ScreenAdapter {
 
     private final InputMultiplexer inputMultiplexer;
+    private Viewport viewport;
 
     private EntityCreator entityCreator;
     private final SpriteBatch spriteBatch;
@@ -38,7 +40,6 @@ public class PlayScreen extends ScreenAdapter {
 
     private ShapeRenderer shapeRenderer;
 
-    private Viewport viewport;
     private InfoDisplay infoDisplay;
 
     public PlayScreen(AndroidGame game) {
@@ -47,7 +48,7 @@ public class PlayScreen extends ScreenAdapter {
         spriteBatch = game.getSpriteBatch();
 
         camera = game.getRenderingSystem().getCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        viewport = new FitViewport(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT, camera);
 
         controls = new Controls();
 
@@ -71,14 +72,15 @@ public class PlayScreen extends ScreenAdapter {
     private void addSystems() {
 
         engine.addSystem(new PlayerControlSystem(controls, entityCreator, camera));
-        engine.addSystem(new EntitySystem(game.getLevelGenerationSystem().getLevelModel().getPlayer(), entityCreator));
+        engine.addSystem(new EntitySystem(game.getLevelGenerationSystem().getLevelModel().getPlayer(), entityCreator, game.getGameTimer()));
+        engine.addSystem(new ObstacleSystem(entityCreator));
 
-        entityCreator.createWalls(0,0, 5f, Gdx.graphics.getHeight()*2);
-        entityCreator.createWalls(Gdx.graphics.getWidth(),0, 5f, Gdx.graphics.getHeight()*2);
-        entityCreator.createWalls(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), Gdx.graphics.getWidth()*2,10f);
-        entityCreator.createWalls(0,0, Gdx.graphics.getWidth()*2,5f);
+        entityCreator.loadMap();
 
-//        entityCreator.createWaterFloor(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2, 80f,30f);
+        entityCreator.createWalls(0,0, 5f, GameUtilities.WORLD_HEIGHT *2);
+        entityCreator.createWalls(GameUtilities.WORLD_WIDTH,0, 5f, GameUtilities.WORLD_HEIGHT *2);
+        entityCreator.createWalls(GameUtilities.WORLD_WIDTH,GameUtilities.WORLD_HEIGHT, GameUtilities.WORLD_WIDTH *2,10f);
+        entityCreator.createWalls(0,0, GameUtilities.WORLD_WIDTH *2,5f);
 
         infoDisplay = new InfoDisplay(game);
 
@@ -87,20 +89,29 @@ public class PlayScreen extends ScreenAdapter {
     @Override
     public void show() {
 
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.setToOrtho(false, GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT);
 
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
-
-
     @Override
     public void render(float delta) {
+        /*
+        This gameclock will keep time per second and will be used over the whole game. This delta is holy. (for now)
+        This screen will therefore keep the time, so when you get a game over or switch from screen and then start a new game,
+        a new gameclock will start (with every new instance of a PlayScreen.
+         */
+
+        game.getGameTimer().gameClock += delta;
+
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         engine.update(delta);
         camera.update();
+
+        entityCreator.getTiledMapRenderer().setView(camera);
+        entityCreator.getTiledMapRenderer().render();
 
         spriteBatch.setProjectionMatrix(camera.combined);
 
@@ -109,25 +120,32 @@ public class PlayScreen extends ScreenAdapter {
         drawObjects();
 
         infoDisplay.renderDisplay(game.getLevelGenerationSystem().getLevelModel().getPlayer(),
-                game.getLevelGenerationSystem().getLevelModel().getTimer(),
+                game.getGameTimer(),
                 delta
         );
-
-
     }
 
     private void drawObjects(){
+        shapeRenderer.setProjectionMatrix(camera.combined);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Entity entity: entityCreator.totalEntities()) {
+
+        for (Entity entity: entityCreator.getTotalEntities()) {
             entity.getComponent(EntityComponent.class);
             if (entity.getComponent(EntityComponent.class) != null) {
-
+                //spriteBatch.begin();
                 switch (entity.getComponent(EntityComponent.class).entityColor){
                     case RED:
                         shapeRenderer.setColor(Color.RED);
                         break;
                     case BLUE:
+                        /*
+                        to create an image instead of a simple color, use the following:
+                        */
+//                        SpriteHelper.entitySpriteAtlas(entity,game.assetManager(),"earth",
+//                        entity.getComponent(Box2dBodyComponent.class).body,spriteBatch,
+//                        GameUtilities.BALL_RADIUS,GameUtilities.BALL_RADIUS);
+
                         shapeRenderer.setColor(Color.BLUE);
                         break;
                     case CYAN:
@@ -146,11 +164,13 @@ public class PlayScreen extends ScreenAdapter {
                         shapeRenderer.setColor(Color.ORANGE);
                         break;
                 }
+                //spriteBatch.end();
 
                 if (entity.getComponent(TypeComponent.class).type == TypeComponent.Type.BALL) {
 
-                    shapeRenderer.circle(entity.getComponent(EntityComponent.class).position.x,
-                            entity.getComponent(EntityComponent.class).position.y, GameUtilities.BALL_RADIUS / 2
+                    shapeRenderer.circle((entity.getComponent(EntityComponent.class).position.x ),
+                            (entity.getComponent(EntityComponent.class).position.y),
+                            GameUtilities.BALL_RADIUS / 2
                     );
 
                 }else if (entity.getComponent(TypeComponent.class).type == TypeComponent.Type.SQUARE) {
@@ -162,8 +182,8 @@ public class PlayScreen extends ScreenAdapter {
                             GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS,
                             1,1,
                             entity.getComponent(TransformComponent.class).rotation);
-                }else if (entity.getComponent(TypeComponent.class).type == TypeComponent.Type.TRIANGLE){
 
+                }else if (entity.getComponent(TypeComponent.class).type == TypeComponent.Type.TRIANGLE){
 
                     shapeRenderer.triangle(entity.getComponent(EntityComponent.class).position.x - GameUtilities.BALL_RADIUS/2,
                             entity.getComponent(EntityComponent.class).position.y ,

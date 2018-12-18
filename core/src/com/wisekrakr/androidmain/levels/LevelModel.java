@@ -1,16 +1,13 @@
 package com.wisekrakr.androidmain.levels;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
+import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.GameTimer;
+import com.wisekrakr.androidmain.components.ObstacleComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class LevelModel extends AbstractLevelContext{
@@ -18,61 +15,44 @@ public class LevelModel extends AbstractLevelContext{
     private Entity player;
     private AndroidGame game;
     private EntityCreator entityCreator;
-    private GameTimer timer;
-
-    private boolean isAvailable;
 
     public LevelModel(AndroidGame game, EntityCreator entityCreator) {
         this.game = game;
         this.entityCreator = entityCreator;
 
-        player = entityCreator.createPlayer(Gdx.graphics.getWidth()/2, 5);
-
-        timer = new GameTimer();
+        player = entityCreator.createPlayer(GameUtilities.WORLD_WIDTH /2, GameUtilities.BALL_RADIUS/2);
     }
 
     @Override
     public void startLevel(int numberOfLevel, int rows, int columns) {
-        setAvailability(numberOfLevel, true);
-
-        if (isAvailable()) {
-            AbstractLevel.getLevel(LevelNumber.valueOf(numberOfLevel), entityCreator, rows, columns);
-        }
+        LevelCreator.getLevel(LevelNumber.valueOf(numberOfLevel), entityCreator, rows, columns);
     }
 
     @Override
     public void updateLevel(int numberOfLevel, float delta) {
 
-        timer.time -= delta;
+        game.getGameTimer().time -= delta;
 
-        if (numberOfLevel != 0) {
-            if (timer.time != 0) {
-                if (entityCreator.totalEntities().size() <= 24) {
-                    completeLevel(numberOfLevel);
-                } else if (timer.time <= 0) {
-                    gameOver();
-                }
-            }
-        }else {
-            System.out.println("No level number given ");
-        }
-
-//        System.out.println(entityCreator.totalEntities().size() +
-//                "   " + numberOfLevel + "   " +
-//                timer.time ); //todo remove
-
+//        if (numberOfLevel != 0) {
+//            if (game.getGameTimer().time != 0) {
+//                if (entityCreator.getTotalEntities().size() <= 5) {
+//                    completeLevel(numberOfLevel);
+//                } else if (game.getGameTimer().time <= 0) {
+//                    gameOver();
+//                }
+//            }
+//        }else {
+//            System.out.println("No level number given ");
+//        }
     }
 
     @Override
     public void completeLevel(int numberOfLevel) {
         game.getGamePreferences().setLevelCompleted(numberOfLevel, true);
 
-        timer.time += 30f;
-
-        setAvailability(numberOfLevel, false);
+        game.getGameTimer().time += 30f;
 
         cleanUp();
-
     }
 
 
@@ -85,11 +65,13 @@ public class LevelModel extends AbstractLevelContext{
 
     private void cleanUp(){
 
-        List<Entity>balls = entityCreator.totalEntities();
-
-        for (Entity entity: balls){
-            entity.getComponent(EntityComponent.class).destroyed = true;
+        for (Entity entity: entityCreator.getTotalEntities()){
+            entity.getComponent(EntityComponent.class).destroy = true;
             player.getComponent(PlayerComponent.class).hasEntityToShoot = false;
+        }
+
+        for (Entity entity: entityCreator.getTotalObstacles()){
+            entity.getComponent(ObstacleComponent.class).destroy = true;
         }
 
         //game.changeScreen(AndroidGame.APPLICATION);
@@ -99,21 +81,4 @@ public class LevelModel extends AbstractLevelContext{
         return player;
     }
 
-    public GameTimer getTimer() {
-        return timer;
-    }
-
-    private Map<Integer, Boolean> setAvailability(int number, boolean set){
-        isAvailable = set;
-
-        Map<Integer, Boolean>map = new HashMap<Integer, Boolean>();
-
-        map.put(number, set);
-
-        return map;
-    }
-
-    public boolean isAvailable() {
-        return isAvailable;
-    }
 }

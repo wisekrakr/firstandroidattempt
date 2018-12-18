@@ -25,8 +25,9 @@ public class EntityComponent implements Component, Pool.Poolable {
     public float velocityY = 0f;
 
     public boolean hitSurface = false;
-    public boolean destroyed = false;
+    public boolean destroy = false;
     public boolean hitEntity = false;
+    public boolean hitObstacle = false;
 
     public Vector2 position = new Vector2();
 
@@ -37,7 +38,7 @@ public class EntityComponent implements Component, Pool.Poolable {
         velocityY = 0f;
 
         hitSurface = false;
-        destroyed = false;
+        destroy = false;
         hitEntity = false;
     }
 }

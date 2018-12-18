@@ -1,9 +1,7 @@
 package com.wisekrakr.androidmain.screens;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -11,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.androidmain.AndroidGame;
+import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.GameTimer;
 import com.wisekrakr.androidmain.components.PlayerComponent;
 
@@ -29,15 +28,15 @@ public class InfoDisplay implements Disposable {
     private Stage stage;
     private float timeCounter;
 
-    public InfoDisplay(AndroidGame game) {
+    InfoDisplay(AndroidGame game) {
         this.game = game;
 
         worldTimer = 0;
 
-        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()));
+        stage = new Stage(new FitViewport(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT));
 
         BitmapFont font = game.assetManager().assetManager.get("font/gamerFont.fnt");
-        font.getData().setScale(2f);
+        font.getData().setScale((GameUtilities.WORLD_WIDTH/100)/5);
 
         timeLabel = new Label("TIME", new Label.LabelStyle(font, Color.WHITE));
         timeCountLabel = new Label(String.format("%06d", worldTimer), new Label.LabelStyle(font, Color.GOLDENROD));
@@ -57,7 +56,7 @@ public class InfoDisplay implements Disposable {
         stage.addActor(table);
     }
 
-    public void renderDisplay(Entity entity, GameTimer timer, float delta){
+    void renderDisplay(Entity entity, GameTimer timer, float delta){
 
         stage.act();
         stage.draw();
@@ -72,6 +71,8 @@ public class InfoDisplay implements Disposable {
 
         }
     }
+
+
 
     @Override
     public void dispose() {
