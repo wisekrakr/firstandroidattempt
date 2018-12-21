@@ -2,7 +2,6 @@ package com.wisekrakr.androidmain.screens;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
@@ -17,7 +16,6 @@ import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.EntityComponent;
-import com.wisekrakr.androidmain.components.GameTimer;
 import com.wisekrakr.androidmain.components.TransformComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
 import com.wisekrakr.androidmain.controls.Controls;
@@ -72,10 +70,10 @@ public class PlayScreen extends ScreenAdapter {
     private void addSystems() {
 
         engine.addSystem(new PlayerControlSystem(controls, entityCreator, camera));
-        engine.addSystem(new EntitySystem(game.getLevelGenerationSystem().getLevelModel().getPlayer(), entityCreator, game.getGameTimer()));
+        engine.addSystem(new EntitySystem(game.getLevelGenerationSystem().getLevelModel().getPlayer(), entityCreator, game.getTimeKeeper()));
         engine.addSystem(new ObstacleSystem(entityCreator));
 
-        entityCreator.loadMap();
+        //entityCreator.loadMap();
 
         entityCreator.createWalls(0,0, 5f, GameUtilities.WORLD_HEIGHT *2);
         entityCreator.createWalls(GameUtilities.WORLD_WIDTH,0, 5f, GameUtilities.WORLD_HEIGHT *2);
@@ -102,7 +100,7 @@ public class PlayScreen extends ScreenAdapter {
         a new gameclock will start (with every new instance of a PlayScreen.
          */
 
-        game.getGameTimer().gameClock += delta;
+        game.getTimeKeeper().gameClock += delta;
 
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -110,8 +108,8 @@ public class PlayScreen extends ScreenAdapter {
         engine.update(delta);
         camera.update();
 
-        entityCreator.getTiledMapRenderer().setView(camera);
-        entityCreator.getTiledMapRenderer().render();
+//        entityCreator.getTiledMapRenderer().setView(camera);
+//        entityCreator.getTiledMapRenderer().render();
 
         spriteBatch.setProjectionMatrix(camera.combined);
 
@@ -119,8 +117,8 @@ public class PlayScreen extends ScreenAdapter {
 
         drawObjects();
 
-        infoDisplay.renderDisplay(game.getLevelGenerationSystem().getLevelModel().getPlayer(),
-                game.getGameTimer(),
+        infoDisplay.renderDisplay(
+                game.getTimeKeeper(),
                 delta
         );
     }

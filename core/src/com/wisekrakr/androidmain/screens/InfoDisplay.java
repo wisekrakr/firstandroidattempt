@@ -1,6 +1,5 @@
 package com.wisekrakr.androidmain.screens;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,8 +9,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.GameUtilities;
-import com.wisekrakr.androidmain.components.GameTimer;
-import com.wisekrakr.androidmain.components.PlayerComponent;
+import com.wisekrakr.androidmain.retainers.ScoreKeeper;
+import com.wisekrakr.androidmain.retainers.TimeKeeper;
 
 
 public class InfoDisplay implements Disposable {
@@ -56,7 +55,7 @@ public class InfoDisplay implements Disposable {
         stage.addActor(table);
     }
 
-    void renderDisplay(Entity entity, GameTimer timer, float delta){
+    void renderDisplay(TimeKeeper timer, float delta){
 
         stage.act();
         stage.draw();
@@ -67,12 +66,9 @@ public class InfoDisplay implements Disposable {
             worldTimer = (int) timer.time;
 
             timeCountLabel.setText(String.format("%s",worldTimer));
-            scoreCountLabel.setText(Float.toString(entity.getComponent(PlayerComponent.class).score));
-
+            scoreCountLabel.setText(Float.toString(ScoreKeeper.getScore()));
         }
     }
-
-
 
     @Override
     public void dispose() {

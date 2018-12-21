@@ -2,9 +2,9 @@ package com.wisekrakr.androidmain;
 
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.wisekrakr.androidmain.components.GameTimer;
+import com.wisekrakr.androidmain.retainers.ScoreKeeper;
+import com.wisekrakr.androidmain.retainers.TimeKeeper;
 import com.wisekrakr.androidmain.screens.EndScreen;
 import com.wisekrakr.androidmain.screens.LevelSelectScreen;
 import com.wisekrakr.androidmain.screens.LoadingScreen;
@@ -109,8 +109,9 @@ public class AndroidGame extends Game {
 		return gameThread.getLevelGenerationSystem();
 	}
 
-	public GameTimer getGameTimer(){
-		return gameThread.getTimer();
+	public TimeKeeper getTimeKeeper(){
+		return gameThread.getTimeKeeper();
 	}
+
 
 }

@@ -106,7 +106,7 @@ public class CollisionSystem extends IteratingSystem {
                     }
 //                    collisionComponent.collisionEntity = null;
                 }else {
-                    System.out.println("type == null");
+                    //System.out.println("type == null");
                 }
             }
         }else if (thisType.type == TypeComponent.Type.TRIANGLE) {
@@ -135,7 +135,7 @@ public class CollisionSystem extends IteratingSystem {
                     }
 //                    collisionComponent.collisionEntity = null;
                 } else {
-                    System.out.println("type == null");
+                    //System.out.println("type == null");
                 }
             }
         }else if (thisType.type == TypeComponent.Type.SCENERY) {
@@ -157,7 +157,7 @@ public class CollisionSystem extends IteratingSystem {
                     }
 //                    collisionComponent.collisionEntity = null;
                 } else {
-                    System.out.println("type == null");
+                    //System.out.println("type == null");
                 }
             }
         }else if (thisType.type == TypeComponent.Type.OBSTACLE) {
@@ -182,7 +182,7 @@ public class CollisionSystem extends IteratingSystem {
                     }
 //                    collisionComponent.collisionEntity = null;
                 } else {
-                    System.out.println("type == null");
+                    //System.out.println("type == null");
                 }
             }
         }

@@ -1,9 +1,9 @@
-package com.wisekrakr.androidmain.components;
+package com.wisekrakr.androidmain.retainers;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Pool;
 
-public class GameTimer {
+public class TimeKeeper {
 
     public float time = 300f;
     private float savedTime = 0;

@@ -14,6 +14,7 @@ import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.CollisionComponent;
 import com.wisekrakr.androidmain.components.LevelComponent;
 import com.wisekrakr.androidmain.components.ObstacleComponent;
+
 import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.components.TextureComponent;
 import com.wisekrakr.androidmain.components.TransformComponent;
@@ -248,7 +249,7 @@ public class EntityCreator {
         LevelComponent levelComponent = engine.createComponent(LevelComponent.class);
 
         bodyComponent.body = bodyFactory.makeBoxPolyBody(x, y, 5, 20, BodyFactory.Material.STONE, BodyDef.BodyType.StaticBody, true);
-
+        BodyFactory.makeAllFixturesSensors(bodyComponent.body, true);
         //transformComponent.position.set(10,10,0);
 
         type.type = PLAYER;

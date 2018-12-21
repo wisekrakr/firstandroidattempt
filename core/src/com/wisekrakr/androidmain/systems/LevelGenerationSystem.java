@@ -111,7 +111,7 @@ public class LevelGenerationSystem {
         for (LevelNumber levelNumber: levelCompleted) {
             levelsToDo.remove(levelNumber);
 
-            game.getGameTimer().reset();
+            game.getTimeKeeper().reset();
         }
         state = State.START;
     }

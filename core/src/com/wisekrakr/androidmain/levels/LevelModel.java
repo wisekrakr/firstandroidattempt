@@ -5,7 +5,6 @@ import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.EntityComponent;
-import com.wisekrakr.androidmain.components.GameTimer;
 import com.wisekrakr.androidmain.components.ObstacleComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
 
@@ -31,13 +30,13 @@ public class LevelModel extends AbstractLevelContext{
     @Override
     public void updateLevel(int numberOfLevel, float delta) {
 
-        game.getGameTimer().time -= delta;
+        game.getTimeKeeper().time -= delta;
 
 //        if (numberOfLevel != 0) {
-//            if (game.getGameTimer().time != 0) {
+//            if (game.getTimeKeeper().time != 0) {
 //                if (entityCreator.getTotalEntities().size() <= 5) {
 //                    completeLevel(numberOfLevel);
-//                } else if (game.getGameTimer().time <= 0) {
+//                } else if (game.getTimeKeeper().time <= 0) {
 //                    gameOver();
 //                }
 //            }
@@ -50,7 +49,7 @@ public class LevelModel extends AbstractLevelContext{
     public void completeLevel(int numberOfLevel) {
         game.getGamePreferences().setLevelCompleted(numberOfLevel, true);
 
-        game.getGameTimer().time += 30f;
+        game.getTimeKeeper().time += 30f;
 
         cleanUp();
     }

@@ -2,7 +2,8 @@ package com.wisekrakr.androidmain;
 
 
 import com.badlogic.ashley.core.PooledEngine;
-import com.wisekrakr.androidmain.components.GameTimer;
+import com.wisekrakr.androidmain.retainers.ScoreKeeper;
+import com.wisekrakr.androidmain.retainers.TimeKeeper;
 import com.wisekrakr.androidmain.systems.CollisionSystem;
 import com.wisekrakr.androidmain.systems.LevelGenerationSystem;
 import com.wisekrakr.androidmain.systems.PhysicsDebugSystem;
@@ -16,12 +17,12 @@ class GameThread {
     private AndroidGame game;
     private PooledEngine engine;
     private RenderingSystem renderingSystem;
-    private GameTimer timer;
+    private TimeKeeper timeKeeper;
 
     GameThread(AndroidGame game) {
         this.game = game;
 
-        timer = new GameTimer();
+        timeKeeper = new TimeKeeper();
 
         entityCreator = new EntityCreator(game, game.getEngine());
         engine = game.getEngine();
@@ -48,7 +49,8 @@ class GameThread {
 
     LevelGenerationSystem getLevelGenerationSystem(){return levelGenerationSystem;}
 
-    GameTimer getTimer() {
-        return timer;
+    TimeKeeper getTimeKeeper() {
+        return timeKeeper;
     }
+
 }

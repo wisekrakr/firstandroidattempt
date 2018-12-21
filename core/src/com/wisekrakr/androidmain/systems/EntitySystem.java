@@ -12,43 +12,54 @@ import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 
-import com.wisekrakr.androidmain.components.GameTimer;
+import com.wisekrakr.androidmain.retainers.ScoreKeeper;
+import com.wisekrakr.androidmain.retainers.TimeKeeper;
 import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
+
+/**
+ * System for Entities (excl. walls/obstacles/player).
+ * What does a entity do when it gets hit by another entity or when it hits a wall.
+ * Activated by CollisionSystem.
+ *
+ * This System also spawns the Entities to shoot towards other Entities. Based on if a player needs a ball,
+ * and the GameClock.
+ */
 
 
 public class EntitySystem extends IteratingSystem {
 
     private Entity player;
     private EntityCreator entityCreator;
-    private GameTimer timer;
+    private TimeKeeper timer;
     private float waitingForASpot = 0f;
-    float save = 0;
+
+    private ComponentMapper<EntityComponent> entityComponentMapper;
+    private ComponentMapper<Box2dBodyComponent> bodyComponentMapper;
+
     @SuppressWarnings("unchecked")
-    public EntitySystem(Entity player, EntityCreator entityCreator, GameTimer timer){
+    public EntitySystem(Entity player, EntityCreator entityCreator, TimeKeeper timer){
         super(Family.all(EntityComponent.class).get());
         this.player = player;
         this.entityCreator = entityCreator;
         this.timer = timer;
+
+        entityComponentMapper = ComponentMapper.getFor(EntityComponent.class);
+        bodyComponentMapper = ComponentMapper.getFor(Box2dBodyComponent.class);
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
 
-        Box2dBodyComponent bodyComponent = ComponentMapper.getFor(Box2dBodyComponent.class).get(entity);
-        EntityComponent entityComponent = ComponentMapper.getFor(EntityComponent.class).get(entity);
+        //todo: split entity process and ball spawning for player. Create new system with playercomponent to spawn balls. Also new ways to integrate player in game
+
+        Box2dBodyComponent bodyComponent = bodyComponentMapper.get(entity);
+        EntityComponent entityComponent = entityComponentMapper.get(entity);
         PlayerComponent playerComponent = ComponentMapper.getFor(PlayerComponent.class).get(player);
 
         bodyComponent.body.applyForceToCenter(entityComponent.velocityX, entityComponent.velocityY, true);
 
-        //bodyComponent.body.setLinearVelocity(entityComponent.velocityX, entityComponent.velocityY);
-
-        Box2dBodyComponent playerBodyComp = ComponentMapper.getFor(Box2dBodyComponent.class).get(player);
-        float positionX = playerBodyComp.body.getPosition().x;
-        float positionY = playerBodyComp.body.getPosition().y;
-
-
-        //TODO bugfix: sometimes spawns two balls too quickly after one another. Then the balls get stuck together or get de-spawned.
+       // bodyComponent.body.setLinearVelocity(entityComponent.velocityX, entityComponent.velocityY);
 
         if (!playerComponent.hasEntityToShoot) {
             if (playerComponent.timeSinceLastShot == 0){
@@ -57,13 +68,7 @@ public class EntitySystem extends IteratingSystem {
 
             if (timer.gameClock - playerComponent.timeSinceLastShot > playerComponent.spawnDelay) {
 
-                entity = entityCreator.createEntity(TypeComponent.Type.BALL,
-                        BodyFactory.Material.RUBBER,
-                        positionX,positionY + GameUtilities.BALL_RADIUS,
-                        0, 0,
-                        bodyComponent.body.getAngle());
-
-                entityCreator.getTotalEntities().add(0, entity);
+                spawnBall(entity);
 
                 playerComponent.hasEntityToShoot = true;
 
@@ -71,18 +76,22 @@ public class EntitySystem extends IteratingSystem {
             }
         }
 
+        //todo iterate through all the balls and do not use given entity, but create for loop.
+
         if (!entityComponent.destroy) {
             if (entityComponent.hitEntity) {
-                notYetDestroyed(bodyComponent, deltaTime);
-                if (bodyComponent.body.getType() == BodyDef.BodyType.StaticBody){
-                    bodyComponent.body.setType(BodyDef.BodyType.DynamicBody);
-                    bodyComponent.body.setAwake(true);
-                }
+                notYetDestroyed(entity);
+
             }else if (entityComponent.hitSurface){
-                //notYetDestroyed(bodyComponent, deltaTime);
                 bodyComponent.body.applyForceToCenter(-entityComponent.velocityX, -entityComponent.velocityY, true);
+
             }else if (entityComponent.hitObstacle){
-                bodyComponent.body.applyForceToCenter(-entityComponent.velocityX, -entityComponent.velocityY, true);
+                if (bodyComponentMapper.get(entity).body.getType() == BodyDef.BodyType.DynamicBody){
+                    bodyComponentMapper.get(entity).body.setType(BodyDef.BodyType.StaticBody);
+                    bodyComponentMapper.get(entity).body.setAwake(false);
+
+                    System.out.println("bing");//todo remove
+                }
             }
         } else {
             if (entityComponent.hitEntity) {
@@ -95,24 +104,38 @@ public class EntitySystem extends IteratingSystem {
         outOfBounds(bodyComponent, entityComponent);
     }
 
+    /**
+     * score points todo: get more time? power ups?
+     */
     private void whenDestroyed(){
-        player.getComponent(PlayerComponent.class).score += 10;
+        ScoreKeeper.setScore(+10);
     }
 
-    private void notYetDestroyed(Box2dBodyComponent bodyComponent, float deltaTime){
-        waitingForASpot += (deltaTime/100);
-        float timeToStopMoving = 3f;
-        if (waitingForASpot > timeToStopMoving) {
 
-            if (bodyComponent.body.getType() == BodyDef.BodyType.DynamicBody){
-                bodyComponent.body.setType(BodyDef.BodyType.StaticBody);
-                bodyComponent.body.setAwake(false);
+    private void notYetDestroyed(Entity entity){
+        if (waitingForASpot == 0){
+            waitingForASpot = timer.gameClock;
+        }
+
+        float timeToStopMoving = 0.2f;
+        if (timer.gameClock - waitingForASpot > timeToStopMoving) {
+
+            if (bodyComponentMapper.get(entity).body.getType() == BodyDef.BodyType.StaticBody){
+                bodyComponentMapper.get(entity).body.setType(BodyDef.BodyType.DynamicBody);
+                bodyComponentMapper.get(entity).body.setAwake(true);
+                System.out.println("bong");//todo remove
             }
 
-            waitingForASpot = 0f;
+            waitingForASpot = timer.gameClock;
         }
     }
 
+    /**
+     * The Entity gets destroyed (body as well) when it goes out of bounds.
+     *
+     * @param bodyComponent component of Box2dBody.
+     * @param entityComponent component of an Entity
+     */
     private void outOfBounds(Box2dBodyComponent bodyComponent, EntityComponent entityComponent){
         if (bodyComponent.body.getPosition().x > GameUtilities.WORLD_WIDTH || bodyComponent.body.getPosition().x < 0){
             entityComponent.destroy = true;
@@ -121,5 +144,13 @@ public class EntitySystem extends IteratingSystem {
         }
     }
 
+    private void spawnBall(Entity entity){
+        entity = entityCreator.createEntity(TypeComponent.Type.BALL,
+                BodyFactory.Material.RUBBER,
+                GameUtilities.WORLD_WIDTH/2,GameUtilities.BALL_RADIUS,
+                0, 0,
+                bodyComponentMapper.get(entity).body.getAngle());
 
+        entityCreator.getTotalEntities().add(0, entity);
+    }
 }

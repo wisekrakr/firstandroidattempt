@@ -32,6 +32,12 @@ class LevelCreator {
                     }
                 }
 
+                entityCreator.createObstacle(width/2,height/2,
+                        300f,0,
+                        80f, 10f,
+                        BodyFactory.Material.STEEL,
+                        BodyDef.BodyType.KinematicBody);
+
 //                SimplexNoise simplexNoise = new SimplexNoise(512, 0.5f, 1);
 //                int currentLevel = 0;
 //
