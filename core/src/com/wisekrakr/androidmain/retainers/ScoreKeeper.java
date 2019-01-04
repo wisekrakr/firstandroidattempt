@@ -12,10 +12,10 @@ public class ScoreKeeper {
         return score;
     }
 
-    //todo: create multiplier. Every bounce on the wall, the score is multiplied by 2
 
     public void reset(){
 
         score = 0;
+
     }
 }

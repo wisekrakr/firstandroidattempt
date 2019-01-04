@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
+import com.wisekrakr.androidmain.GameHelper;
 import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.TransformComponent;
@@ -22,6 +24,10 @@ import com.wisekrakr.androidmain.controls.Controls;
 import com.wisekrakr.androidmain.systems.EntitySystem;
 import com.wisekrakr.androidmain.systems.ObstacleSystem;
 import com.wisekrakr.androidmain.systems.PlayerControlSystem;
+import com.wisekrakr.androidmain.systems.PlayerSystem;
+import com.wisekrakr.androidmain.systems.PowerUpSystem;
+
+import java.util.ArrayList;
 
 public class PlayScreen extends ScreenAdapter {
 
@@ -69,9 +75,11 @@ public class PlayScreen extends ScreenAdapter {
      */
     private void addSystems() {
 
+        engine.addSystem(new PlayerSystem(entityCreator, game.getTimeKeeper()));
         engine.addSystem(new PlayerControlSystem(controls, entityCreator, camera));
-        engine.addSystem(new EntitySystem(game.getLevelGenerationSystem().getLevelModel().getPlayer(), entityCreator, game.getTimeKeeper()));
+        engine.addSystem(new EntitySystem(entityCreator));
         engine.addSystem(new ObstacleSystem(entityCreator));
+        engine.addSystem(new PowerUpSystem(entityCreator, game.getTimeKeeper()));
 
         //entityCreator.loadMap();
 
@@ -130,6 +138,7 @@ public class PlayScreen extends ScreenAdapter {
 
         for (Entity entity: entityCreator.getTotalEntities()) {
             entity.getComponent(EntityComponent.class);
+
             if (entity.getComponent(EntityComponent.class) != null) {
                 //spriteBatch.begin();
                 switch (entity.getComponent(EntityComponent.class).entityColor){
@@ -198,6 +207,19 @@ public class PlayScreen extends ScreenAdapter {
         shapeRenderer.end();
 
 
+    }
+
+    private Sound bounceSoundInit(){
+        ArrayList<Sound> sounds = new ArrayList<Sound>();
+
+        sounds.add(game.assetManager().assetManager.get("sounds/bounce thicc.wav", Sound.class));
+        sounds.add(game.assetManager().assetManager.get("sounds/bounce thwap.wav", Sound.class));
+        sounds.add(game.assetManager().assetManager.get("sounds/bounce thwip.wav", Sound.class));
+        sounds.add(game.assetManager().assetManager.get("sounds/bounce thoight.wav", Sound.class));
+
+        int index = GameHelper.randomGenerator.nextInt(sounds.size());
+
+        return sounds.get(index);
     }
 
     @Override

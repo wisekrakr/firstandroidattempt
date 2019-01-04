@@ -113,5 +113,7 @@ public class AndroidGame extends Game {
 		return gameThread.getTimeKeeper();
 	}
 
-
+	public EntityHelper getEntityHelper(){
+		return gameThread.getEntityHelper();
+	}
 }

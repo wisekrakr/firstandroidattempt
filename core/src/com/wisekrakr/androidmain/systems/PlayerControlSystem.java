@@ -53,8 +53,9 @@ public class PlayerControlSystem extends IteratingSystem {
         }
 
 
-        if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
-            if (playerComponent.hasEntityToShoot) {
+        if (playerComponent.hasEntityToShoot){
+            if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
+
 
                 Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 
@@ -74,10 +75,13 @@ public class PlayerControlSystem extends IteratingSystem {
 
                 Iterator<Entity> iterator = entityCreator.getTotalEntities().iterator();
                 if (iterator.hasNext()) {
+
                     entityCreator.getTotalEntities().get(0).getComponent(EntityComponent.class).velocityX = xVelocity * speed;
                     entityCreator.getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = yVelocity * speed;
+
                 }
                 playerComponent.hasEntityToShoot = false;
+
             }
         }
     }

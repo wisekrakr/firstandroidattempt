@@ -32,17 +32,17 @@ public class LevelModel extends AbstractLevelContext{
 
         game.getTimeKeeper().time -= delta;
 
-//        if (numberOfLevel != 0) {
-//            if (game.getTimeKeeper().time != 0) {
-//                if (entityCreator.getTotalEntities().size() <= 5) {
-//                    completeLevel(numberOfLevel);
-//                } else if (game.getTimeKeeper().time <= 0) {
-//                    gameOver();
-//                }
-//            }
-//        }else {
-//            System.out.println("No level number given ");
-//        }
+        if (numberOfLevel != 0) {
+            if (game.getTimeKeeper().time != 0) {
+                if (entityCreator.getTotalEntities().size() <= 15) {
+                    completeLevel(numberOfLevel);
+                } else if (game.getTimeKeeper().time <= 0) {
+                    gameOver();
+                }
+            }
+        }else {
+            System.out.println("No level number given ");
+        }
     }
 
     @Override
@@ -65,7 +65,7 @@ public class LevelModel extends AbstractLevelContext{
     private void cleanUp(){
 
         for (Entity entity: entityCreator.getTotalEntities()){
-            entity.getComponent(EntityComponent.class).destroy = true;
+            entity.getComponent(EntityComponent.class).setDestroy(true);
             player.getComponent(PlayerComponent.class).hasEntityToShoot = false;
         }
 
@@ -75,9 +75,4 @@ public class LevelModel extends AbstractLevelContext{
 
         //game.changeScreen(AndroidGame.APPLICATION);
     }
-
-    public Entity getPlayer() {
-        return player;
-    }
-
 }

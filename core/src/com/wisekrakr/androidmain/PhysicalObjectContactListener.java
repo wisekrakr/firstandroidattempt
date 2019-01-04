@@ -21,7 +21,6 @@ public class PhysicalObjectContactListener implements ContactListener {
             }else if(object2 != null){
                 object2.collisionEntity = entity;
             }
-            //System.out.println(StringHelper.ANSI_RED_BACKGROUND + "Contact : " + StringHelper.ANSI_RESET + entity.toString() + " and " + fixtureB.getBody().getUserData());
         }
     }
 
@@ -30,8 +29,6 @@ public class PhysicalObjectContactListener implements ContactListener {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
 
-        //System.out.println(StringHelper.ANSI_RED_BACKGROUND + "Contact : " + StringHelper.ANSI_RESET + fixtureA.getBody().getUserData() + " and " + fixtureB.getBody().getUserData());
-
         if (fixtureA.getBody().getUserData() instanceof Entity){
             Entity entity = (Entity) fixtureA.getBody().getUserData();
             entityCollision(entity, fixtureB);
@@ -39,7 +36,6 @@ public class PhysicalObjectContactListener implements ContactListener {
             Entity entity = (Entity) fixtureB.getBody().getUserData();
             entityCollision(entity, fixtureA);
         }
-
     }
 
     @Override
@@ -54,17 +50,6 @@ public class PhysicalObjectContactListener implements ContactListener {
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
-//        Fixture fixtureA = contact.getFixtureA();
-//        Fixture fixtureB = contact.getFixtureB();
-//
-//        //System.out.println(StringHelper.ANSI_RED_BACKGROUND + "Contact : " + StringHelper.ANSI_RESET + fixtureA.getBody().getUserData() + " and " + fixtureB.getBody().getUserData());
-//
-//        if (fixtureA.getBody().getUserData() instanceof Entity){
-//            Entity entity = (Entity) fixtureA.getBody().getUserData();
-//            entityCollision(entity, fixtureB);
-//        }else if (fixtureB.getBody().getUserData() instanceof Entity){
-//            Entity entity = (Entity) fixtureB.getBody().getUserData();
-//            entityCollision(entity, fixtureA);
-//        }
+
     }
 }

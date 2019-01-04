@@ -22,6 +22,11 @@ public class MyAssetManager implements Disposable {
      */
     public void loadSounds() {
 
+        assetManager.load("sounds/bounce thicc.wav", Sound.class);
+        assetManager.load("sounds/bounce thoight.wav", Sound.class);
+        assetManager.load("sounds/bounce thwap.wav", Sound.class);
+        assetManager.load("sounds/bounce thwip.wav", Sound.class);
+
         assetManager.finishLoading();
     }
     /*

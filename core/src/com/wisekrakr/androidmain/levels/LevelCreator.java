@@ -21,113 +21,89 @@ class LevelCreator {
         setColumns(columns);
         switch (levelNumber){
             case ONE:
-                System.out.println("Making level 1, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 1, with a total of entities: " + getInitialEntities());
                 for (int j = 1; j < getRows(); j++) {
                     for (int k = 1; k < getColumns(); k++) {
 
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS);
+                                ((width/2) - (width/5))  + j * GameUtilities.BALL_RADIUS, height/2 - k * GameUtilities.BALL_RADIUS);
                     }
                 }
 
-                entityCreator.createObstacle(width/2,height/2,
-                        300f,0,
-                        80f, 10f,
-                        BodyFactory.Material.STEEL,
-                        BodyDef.BodyType.KinematicBody);
+//                entityCreator.createObstacle(width/2,height/2,
+//                        300f,0,
+//                        80f, 10f,
+//                        BodyFactory.Material.STEEL,
+//                        BodyDef.BodyType.KinematicBody);
 
-//                SimplexNoise simplexNoise = new SimplexNoise(512, 0.5f, 1);
-//                int currentLevel = 0;
-//
-//                float noise1 = (float)simplexNoise.getNoise((int) GameHelper.generateRandomNumberBetween(0, GameUtilities.WORLD_WIDTH), currentLevel, 0);		// platform 1 should exist?
-//                float noise2 = (float)simplexNoise.getNoise((int) GameHelper.generateRandomNumberBetween(0, GameUtilities.WORLD_WIDTH), currentLevel, 100);	// if plat 1 exists where on x axis
-//                float noise3 = (float)simplexNoise.getNoise((int) GameHelper.generateRandomNumberBetween(0, GameUtilities.WORLD_WIDTH), currentLevel, 200);	// platform 2 exists?
-//                float noise4 = (float)simplexNoise.getNoise((int) GameHelper.generateRandomNumberBetween(0, GameUtilities.WORLD_WIDTH), currentLevel, 300);
-//
-//                if(noise1 > 0.2f) {
-//                    entityCreator.createRowEntity(TypeComponent.Type.BALL,
-//                            BodyDef.BodyType.StaticBody,
-//                            BodyFactory.Material.RUBBER,
-//                            noise1 + GameUtilities.BALL_RADIUS, currentLevel - 2 * GameUtilities.BALL_RADIUS);
-//                    System.out.println("bang");
-//                    if (noise2 > 0.3f) {
-//                        entityCreator.createRowEntity(TypeComponent.Type.BALL,
-//                                BodyDef.BodyType.StaticBody,
-//                                BodyFactory.Material.RUBBER,
-//                                noise2 + GameUtilities.BALL_RADIUS, currentLevel - 2 * GameUtilities.BALL_RADIUS);
-//                        System.out.println("bing");
-//                    }
-//                    if(noise3 > 0.4f) {
-//                        entityCreator.createRowEntity(TypeComponent.Type.BALL,
-//                                BodyDef.BodyType.StaticBody,
-//                                BodyFactory.Material.RUBBER,
-//                                noise3 + GameUtilities.BALL_RADIUS, height - 2 * GameUtilities.BALL_RADIUS);
-//                        System.out.println("bong");
-//                    }
-//                }
+
+
                 break;
             case TWO:
-                System.out.println("Making level 2, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 2, with a total of entities: " + getInitialEntities());
                 for (int j = 1; j < getRows(); j++) {
                     for (int k = 1; k < getColumns(); k++) {
 
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS);
+                                ((width/2) - (width/5)) + j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS);
                     }
                 }
 
                 break;
             case THREE:
-                System.out.println("Making level 3, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 3, with a total of entities: " + getInitialEntities());
                 for(int i = 1; i < getRows(); i++) {
                     for (int j = 1; j < getColumns(); j++) {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2);
+                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2);
                     }
                 }
+
+
                 break;
             case FOUR:
-                System.out.println("Making level 4, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 4, with a total of entities: " + getInitialEntities());
                 for(int i = 1; i < getRows(); i++) {
                     for (int j = 1; j < getColumns(); j++) {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2);
+                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2);
                     }
                 }
                 break;
             case FIVE:
-                System.out.println("Making level 5, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 5, with a total of entities: " + getInitialEntities());
                 for(int i = 1; i < getRows(); i++) {
                     for (int j = 1; j < getColumns(); j++) {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                i * GameUtilities.BALL_RADIUS, height/2 - j * GameUtilities.BALL_RADIUS *2);
+                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2);
                     }
                 }
                 break;
             case SIX:
-                System.out.println("Making level 6, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 6, with a total of entities: " + getInitialEntities());
                 for(int i = 1; i < getRows(); i++){
                     for (int j = 1; j < getColumns(); j++) {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2, height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2);
+                                i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2,
+                                height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2);
                     }
                 }
 
                 break;
             case SEVEN:
-                System.out.println("Making level 7, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 7, with a total of entities: " + getInitialEntities());
                 for (int j = 1; j < getRows(); j++) {
                     for (int k = 1; k < getColumns(); k++) {
 
@@ -139,7 +115,7 @@ class LevelCreator {
                 }
                 break;
             case EIGHT:
-                System.out.println("Making level 8, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 8, with a total of entities: " + getInitialEntities());
                 for (int j = 1; j < getRows(); j++) {
                     for (int k = 1; k < getColumns(); k++) {
 
@@ -151,7 +127,7 @@ class LevelCreator {
                 }
                 break;
             case NINE:
-                System.out.println("Making level 9, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 9, with a total of entities: " + getInitialEntities());
                 for(int i = 1; i < getRows(); i++){
                     for (int j = 1; j < getColumns(); j++) {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
@@ -164,7 +140,7 @@ class LevelCreator {
                 break;
             case TEN:
 
-                System.out.println("Making level 10, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 10, with a total of entities: " + getInitialEntities());
                 for(int i = 1; i < getRows(); i++){
                     for (int j = 1; j < getColumns(); j++) {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
@@ -176,7 +152,7 @@ class LevelCreator {
                 }
                 break;
             case ELEVEN:
-                System.out.println("Making level 11, with a total of entities: " + getInitialEntities()); //todo remove
+                System.out.println("Making level 11, with a total of entities: " + getInitialEntities());
                 for (int j = 1; j < getRows(); j++) {
                     for (int k = 1; k < getColumns(); k++) {
 

@@ -10,6 +10,24 @@ import com.wisekrakr.androidmain.GameHelper;
 
 public class EntityComponent implements Component, Pool.Poolable {
 
+    public boolean hitSurface = false;
+    public boolean destroy = false;
+    public boolean hitEntity = false;
+    public boolean hitObstacle = false;
+
+    public void setHitSurface(boolean hitSurface) {
+        this.hitSurface = hitSurface;
+    }
+    public void setDestroy(boolean destroy) {
+        this.destroy = destroy;
+    }
+    public void setHitEntity(boolean hitEntity) {
+        this.hitEntity = hitEntity;
+    }
+    public void setHitObstacle(boolean hitObstacle) {
+        this.hitObstacle = hitObstacle;
+    }
+
     public enum EntityColor {
         RED, BLUE, YELLOW, GREEN, PURPLE, PINK, CYAN
     }
@@ -20,19 +38,35 @@ public class EntityComponent implements Component, Pool.Poolable {
         return entityColors[GameHelper.randomGenerator.nextInt(entityColors.length)];
     }
 
+    private int pointsToGive = 0;
+    public int multiplier = 0;
+
+    public void setMultiplier(int multi) {
+        multiplier = multi;
+    }
+
+    public int setPointsToGive(int points) {
+        pointsToGive = points * multiplier;
+
+        if (pointsToGive == 0){
+            pointsToGive = 10;
+        }
+
+        return pointsToGive;
+    }
+
     public EntityColor entityColor;
     public float velocityX = 0f;
     public float velocityY = 0f;
-
-    public boolean hitSurface = false;
-    public boolean destroy = false;
-    public boolean hitEntity = false;
-    public boolean hitObstacle = false;
-
     public Vector2 position = new Vector2();
 
     @Override
     public void reset() {
+        entityColor = null;
+
+        multiplier = 0;
+        pointsToGive = 10;
+
         position = new Vector2();
         velocityX = 0f;
         velocityY = 0f;

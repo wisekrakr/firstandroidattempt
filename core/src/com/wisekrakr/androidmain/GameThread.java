@@ -13,13 +13,14 @@ import com.wisekrakr.androidmain.systems.RenderingSystem;
 class GameThread {
 
     private final EntityCreator entityCreator;
+    private EntityHelper entityHelper;
     private LevelGenerationSystem levelGenerationSystem;
     private AndroidGame game;
     private PooledEngine engine;
     private RenderingSystem renderingSystem;
     private TimeKeeper timeKeeper;
 
-    GameThread(AndroidGame game) {
+    protected GameThread(AndroidGame game) {
         this.game = game;
 
         timeKeeper = new TimeKeeper();
@@ -29,6 +30,7 @@ class GameThread {
 
         renderingSystem = new RenderingSystem(game.getSpriteBatch());
         levelGenerationSystem = new LevelGenerationSystem(game, entityCreator);
+        entityHelper = new EntityHelper(game);
 
         init(renderingSystem);
     }
@@ -53,4 +55,7 @@ class GameThread {
         return timeKeeper;
     }
 
+    EntityHelper getEntityHelper() {
+        return entityHelper;
+    }
 }

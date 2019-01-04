@@ -14,10 +14,6 @@ public class TimeKeeper {
         savedTime = time;
     }
 
-    public float getGameClock(){
-        return gameClock;
-    }
-
     public void reset(){
         time = 300f;
     }

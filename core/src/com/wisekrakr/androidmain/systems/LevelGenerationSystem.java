@@ -74,15 +74,15 @@ public class LevelGenerationSystem {
 
         if (!game.getGamePreferences().levelGoing(mainLevel)) {
             if (mainLevel <= 4) {
-                levelModel.startLevel(mainLevel, 10, 10);
+                levelModel.startLevel(mainLevel, 5, 5);
             }else if (mainLevel >= 5 && mainLevel <=8){
-                levelModel.startLevel(mainLevel, 11, 18);
+                levelModel.startLevel(mainLevel, 6, 8);
             }else if (mainLevel >= 9 && mainLevel <=12){
-                levelModel.startLevel(mainLevel, 12, 25);
+                levelModel.startLevel(mainLevel, 7, 12);
             }else if (mainLevel >= 13 && mainLevel <=16){
-                levelModel.startLevel(mainLevel, 13, 33);
+                levelModel.startLevel(mainLevel, 9, 18);
             }else if (mainLevel >= 17 && mainLevel <=20){
-                levelModel.startLevel(mainLevel, 14, 45);
+                levelModel.startLevel(mainLevel, 12, 25);
             }
 
             game.getGamePreferences().setLevelGoing(mainLevel, true);
@@ -112,11 +112,8 @@ public class LevelGenerationSystem {
             levelsToDo.remove(levelNumber);
 
             game.getTimeKeeper().reset();
+            game.getEntityCreator().getTotalEntities().clear();
         }
         state = State.START;
-    }
-
-    public LevelModel getLevelModel() {
-        return levelModel;
     }
 }
