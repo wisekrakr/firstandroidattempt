@@ -4,18 +4,14 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.BodyFactory;
-import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameUtilities;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
-import com.wisekrakr.androidmain.retainers.ScoreKeeper;
-import com.wisekrakr.androidmain.retainers.TimeKeeper;
-
-import java.util.Iterator;
 
 /**
  * System for Entities (excl. walls/obstacles).
@@ -29,52 +25,67 @@ import java.util.Iterator;
 
 public class PlayerSystem extends IteratingSystem {
 
-    private EntityCreator entityCreator;
-    private TimeKeeper timer;
+    private AndroidGame game;
 
-    private ComponentMapper<EntityComponent> entityComponentMapper;
-    private ComponentMapper<Box2dBodyComponent> bodyComponentMapper;
+    private ComponentMapper<Box2dBodyComponent>box2dBodyComponentMapper;
+    private ComponentMapper<PlayerComponent>playerComponentMapper;
 
     @SuppressWarnings("unchecked")
-    public PlayerSystem(EntityCreator entityCreator, TimeKeeper timer){
+    public PlayerSystem(AndroidGame game){
         super(Family.all(PlayerComponent.class).get());
+        this.game = game;
 
-        this.entityCreator = entityCreator;
-        this.timer = timer;
-
-        entityComponentMapper = ComponentMapper.getFor(EntityComponent.class);
-        bodyComponentMapper = ComponentMapper.getFor(Box2dBodyComponent.class);
+        box2dBodyComponentMapper = ComponentMapper.getFor(Box2dBodyComponent.class);
+        playerComponentMapper = ComponentMapper.getFor(PlayerComponent.class);
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        Box2dBodyComponent bodyComponent = bodyComponentMapper.get(entity);
-        EntityComponent entityComponent = entityComponentMapper.get(entity);
-        PlayerComponent playerComponent = ComponentMapper.getFor(PlayerComponent.class).get(entity);
 
-        //bodyComponent.body.applyForceToCenter(entityComponent.velocityX, entityComponent.velocityY, true);
+        PlayerComponent playerComponent = playerComponentMapper.get(entity);
+        Box2dBodyComponent bodyComponent = box2dBodyComponentMapper.get(entity);
 
         if (!playerComponent.hasEntityToShoot) {
             if (playerComponent.timeSinceLastShot == 0){
-                playerComponent.timeSinceLastShot = timer.gameClock;
+                playerComponent.timeSinceLastShot = game.getTimeKeeper().gameClock;
             }
 
-            if (timer.gameClock - playerComponent.timeSinceLastShot > playerComponent.spawnDelay) {
-                spawnBall();
+            if (game.getTimeKeeper().gameClock - playerComponent.timeSinceLastShot > playerComponent.spawnDelay) {
+                spawnBall(entity);
 
                 playerComponent.hasEntityToShoot = true;
                 playerComponent.timeSinceLastShot = 0;
             }
+        }else {
+            Entity ent = game.getEntityCreator().getTotalEntities().get(0);
+
+            ent.getComponent(Box2dBodyComponent.class).body.setTransform(new Vector2(
+                    bodyComponent.body.getPosition().x,
+                    bodyComponent.body.getPosition().y + GameUtilities.BALL_RADIUS
+            ), 0);
         }
+        outOfBounds(bodyComponent);
+    }
+
+    private void spawnBall(Entity entity){
+        Box2dBodyComponent bodyComponent = box2dBodyComponentMapper.get(entity);
+
+        Entity playerBall = game.getEntityCreator().createEntity(TypeComponent.Type.BALL,
+                BodyFactory.Material.RUBBER,
+                bodyComponent.body.getPosition().x,
+                bodyComponent.body.getPosition().y + GameUtilities.BALL_RADIUS,
+                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS,
+                0, 0, 0);
+        game.getEntityCreator().getTotalEntities().add(0, playerBall);
+
 
     }
 
-    private void spawnBall(){
-        Entity entity = entityCreator.createEntity(TypeComponent.Type.BALL,
-                BodyFactory.Material.RUBBER,
-                GameUtilities.WORLD_WIDTH/2,GameUtilities.BALL_RADIUS,
-                0, 0,
-                0);
-        entityCreator.getTotalEntities().add(0, entity);
+    private void outOfBounds(Box2dBodyComponent bodyComponent){
+        if (bodyComponent.body.getPosition().x + 20 > GameUtilities.WORLD_WIDTH || bodyComponent.body.getPosition().x - 20 < 0){
+            bodyComponent.body.setLinearVelocity(-bodyComponent.body.getLinearVelocity().x, 0);
+        }else if (bodyComponent.body.getPosition().y + 5 > GameUtilities.WORLD_HEIGHT || bodyComponent.body.getPosition().y - 5 < 0){
+            bodyComponent.body.setLinearVelocity(0, -bodyComponent.body.getLinearVelocity().x);
+        }
     }
 }

@@ -8,7 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
-import com.wisekrakr.androidmain.EntityCreator;
+import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
@@ -21,16 +21,16 @@ public class PlayerControlSystem extends IteratingSystem {
     private ComponentMapper<EntityComponent>ballComponentMapper;
     private ComponentMapper<PlayerComponent> playerComponentMapper;
     private ComponentMapper<Box2dBodyComponent> box2dBodyComponentMapper;
+    private AndroidGame game;
     private Controls controller;
-    private EntityCreator entityCreator;
     private OrthographicCamera camera;
 
 
     @SuppressWarnings("unchecked")
-    public PlayerControlSystem(Controls controls, EntityCreator entityCreator, OrthographicCamera camera) {
+    public PlayerControlSystem(AndroidGame game, Controls controls, OrthographicCamera camera) {
         super(Family.all(PlayerComponent.class).get());
+        this.game = game;
         controller = controls;
-        this.entityCreator = entityCreator;
         this.camera = camera;
 
         playerComponentMapper = ComponentMapper.getFor(PlayerComponent.class);
@@ -44,18 +44,18 @@ public class PlayerControlSystem extends IteratingSystem {
         PlayerComponent playerComponent = playerComponentMapper.get(entity);
 
         if (controller.left) {
-            b2body.body.setLinearVelocity(MathUtils.lerp(b2body.body.getLinearVelocity().x, -5f, 0.2f), b2body.body.getLinearVelocity().y);
-//                b2body.body.setTransform(b2body.body.getPosition().x,b2body.body.getPosition().y, b2body.body.getAngle() + 15f * deltaTime);
+            b2body.body.setLinearVelocity(-500, 0);
         }
         if (controller.right) {
-            b2body.body.setLinearVelocity(MathUtils.lerp(b2body.body.getLinearVelocity().x, 5f, 0.2f), b2body.body.getLinearVelocity().y);
-//                b2body.body.setTransform(b2body.body.getPosition().x,b2body.body.getPosition().y, b2body.body.getAngle() + -15f * deltaTime);
+            b2body.body.setLinearVelocity(500, 0);
+        }
+        if (controller.down) {
+            b2body.body.setLinearVelocity(0, 0);
         }
 
 
         if (playerComponent.hasEntityToShoot){
             if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
-
 
                 Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 
@@ -73,15 +73,19 @@ public class PlayerControlSystem extends IteratingSystem {
                     yVelocity = yVelocity / length;  // get required y velocity to aim at target
                 }
 
-                Iterator<Entity> iterator = entityCreator.getTotalEntities().iterator();
+                Iterator<Entity> iterator = game.getEntityCreator().getTotalEntities().iterator();
                 if (iterator.hasNext()) {
 
-                    entityCreator.getTotalEntities().get(0).getComponent(EntityComponent.class).velocityX = xVelocity * speed;
-                    entityCreator.getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = yVelocity * speed;
+                    game.getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityX = xVelocity * speed;
+                    game.getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = yVelocity * speed;
 
                 }
                 playerComponent.hasEntityToShoot = false;
 
+            }else if (controller.up){
+                game.getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = 10000000f;
+
+                playerComponent.hasEntityToShoot = false;
             }
         }
     }

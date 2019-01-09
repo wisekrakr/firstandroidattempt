@@ -10,6 +10,7 @@ public class PlayerComponent implements Component, Pool.Poolable {
     public float spawnDelay = 0.8f;
     public float timeSinceLastShot = 0f;
 
+
     @Override
     public void reset() {
 

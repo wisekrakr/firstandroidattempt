@@ -23,8 +23,8 @@ public class GameHelper {
 
     public static Vector2 randomPosition() {
 
-        return new Vector2(randomGenerator.nextFloat() * 10 - GameUtilities.WORLD_WIDTH,
-                10 - GameUtilities.WORLD_HEIGHT);
+        return new Vector2(randomGenerator.nextFloat() *  GameUtilities.WORLD_WIDTH,
+                randomGenerator.nextFloat() * GameUtilities.WORLD_HEIGHT);
     }
 
     public static float distanceBetween(Vector2 subject, Vector2 target) {

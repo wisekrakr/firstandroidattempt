@@ -34,7 +34,7 @@ public class LevelModel extends AbstractLevelContext{
 
         if (numberOfLevel != 0) {
             if (game.getTimeKeeper().time != 0) {
-                if (entityCreator.getTotalEntities().size() <= 15) {
+                if (entityCreator.getTotalEntities().size() <= 1) {
                     completeLevel(numberOfLevel);
                 } else if (game.getTimeKeeper().time <= 0) {
                     gameOver();
@@ -75,4 +75,6 @@ public class LevelModel extends AbstractLevelContext{
 
         //game.changeScreen(AndroidGame.APPLICATION);
     }
+
+
 }

@@ -21,11 +21,11 @@ import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.TransformComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
 import com.wisekrakr.androidmain.controls.Controls;
+import com.wisekrakr.androidmain.systems.CollisionSystem;
 import com.wisekrakr.androidmain.systems.EntitySystem;
 import com.wisekrakr.androidmain.systems.ObstacleSystem;
 import com.wisekrakr.androidmain.systems.PlayerControlSystem;
 import com.wisekrakr.androidmain.systems.PlayerSystem;
-import com.wisekrakr.androidmain.systems.PowerUpSystem;
 
 import java.util.ArrayList;
 
@@ -75,11 +75,12 @@ public class PlayScreen extends ScreenAdapter {
      */
     private void addSystems() {
 
-        engine.addSystem(new PlayerSystem(entityCreator, game.getTimeKeeper()));
-        engine.addSystem(new PlayerControlSystem(controls, entityCreator, camera));
-        engine.addSystem(new EntitySystem(entityCreator));
+        engine.addSystem(new PlayerSystem(game));
+        engine.addSystem(new PlayerControlSystem(game, controls, camera));
+        engine.addSystem(new CollisionSystem());
+        engine.addSystem(new EntitySystem(game));
         engine.addSystem(new ObstacleSystem(entityCreator));
-        engine.addSystem(new PowerUpSystem(entityCreator, game.getTimeKeeper()));
+
 
         //entityCreator.loadMap();
 

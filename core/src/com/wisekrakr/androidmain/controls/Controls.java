@@ -20,19 +20,19 @@ public class Controls implements InputProcessor {
         boolean keyProcessed = false;
         switch (keycode) // switch code base on the variable keycode
         {
-            case Input.Keys.LEFT:
+            case Input.Keys.A:
                 left = true;
                 keyProcessed = true;
                 break;
-            case Input.Keys.RIGHT:
+            case Input.Keys.D:
                 right = true;
                 keyProcessed = true;
                 break;
-            case Input.Keys.UP:
+            case Input.Keys.W:
                 up = true;
                 keyProcessed = true;
                 break;
-            case Input.Keys.DOWN:
+            case Input.Keys.S:
                 down = true;
                 keyProcessed = true;
                 break;
@@ -45,19 +45,19 @@ public class Controls implements InputProcessor {
         boolean keyProcessed = false;
         switch (keycode) // switch code base on the variable keycode
         {
-            case Input.Keys.LEFT:
+            case Input.Keys.A:
                 left = false;
                 keyProcessed = true;
                 break;
-            case Input.Keys.RIGHT:
+            case Input.Keys.D:
                 right = false;
                 keyProcessed = true;
                 break;
-            case Input.Keys.UP:
+            case Input.Keys.W:
                 up = false;
                 keyProcessed = true;
                 break;
-            case Input.Keys.DOWN:
+            case Input.Keys.S:
                 down = false;
                 keyProcessed = true;
                 break;

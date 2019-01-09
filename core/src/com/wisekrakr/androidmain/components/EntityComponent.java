@@ -14,6 +14,7 @@ public class EntityComponent implements Component, Pool.Poolable {
     public boolean destroy = false;
     public boolean hitEntity = false;
     public boolean hitObstacle = false;
+    public boolean hitPowerUp = false;
 
     public void setHitSurface(boolean hitSurface) {
         this.hitSurface = hitSurface;
@@ -26,6 +27,9 @@ public class EntityComponent implements Component, Pool.Poolable {
     }
     public void setHitObstacle(boolean hitObstacle) {
         this.hitObstacle = hitObstacle;
+    }
+    public void setHitPowerUp(boolean hitPowerUp) {
+        this.hitPowerUp = hitPowerUp;
     }
 
     public enum EntityColor {
@@ -60,6 +64,9 @@ public class EntityComponent implements Component, Pool.Poolable {
     public float velocityY = 0f;
     public Vector2 position = new Vector2();
 
+    public float width = 0f;
+    public float height = 0f;
+
     @Override
     public void reset() {
         entityColor = null;
@@ -74,5 +81,10 @@ public class EntityComponent implements Component, Pool.Poolable {
         hitSurface = false;
         destroy = false;
         hitEntity = false;
+        hitPowerUp = false;
+        hitObstacle = false;
+
+        width = 0f;
+        height = 0f;
     }
 }

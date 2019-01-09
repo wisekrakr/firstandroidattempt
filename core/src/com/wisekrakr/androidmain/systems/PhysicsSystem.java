@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.TransformComponent;
+import com.wisekrakr.androidmain.components.TypeComponent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -56,6 +57,8 @@ public class PhysicsSystem extends IteratingSystem {
                 if (bodyComponent.isDead){
                     world.destroyBody(bodyComponent.body);
                     getEngine().removeEntity(entity);
+
+                    System.out.println("removed entity: " + entity.getComponent(TypeComponent.class).type); //todo remove
                 }
             }
         }

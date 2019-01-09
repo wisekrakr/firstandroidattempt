@@ -15,11 +15,15 @@ public class TypeComponent implements Component, Pool.Poolable {
         PLAYER_BALL, A_PRIORI_ENTITY, NONE
     }
 
-    public Tag tag = Tag.PLAYER_BALL;
+    public Tag tag = null;
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
+    }
 
     @Override
     public void reset() {
-        type = Type.OTHER;
-        tag = Tag.PLAYER_BALL;
+        type = null;
+        tag = null;
     }
 }

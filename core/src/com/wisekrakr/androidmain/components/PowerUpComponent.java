@@ -4,8 +4,9 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 import com.wisekrakr.androidmain.GameHelper;
+import com.wisekrakr.androidmain.systems.PowerUpContext;
 
-public class PowerUpComponent implements Component, Pool.Poolable{
+public class PowerUpComponent {
 
     public enum PowerUp{
         TIME_FREEZE, TIME_SLOW, NUKE, HOMING_BALL
@@ -13,24 +14,11 @@ public class PowerUpComponent implements Component, Pool.Poolable{
 
     private PowerUpComponent.PowerUp[] powerUps = PowerUpComponent.PowerUp.values();
 
-    public PowerUpComponent.PowerUp randomPowerUp(){
+    private PowerUpComponent.PowerUp randomPowerUp(){
         return powerUps[GameHelper.randomGenerator.nextInt(powerUps.length)];
     }
 
-    public PowerUp powerUp;
-
-    public float velocityX = 0f;
-    public float velocityY = 0f;
-    public Vector2 position = new Vector2();
+    public PowerUp powerUp = PowerUp.NUKE;
 
 
-    @Override
-    public void reset() {
-        powerUp = null;
-
-        velocityX = 0f;
-        velocityY = 0f;
-        position = new Vector2();
-
-    }
 }

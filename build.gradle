@@ -9,7 +9,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
-        classpath 'com.google.gms:google-services:3.2.0'
+        classpath 'com.google.gms:google-services:4.2.0'
     }
 }
 
@@ -47,6 +47,7 @@ project(":desktop") {
         implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         implementation "com.badlogicgames.ashley:ashley:1.7.0"
+
     }
 }
 

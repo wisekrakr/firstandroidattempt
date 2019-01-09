@@ -2,113 +2,152 @@ package com.wisekrakr.androidmain.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.math.Vector2;
-import com.wisekrakr.androidmain.EntityCreator;
-import com.wisekrakr.androidmain.GameHelper;
+import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.GameUtilities;
-import com.wisekrakr.androidmain.retainers.TimeKeeper;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.PowerUpComponent;
 
-public class PowerUpSystem extends IteratingSystem {
+import java.util.ArrayList;
+import java.util.List;
 
-    private EntityCreator entityCreator;
-    private TimeKeeper timer;
+/**
+ * Initiate this system in EntitySystem since we did not extend this system with an IteratingSystem.
+ *
+ */
+
+public class PowerUpSystem {
+
+    private Entity entity;
+
+    public enum PowerUpStage {
+        INIT, UPDATE, EXIT
+    }
+
+    public void setPowerUpStage(PowerUpStage powerUpStage) {
+        this.powerUpStage = powerUpStage;
+    }
+
+    private PowerUpStage powerUpStage = PowerUpStage.INIT;
+
     private float timeCount = 0f;
+    private ArrayList<Entity>powerUps = new ArrayList<Entity>();
 
     private ComponentMapper<EntityComponent> entityComponentMapper;
-    private ComponentMapper<Box2dBodyComponent> bodyComponentMapper;
-    private ComponentMapper<PowerUpComponent> powerUpComponentMapper;
+        private AndroidGame game;
 
-    @SuppressWarnings("unchecked")
-    public PowerUpSystem(EntityCreator entityCreator, TimeKeeper timer){
-        super(Family.all(PowerUpComponent.class).get());
-
-        this.entityCreator = entityCreator;
-        this.timer = timer;
+    public PowerUpSystem(AndroidGame game){
+        this.game = game;
 
         entityComponentMapper = ComponentMapper.getFor(EntityComponent.class);
-        bodyComponentMapper = ComponentMapper.getFor(Box2dBodyComponent.class);
-        powerUpComponentMapper = ComponentMapper.getFor(PowerUpComponent.class);
-    }
-
-    @Override
-    public void update(float deltaTime) {
-
-        float directionChangeInterval = 3f;
-        if (timeCount == 0){
-            timeCount = timer.gameClock;
-        }
-        if (timer.gameClock - timeCount > directionChangeInterval){
-            spawnPowerUp();
-            timeCount = 0;
-        }
-    }
-
-    @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        EntityComponent entityComponent = entityComponentMapper.get(entity);
-        Box2dBodyComponent bodyComponent = bodyComponentMapper.get(entity);
-        PowerUpComponent powerUpComponent = powerUpComponentMapper.get(entity);
-
-        bodyComponentMapper.get(entity).body.applyForceToCenter(new Vector2(GameHelper.generateRandomNumberBetween(10, 2000),
-                GameHelper.generateRandomNumberBetween(10, 2000)), true);
-
-        if (!entityComponent.destroy) {
-            if (entityComponent.hitEntity || entityComponent.hitSurface || entityComponent.hitObstacle) {
-                bodyComponent.body.applyForceToCenter(-entityComponent.velocityX, -entityComponent.velocityY, true);
-            }
-        } else {
-            if (entityComponent.hitEntity) {
-                powerTime(entity);
-            }
-            bodyComponent.isDead = true;
-        }
-
-        outOfBounds(bodyComponent, entityComponent);
-    }
-
-    private void powerTime(Entity entity) {
-
-        if (entity != null){
-            switch (powerUpComponentMapper.get(entity).powerUp){
-                case HOMING_BALL:
-                    System.out.println("Homing ball power up");
-                    break;
-                case NUKE:
-                    System.out.println("Nuke power up");
-                    break;
-                case TIME_SLOW:
-                    System.out.println("Time SLow power up");
-                    break;
-                case TIME_FREEZE:
-                    System.out.println("Time Freeze power up");
-                    break;
-            }
-        }
-    }
-
-    private void spawnPowerUp(){
-
-        entityCreator.createPowerUp(100,100,
-                0,0);
 
     }
 
     /**
-     * The Entity gets destroyed (body as well) when it goes out of bounds.
+     * Initiate this method in the processEntity method in EntitySystem
      *
-     * @param bodyComponent component of Box2dBody.
-     * @param entityComponent component of an Entity
+     * @param entity the ball that will hit the power up
+     * @param spawnInterval seconds it will take to spawn another power up
      */
-    private void outOfBounds(Box2dBodyComponent bodyComponent, EntityComponent entityComponent){
-        if (bodyComponent.body.getPosition().x > GameUtilities.WORLD_WIDTH || bodyComponent.body.getPosition().x < 0){
-            entityComponent.setDestroy(true);
-        }else if (bodyComponent.body.getPosition().y > GameUtilities.WORLD_HEIGHT || bodyComponent.body.getPosition().y < 0){
-            entityComponent.setDestroy(true);
+
+    public void traversePowerUpStages(Entity entity, float spawnInterval){
+
+        switch (powerUpStage) {
+            case INIT:
+                powerUpContext.init(spawnInterval);
+                break;
+            case UPDATE:
+                powerUpContext.powerTime(entity);
+                break;
+            case EXIT:
+                powerUpContext.exit();
+                break;
+            default:
+                 System.out.println("no power stage");
         }
+    }
+
+    private PowerUpContext powerUpContext = new PowerUpContext() {
+
+        @Override
+        public void init(float spawnInterval){
+
+            if (timeCount == 0){
+                timeCount = game.getTimeKeeper().gameClock;
+            }
+            if (game.getTimeKeeper().gameClock - timeCount > spawnInterval){
+                if (powerUps.size() == 0) {
+                    spawnPowerUp();
+                }
+            }
+        }
+
+        @Override
+        public void spawnPowerUp() {
+
+            entity = game.getEntityCreator().createPowerUp(100,100,
+                    0, 0, GameUtilities.BALL_RADIUS/2, GameUtilities.BALL_RADIUS/2);
+
+            powerUps.add(entity);
+
+            setPowerUpStage(PowerUpStage.UPDATE);
+
+        }
+
+        @Override
+        public void powerTime(Entity entity) {
+
+            PowerUpComponent powerUpComponent = new PowerUpComponent();
+
+            if (entityComponentMapper.get(entity).hitPowerUp) {
+                switch (powerUpComponent.powerUp) {
+                    case HOMING_BALL:
+                        System.out.println("Homing ball power up");
+                        setPowerUpStage(PowerUpStage.EXIT);
+                        break;
+                    case NUKE:
+                        System.out.println("Nuke power up");
+
+                        List<Entity> sub = game.getEntityCreator().getTotalEntities().subList(0, game.getEntityCreator().getTotalEntities().size()/2);
+                        List<Entity> toBeKilled = new ArrayList<Entity>(sub);
+
+                        for (Entity ent: toBeKilled){
+                            entityComponentMapper.get(ent).setDestroy(true);
+                        }
+
+                        setPowerUpStage(PowerUpStage.EXIT);
+                        break;
+                    case TIME_SLOW:
+                        System.out.println("Time Slow power up");
+                        setPowerUpStage(PowerUpStage.EXIT);
+                        break;
+                    case TIME_FREEZE:
+                        System.out.println("Time Freeze power up");
+
+                        for (Entity ent: game.getEntityCreator().getTotalEntities()){
+                            ent.getComponent(Box2dBodyComponent.class).body.setAwake(false);
+                        }
+
+                        setPowerUpStage(PowerUpStage.EXIT);
+                        break;
+                }
+                entityComponentMapper.get(entity).setHitPowerUp(false);
+            }
+        }
+
+        @Override
+        public void exit() {
+
+            powerUps.remove(entity);
+
+            timeCount = 0;
+
+            setPowerUpStage(PowerUpStage.INIT);
+
+        }
+    };
+
+    public Entity getEntity() {
+        return entity;
     }
 }

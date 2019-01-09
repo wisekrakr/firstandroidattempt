@@ -3,9 +3,7 @@ package com.wisekrakr.androidmain.levels;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.wisekrakr.androidmain.BodyFactory;
 import com.wisekrakr.androidmain.EntityCreator;
-import com.wisekrakr.androidmain.GameHelper;
 import com.wisekrakr.androidmain.GameUtilities;
-import com.wisekrakr.androidmain.SimplexNoise;
 import com.wisekrakr.androidmain.components.TypeComponent;
 
 class LevelCreator {
@@ -28,7 +26,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                ((width/2) - (width/5))  + j * GameUtilities.BALL_RADIUS, height/2 - k * GameUtilities.BALL_RADIUS);
+                                ((width/2) - (width/5))  + j * GameUtilities.BALL_RADIUS, height/2 - k * GameUtilities.BALL_RADIUS,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
 
@@ -49,7 +48,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                ((width/2) - (width/5)) + j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS);
+                                ((width/2) - (width/5)) + j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
 
@@ -61,7 +61,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2);
+                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
 
@@ -74,7 +75,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2);
+                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
                 break;
@@ -85,7 +87,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2);
+                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
                 break;
@@ -97,7 +100,8 @@ class LevelCreator {
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
                                 i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2,
-                                height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2);
+                                height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
 
@@ -110,7 +114,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS);
+                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
                 break;
@@ -122,7 +127,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS);
+                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
                 break;
@@ -134,7 +140,8 @@ class LevelCreator {
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.WOOD,
                                 i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2,
-                                height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2);
+                                height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
                 break;
@@ -147,7 +154,8 @@ class LevelCreator {
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
                                 i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2,
-                                height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2);
+                                height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
                 break;
@@ -159,7 +167,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS);
+                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS,
+                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
                     }
                 }
                 break;

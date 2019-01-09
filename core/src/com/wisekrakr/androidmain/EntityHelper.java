@@ -8,7 +8,6 @@ import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.LevelComponent;
 import com.wisekrakr.androidmain.components.ObstacleComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
-import com.wisekrakr.androidmain.components.PowerUpComponent;
 import com.wisekrakr.androidmain.components.TextureComponent;
 import com.wisekrakr.androidmain.components.TransformComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
@@ -71,12 +70,14 @@ public class EntityHelper {
         }
 
         @Override
-        public void entityComponent(PooledEngine engine, Entity mainEntity, Box2dBodyComponent bodyComponent, float velocityX, float velocityY) {
+        public void entityComponent(PooledEngine engine, Entity mainEntity, Box2dBodyComponent bodyComponent, float width, float height, float velocityX, float velocityY) {
             EntityComponent entityComponent = engine.createComponent(EntityComponent.class);
 
             entityComponent.velocityX = velocityX;
             entityComponent.velocityY = velocityY;
             entityComponent.position = bodyComponent.body.getPosition();
+            entityComponent.width = width;
+            entityComponent.height = height;
 
             entityComponent.entityColor = entityComponent.randomBallColor();
 
@@ -96,17 +97,6 @@ public class EntityHelper {
             mainEntity.add(obstacleComponent);
         }
 
-        @Override
-        public void powerUpComponent(PooledEngine engine, Entity mainEntity, float x, float y, float velocityX, float velocityY, float rotation) {
-            PowerUpComponent powerUpComponent = engine.createComponent(PowerUpComponent.class);
-
-            powerUpComponent.position.set(x, y);
-            powerUpComponent.velocityX = velocityX;
-            powerUpComponent.velocityY = velocityY;
-            powerUpComponent.powerUp = powerUpComponent.randomPowerUp();
-
-            mainEntity.add(powerUpComponent);
-        }
 
         @Override
         public void playerComponent(PooledEngine engine, Entity mainEntity) {
