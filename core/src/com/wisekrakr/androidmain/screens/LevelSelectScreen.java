@@ -14,8 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.androidmain.AndroidGame;
+import com.wisekrakr.androidmain.GameConstants;
 import com.wisekrakr.androidmain.GamePreferences;
-import com.wisekrakr.androidmain.GameUtilities;
 
 public class LevelSelectScreen extends ScreenAdapter {
 
@@ -26,7 +26,7 @@ public class LevelSelectScreen extends ScreenAdapter {
     public LevelSelectScreen(AndroidGame game) {
         this.game = game;
 
-        stage = new Stage(new FitViewport(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT), game.getSpriteBatch());
+        stage = new Stage(new FitViewport(GameConstants.WORLD_WIDTH, GameConstants.WORLD_HEIGHT));
 
         preferences = game.getGamePreferences();
     }
@@ -41,7 +41,7 @@ public class LevelSelectScreen extends ScreenAdapter {
         stage.addActor(table);
 
         BitmapFont font = game.assetManager().assetManager.get("font/gamerFont.fnt");
-        font.getData().setScale((GameUtilities.WORLD_WIDTH/100)/5);
+        font.getData().setScale((GameConstants.WORLD_WIDTH/100)/5);
 
         Skin skin = game.assetManager().assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 

@@ -58,7 +58,7 @@ public class PhysicsSystem extends IteratingSystem {
                     world.destroyBody(bodyComponent.body);
                     getEngine().removeEntity(entity);
 
-                    System.out.println("removed entity: " + entity.getComponent(TypeComponent.class).type); //todo remove
+                    System.out.println("removed entity: " + entity.getComponent(TypeComponent.class).getType()); //todo remove
                 }
             }
         }

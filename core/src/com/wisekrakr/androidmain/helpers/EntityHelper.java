@@ -1,7 +1,9 @@
-package com.wisekrakr.androidmain;
+package com.wisekrakr.androidmain.helpers;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.wisekrakr.androidmain.AndroidGame;
+import com.wisekrakr.androidmain.ComponentInitializer;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.CollisionComponent;
 import com.wisekrakr.androidmain.components.EntityComponent;
@@ -32,7 +34,7 @@ public class EntityHelper {
         public void typeComponent(PooledEngine engine, Entity mainEntity, TypeComponent.Type type, TypeComponent.Tag tag) {
             TypeComponent typeComponent = engine.createComponent(TypeComponent.class);
 
-            typeComponent.type = type;
+            typeComponent.setType(type);
             typeComponent.tag = tag;
 
             mainEntity.add(typeComponent);
@@ -70,7 +72,7 @@ public class EntityHelper {
         }
 
         @Override
-        public void entityComponent(PooledEngine engine, Entity mainEntity, Box2dBodyComponent bodyComponent, float width, float height, float velocityX, float velocityY) {
+        public void entityComponent(PooledEngine engine, Entity mainEntity, Box2dBodyComponent bodyComponent, float width, float height, float velocityX, float velocityY, EntityComponent.EntityColor color) {
             EntityComponent entityComponent = engine.createComponent(EntityComponent.class);
 
             entityComponent.velocityX = velocityX;
@@ -79,7 +81,7 @@ public class EntityHelper {
             entityComponent.width = width;
             entityComponent.height = height;
 
-            entityComponent.entityColor = entityComponent.randomBallColor();
+            entityComponent.setEntityColor(color);
 
             mainEntity.add(entityComponent);
         }
@@ -99,8 +101,11 @@ public class EntityHelper {
 
 
         @Override
-        public void playerComponent(PooledEngine engine, Entity mainEntity) {
+        public void playerComponent(PooledEngine engine, Entity mainEntity, float width, float height) {
             PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
+
+            playerComponent.width = width;
+            playerComponent.height = height;
 
             mainEntity.add(playerComponent);
         }

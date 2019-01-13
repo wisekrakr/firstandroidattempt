@@ -3,7 +3,7 @@ package com.wisekrakr.androidmain.levels;
 import com.badlogic.ashley.core.Entity;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
-import com.wisekrakr.androidmain.GameUtilities;
+import com.wisekrakr.androidmain.GameConstants;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.ObstacleComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
@@ -19,7 +19,8 @@ public class LevelModel extends AbstractLevelContext{
         this.game = game;
         this.entityCreator = entityCreator;
 
-        player = entityCreator.createPlayer(GameUtilities.WORLD_WIDTH /2, GameUtilities.BALL_RADIUS/2);
+        player = entityCreator.createPlayer(GameConstants.WORLD_WIDTH /2, GameConstants.BALL_RADIUS/2,
+                GameConstants.WORLD_WIDTH/10, GameConstants.BALL_RADIUS/3);
     }
 
     @Override
@@ -30,13 +31,13 @@ public class LevelModel extends AbstractLevelContext{
     @Override
     public void updateLevel(int numberOfLevel, float delta) {
 
-        game.getTimeKeeper().time -= delta;
+        game.getGameThread().getTimeKeeper().time -= delta;
 
         if (numberOfLevel != 0) {
-            if (game.getTimeKeeper().time != 0) {
-                if (entityCreator.getTotalEntities().size() <= 1) {
+            if (game.getGameThread().getTimeKeeper().time != 0) {
+                if (entityCreator.getTotalEntities().size() <= 10) {
                     completeLevel(numberOfLevel);
-                } else if (game.getTimeKeeper().time <= 0) {
+                } else if (game.getGameThread().getTimeKeeper().time <= 0) {
                     gameOver();
                 }
             }
@@ -49,7 +50,7 @@ public class LevelModel extends AbstractLevelContext{
     public void completeLevel(int numberOfLevel) {
         game.getGamePreferences().setLevelCompleted(numberOfLevel, true);
 
-        game.getTimeKeeper().time += 30f;
+        game.getGameThread().getTimeKeeper().setTime(game.getGameThread().getTimeKeeper().time + 60f);
 
         cleanUp();
     }

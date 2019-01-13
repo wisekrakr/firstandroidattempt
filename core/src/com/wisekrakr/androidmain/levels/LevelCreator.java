@@ -3,7 +3,8 @@ package com.wisekrakr.androidmain.levels;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.wisekrakr.androidmain.BodyFactory;
 import com.wisekrakr.androidmain.EntityCreator;
-import com.wisekrakr.androidmain.GameUtilities;
+import com.wisekrakr.androidmain.GameConstants;
+import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
 
 class LevelCreator {
@@ -11,8 +12,8 @@ class LevelCreator {
     private static int rows = 0;
     private static int columns = 0;
 
-    private static float width = GameUtilities.WORLD_WIDTH;
-    private static float height = GameUtilities.WORLD_HEIGHT;
+    private static float width = GameConstants.WORLD_WIDTH;
+    private static float height = GameConstants.WORLD_HEIGHT;
 
     static void getLevel(LevelNumber levelNumber, EntityCreator entityCreator, int rows, int columns){
         setRows(rows);
@@ -26,8 +27,10 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                ((width/2) - (width/5))  + j * GameUtilities.BALL_RADIUS, height/2 - k * GameUtilities.BALL_RADIUS,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                ((width/2) - (width/5))  + j * GameConstants.BALL_RADIUS, height/2 - k * GameConstants.BALL_RADIUS,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
+
+
                     }
                 }
 
@@ -48,21 +51,22 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                ((width/2) - (width/5)) + j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                ((width/2) - (width/5))  + j * GameConstants.BALL_RADIUS, height/2 - k * GameConstants.BALL_RADIUS,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
-
                 break;
             case THREE:
                 System.out.println("Making level 3, with a total of entities: " + getInitialEntities());
-                for(int i = 1; i < getRows(); i++) {
-                    for (int j = 1; j < getColumns(); j++) {
+
+                for (int j = 1; j < getRows(); j++) {
+                    for (int k = 1; k < getColumns(); k++) {
+
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                ((width/2) - (width/5))  + j * GameConstants.BALL_RADIUS, height/2 - k * GameConstants.BALL_RADIUS,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
 
@@ -70,13 +74,14 @@ class LevelCreator {
                 break;
             case FOUR:
                 System.out.println("Making level 4, with a total of entities: " + getInitialEntities());
+
                 for(int i = 1; i < getRows(); i++) {
                     for (int j = 1; j < getColumns(); j++) {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.RUBBER,
-                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                ((width/2) - (width/5)) + i * GameConstants.BALL_RADIUS, height - j * GameConstants.BALL_RADIUS *2,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
                 break;
@@ -87,8 +92,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                ((width/2) - (width/5)) + i * GameUtilities.BALL_RADIUS, height - j * GameUtilities.BALL_RADIUS *2,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                ((width/2) - (width/5)) + i * GameConstants.BALL_RADIUS, height - j * GameConstants.BALL_RADIUS *2,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
                 break;
@@ -99,9 +104,9 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2,
-                                height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                i * GameConstants.BALL_RADIUS + j * GameConstants.BALL_RADIUS/2,
+                                height - j * GameConstants.BALL_RADIUS - i * GameConstants.BALL_RADIUS/2,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
 
@@ -114,8 +119,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                j * GameConstants.BALL_RADIUS, height - k * GameConstants.BALL_RADIUS,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
                 break;
@@ -127,8 +132,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                j * GameConstants.BALL_RADIUS, height - k * GameConstants.BALL_RADIUS,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
                 break;
@@ -139,9 +144,9 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.WOOD,
-                                i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2,
-                                height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                i * GameConstants.BALL_RADIUS + j * GameConstants.BALL_RADIUS/2,
+                                height - j * GameConstants.BALL_RADIUS - i * GameConstants.BALL_RADIUS/2,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
                 break;
@@ -153,9 +158,9 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.SQUARE,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                i * GameUtilities.BALL_RADIUS + j * GameUtilities.BALL_RADIUS/2,
-                                height - j * GameUtilities.BALL_RADIUS - i * GameUtilities.BALL_RADIUS/2,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                i * GameConstants.BALL_RADIUS + j * GameConstants.BALL_RADIUS/2,
+                                height - j * GameConstants.BALL_RADIUS - i * GameConstants.BALL_RADIUS/2,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
                 break;
@@ -167,8 +172,8 @@ class LevelCreator {
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
                                 BodyFactory.Material.STONE,
-                                j * GameUtilities.BALL_RADIUS, height - k * GameUtilities.BALL_RADIUS,
-                                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS);
+                                j * GameConstants.BALL_RADIUS, height - k * GameConstants.BALL_RADIUS,
+                                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
                 break;

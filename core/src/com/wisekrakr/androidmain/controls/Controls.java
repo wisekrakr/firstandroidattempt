@@ -1,17 +1,15 @@
 package com.wisekrakr.androidmain.controls;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
-
-import java.awt.event.MouseEvent;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.wisekrakr.androidmain.screens.PlayScreen;
 
 public class Controls implements InputProcessor {
     public boolean left, right, up, down;
-    public boolean isLeftMouseDown, isMiddleMouseDown, isRightMouseDown;
+    public boolean isLeftMouseDown;
     public boolean isDragged;
     public Vector2 mousePosition;
 
@@ -75,11 +73,8 @@ public class Controls implements InputProcessor {
 
         if (button == 0){
             isLeftMouseDown = true;
-        }else if (button == 1){
-            isRightMouseDown = true;
-        }else if (button == 2){
-            isMiddleMouseDown = true;
         }
+
         mousePosition = new Vector2(screenX, screenY);
 
         return false;
@@ -89,13 +84,10 @@ public class Controls implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         isDragged = false;
 
-        if (button == 0){
+        if (button == 0 ) {
             isLeftMouseDown = false;
-        }else if (button == 1){
-            isRightMouseDown = true;
-        }else if (button == 2){
-            isMiddleMouseDown = true;
         }
+
         mousePosition = new Vector2(screenX, screenY);
 
         return false;
@@ -119,6 +111,7 @@ public class Controls implements InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
 
 
 

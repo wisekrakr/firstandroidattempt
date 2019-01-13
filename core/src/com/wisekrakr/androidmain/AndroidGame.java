@@ -20,7 +20,6 @@ public class AndroidGame extends Game {
 
 	private MyAssetManager myAssetManager;
 	private GamePreferences gamePreferences;
-	private SpriteBatch spriteBatch;
 
 	private PreferencesScreen preferencesScreen;
 	private MenuScreen menuScreen;
@@ -48,8 +47,6 @@ public class AndroidGame extends Game {
 		engine = new PooledEngine();
 
 		setScreen(new LoadingScreen(this));
-
-		spriteBatch = new SpriteBatch();
 
 		gameThread = new GameThread(this);
 	}
@@ -81,14 +78,6 @@ public class AndroidGame extends Game {
 
 
 
-	public RenderingSystem getRenderingSystem(){
-		return gameThread.getRenderingSystem();
-	}
-
-	public EntityCreator getEntityCreator(){
-		return gameThread.getEntityCreator();
-	}
-
 	public GamePreferences getGamePreferences() {
 		return gamePreferences;
 	}
@@ -97,20 +86,11 @@ public class AndroidGame extends Game {
 		return myAssetManager;
 	}
 
-	public SpriteBatch getSpriteBatch() {
-		return spriteBatch;
-	}
-
 	public PooledEngine getEngine() {
 		return engine;
 	}
 
-	public LevelGenerationSystem getLevelGenerationSystem(){
-		return gameThread.getLevelGenerationSystem();
+	public GameThread getGameThread() {
+		return gameThread;
 	}
-
-	public TimeKeeper getTimeKeeper(){
-		return gameThread.getTimeKeeper();
-	}
-
 }

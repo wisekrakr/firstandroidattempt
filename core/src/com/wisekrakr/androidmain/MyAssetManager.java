@@ -74,6 +74,8 @@ public class MyAssetManager implements Disposable {
         assetManager.load("images/game/venus.png", Texture.class);
         assetManager.load("images/game/mercury.png", Texture.class);
 
+        assetManager.load("images/background/mainbg.jpg", Texture.class);
+
         assetManager.finishLoading();
     }
 
@@ -87,6 +89,7 @@ public class MyAssetManager implements Disposable {
 
     public void queueGameImages(){
         assetManager.load("images/game/game.atlas", TextureAtlas.class);
+        assetManager.load("images/objects/gameobjects.atlas", TextureAtlas.class);
     }
 
 

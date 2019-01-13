@@ -53,7 +53,6 @@ public class PlayerControlSystem extends IteratingSystem {
             b2body.body.setLinearVelocity(0, 0);
         }
 
-
         if (playerComponent.hasEntityToShoot){
             if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
 
@@ -73,20 +72,21 @@ public class PlayerControlSystem extends IteratingSystem {
                     yVelocity = yVelocity / length;  // get required y velocity to aim at target
                 }
 
-                Iterator<Entity> iterator = game.getEntityCreator().getTotalEntities().iterator();
+                Iterator<Entity> iterator = game.getGameThread().getEntityCreator().getTotalEntities().iterator();
                 if (iterator.hasNext()) {
 
-                    game.getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityX = xVelocity * speed;
-                    game.getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = yVelocity * speed;
+                    game.getGameThread().getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityX = xVelocity * speed;
+                    game.getGameThread().getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = yVelocity * speed;
 
                 }
                 playerComponent.hasEntityToShoot = false;
 
             }else if (controller.up){
-                game.getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = 10000000f;
+                game.getGameThread().getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = 10000000f;
 
                 playerComponent.hasEntityToShoot = false;
             }
         }
+
     }
 }

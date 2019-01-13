@@ -1,5 +1,7 @@
 package com.wisekrakr.androidmain;
 
+import com.wisekrakr.androidmain.helpers.GameHelper;
+
 import java.util.Random;
 
 public class SimplexNoise_octave {

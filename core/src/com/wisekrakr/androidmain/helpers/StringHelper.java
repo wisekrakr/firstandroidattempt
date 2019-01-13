@@ -1,4 +1,4 @@
-package com.wisekrakr.androidmain;
+package com.wisekrakr.androidmain.helpers;
 
 public class StringHelper {
 

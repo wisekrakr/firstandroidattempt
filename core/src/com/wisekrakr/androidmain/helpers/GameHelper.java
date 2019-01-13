@@ -1,8 +1,7 @@
-package com.wisekrakr.androidmain;
+package com.wisekrakr.androidmain.helpers;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.wisekrakr.androidmain.GameConstants;
 
 import java.util.Random;
 
@@ -23,8 +22,8 @@ public class GameHelper {
 
     public static Vector2 randomPosition() {
 
-        return new Vector2(randomGenerator.nextFloat() *  GameUtilities.WORLD_WIDTH,
-                randomGenerator.nextFloat() * GameUtilities.WORLD_HEIGHT);
+        return new Vector2(randomGenerator.nextFloat() *  GameConstants.WORLD_WIDTH,
+                randomGenerator.nextFloat() * GameConstants.WORLD_HEIGHT);
     }
 
     public static float distanceBetween(Vector2 subject, Vector2 target) {

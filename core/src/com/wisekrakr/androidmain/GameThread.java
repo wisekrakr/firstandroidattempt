@@ -2,54 +2,43 @@ package com.wisekrakr.androidmain;
 
 
 import com.badlogic.ashley.core.PooledEngine;
-import com.wisekrakr.androidmain.retainers.ScoreKeeper;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.wisekrakr.androidmain.retainers.TimeKeeper;
-import com.wisekrakr.androidmain.systems.CollisionSystem;
+import com.wisekrakr.androidmain.systems.EntitySystem;
 import com.wisekrakr.androidmain.systems.LevelGenerationSystem;
-import com.wisekrakr.androidmain.systems.PhysicsDebugSystem;
 import com.wisekrakr.androidmain.systems.PhysicsSystem;
 import com.wisekrakr.androidmain.systems.RenderingSystem;
 
-class GameThread {
+public class GameThread {
 
     private final EntityCreator entityCreator;
-
     private LevelGenerationSystem levelGenerationSystem;
     private AndroidGame game;
     private PooledEngine engine;
-    private RenderingSystem renderingSystem;
     private TimeKeeper timeKeeper;
+
 
     protected GameThread(AndroidGame game) {
         this.game = game;
 
         timeKeeper = new TimeKeeper();
 
-        entityCreator = new EntityCreator(game, game.getEngine());
         engine = game.getEngine();
+        entityCreator = new EntityCreator(game, engine);
 
-        renderingSystem = new RenderingSystem(game.getSpriteBatch());
-        levelGenerationSystem = new LevelGenerationSystem(game, entityCreator);
-
-        init(renderingSystem);
+        init();
     }
 
-    private void init(RenderingSystem renderingSystem) {
-        engine.addSystem(renderingSystem);
+    private void init() {
         engine.addSystem(new PhysicsSystem(entityCreator.world));
-        engine.addSystem(new PhysicsDebugSystem(entityCreator.world, renderingSystem.getCamera()));
-
+        levelGenerationSystem = new LevelGenerationSystem(game, entityCreator);
     }
 
-    RenderingSystem getRenderingSystem() {
-        return renderingSystem;
-    }
+    public EntityCreator getEntityCreator(){return  entityCreator;}
 
-    EntityCreator getEntityCreator(){return  entityCreator;}
+    public LevelGenerationSystem getLevelGenerationSystem(){return levelGenerationSystem;}
 
-    LevelGenerationSystem getLevelGenerationSystem(){return levelGenerationSystem;}
-
-    TimeKeeper getTimeKeeper() {
+    public TimeKeeper getTimeKeeper() {
         return timeKeeper;
     }
 

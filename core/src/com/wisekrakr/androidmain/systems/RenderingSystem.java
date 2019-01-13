@@ -7,7 +7,7 @@ import com.badlogic.ashley.systems.SortedIteratingSystem;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
-import com.wisekrakr.androidmain.GameUtilities;
+import com.wisekrakr.androidmain.GameConstants;
 import com.wisekrakr.androidmain.components.TextureComponent;
 import com.wisekrakr.androidmain.components.TransformComponent;
 
@@ -43,8 +43,8 @@ public class RenderingSystem extends SortedIteratingSystem {
 
         renderQueue = new Array<Entity>();
 
-        camera = new OrthographicCamera(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT);
-//        camera.position.set(GameUtilities.WORLD_WIDTH/2, GameUtilities.WORLD_HEIGHT/2,0);
+        camera = new OrthographicCamera(GameConstants.WORLD_WIDTH, GameConstants.WORLD_HEIGHT);
+//        camera.position.set(GameConstants.WORLD_WIDTH/2, GameConstants.WORLD_HEIGHT/2,0);
 
     }
 

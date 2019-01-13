@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 
-import com.wisekrakr.androidmain.GameHelper;
+import com.wisekrakr.androidmain.helpers.GameHelper;
 
 public class EntityComponent implements Component, Pool.Poolable {
 
@@ -14,7 +14,7 @@ public class EntityComponent implements Component, Pool.Poolable {
     public boolean destroy = false;
     public boolean hitEntity = false;
     public boolean hitObstacle = false;
-    public boolean hitPowerUp = false;
+    public boolean hitPower = false;
 
     public void setHitSurface(boolean hitSurface) {
         this.hitSurface = hitSurface;
@@ -28,38 +28,30 @@ public class EntityComponent implements Component, Pool.Poolable {
     public void setHitObstacle(boolean hitObstacle) {
         this.hitObstacle = hitObstacle;
     }
-    public void setHitPowerUp(boolean hitPowerUp) {
-        this.hitPowerUp = hitPowerUp;
+    public void setHitPower(boolean hitPower) {
+        this.hitPower = hitPower;
     }
 
     public enum EntityColor {
-        RED, BLUE, YELLOW, GREEN, PURPLE, PINK, CYAN
+        RED, BLUE, YELLOW, GREEN, PURPLE, ORANGE, CYAN
     }
 
-    private EntityColor[] entityColors = EntityColor.values();
+    private static EntityColor[] entityColors = EntityColor.values();
 
-    public EntityColor randomBallColor(){
+    public static EntityColor randomBallColor(){
         return entityColors[GameHelper.randomGenerator.nextInt(entityColors.length)];
     }
 
-    private int pointsToGive = 0;
-    public int multiplier = 0;
+    private EntityColor entityColor;
 
-    public void setMultiplier(int multi) {
-        multiplier = multi;
+    public EntityColor getEntityColor() {
+        return entityColor;
     }
 
-    public int setPointsToGive(int points) {
-        pointsToGive = points * multiplier;
-
-        if (pointsToGive == 0){
-            pointsToGive = 10;
-        }
-
-        return pointsToGive;
+    public void setEntityColor(EntityColor entityColor) {
+        this.entityColor = entityColor;
     }
 
-    public EntityColor entityColor;
     public float velocityX = 0f;
     public float velocityY = 0f;
     public Vector2 position = new Vector2();
@@ -71,9 +63,6 @@ public class EntityComponent implements Component, Pool.Poolable {
     public void reset() {
         entityColor = null;
 
-        multiplier = 0;
-        pointsToGive = 10;
-
         position = new Vector2();
         velocityX = 0f;
         velocityY = 0f;
@@ -81,7 +70,7 @@ public class EntityComponent implements Component, Pool.Poolable {
         hitSurface = false;
         destroy = false;
         hitEntity = false;
-        hitPowerUp = false;
+        hitPower = false;
         hitObstacle = false;
 
         width = 0f;

@@ -4,8 +4,6 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.wisekrakr.androidmain.AndroidGame;
-import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.CollisionComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
@@ -35,15 +33,15 @@ public class CollisionSystem extends IteratingSystem {
         TypeComponent thisType = ComponentMapper.getFor(TypeComponent.class).get(entity);
 
 
-        if (thisType.type.equals(TypeComponent.Type.BALL) || thisType.type.equals(TypeComponent.Type.SQUARE) || thisType.type.equals(TypeComponent.Type.TRIANGLE)){
+        if (thisType.getType().equals(TypeComponent.Type.BALL) || thisType.getType().equals(TypeComponent.Type.SQUARE) || thisType.getType().equals(TypeComponent.Type.TRIANGLE)){
             if (collidedEntity != null) {
                 TypeComponent typeComponent = collidedEntity.getComponent(TypeComponent.class);
                 if (typeComponent != null) {
-                    switch (typeComponent.type) {
+                    switch (typeComponent.getType()) {
                         case BALL:
                             entityComponentMapper.get(entity).setHitEntity(true);
 
-                            if (entityComponentMapper.get(entity).entityColor == collisionComponent.collisionEntity.getComponent(EntityComponent.class).entityColor) {
+                            if (entityComponentMapper.get(entity).getEntityColor() == collisionComponent.collisionEntity.getComponent(EntityComponent.class).getEntityColor()) {
                                 entityComponentMapper.get(entity).setDestroy(true);
                                 collisionComponent.collisionEntity.getComponent(EntityComponent.class).setDestroy(true);
                             }
@@ -51,7 +49,7 @@ public class CollisionSystem extends IteratingSystem {
                         case SQUARE:
                             entityComponentMapper.get(entity).setHitEntity(true);
 
-                            if (entityComponentMapper.get(entity).entityColor == collisionComponent.collisionEntity.getComponent(EntityComponent.class).entityColor) {
+                            if (entityComponentMapper.get(entity).getEntityColor() == collisionComponent.collisionEntity.getComponent(EntityComponent.class).getEntityColor()) {
                                 entityComponentMapper.get(entity).setDestroy(true);
                                 collisionComponent.collisionEntity.getComponent(EntityComponent.class).setDestroy(true);
                             }
@@ -59,16 +57,16 @@ public class CollisionSystem extends IteratingSystem {
                         case TRIANGLE:
                             entityComponentMapper.get(entity).setHitEntity(true);
 
-                            if (entityComponentMapper.get(entity).entityColor == collisionComponent.collisionEntity.getComponent(EntityComponent.class).entityColor) {
+                            if (entityComponentMapper.get(entity).getEntityColor() == collisionComponent.collisionEntity.getComponent(EntityComponent.class).getEntityColor()) {
                                 entityComponentMapper.get(entity).setDestroy(true);
                                 collisionComponent.collisionEntity.getComponent(EntityComponent.class).setDestroy(true);
                             }
                             break;
-                        case POWER_UP:
+                        case POWER:
                             System.out.println("ball hit power up"); //todo remove
 
                             if (entity.getComponent(TypeComponent.class).tag == TypeComponent.Tag.PLAYER_BALL) {
-                                entityComponentMapper.get(entity).setHitPowerUp(true);
+                                entityComponentMapper.get(entity).setHitPower(true);
                                 entityComponentMapper.get(collidedEntity).setDestroy(true);
                             }
                             break;
@@ -81,11 +79,11 @@ public class CollisionSystem extends IteratingSystem {
                     //System.out.println("type == null");
                 }
             }
-        }else if (thisType.type == TypeComponent.Type.SCENERY) {
+        }else if (thisType.getType() == TypeComponent.Type.SCENERY) {
             if (collidedEntity != null) {
                 TypeComponent typeComponent = collidedEntity.getComponent(TypeComponent.class);
                 if (typeComponent != null) {
-                    switch (typeComponent.type) {
+                    switch (typeComponent.getType()) {
                         case SQUARE:
                             if (!entityComponentMapper.get(collidedEntity).hitSurface){
                                 entityComponentMapper.get(collidedEntity).setHitSurface(true);
@@ -101,7 +99,7 @@ public class CollisionSystem extends IteratingSystem {
                                 entityComponentMapper.get(collidedEntity).setHitSurface(true);
                             }
                             break;
-                        case POWER_UP:
+                        case POWER:
                             if (!entityComponentMapper.get(collidedEntity).hitSurface){
                                 entityComponentMapper.get(collidedEntity).setHitSurface(true);
                             }
@@ -114,11 +112,11 @@ public class CollisionSystem extends IteratingSystem {
                     //System.out.println("type == null");
                 }
             }
-        }else if (thisType.type == TypeComponent.Type.OBSTACLE) {
+        }else if (thisType.getType() == TypeComponent.Type.OBSTACLE) {
             if (collidedEntity != null) {
                 TypeComponent typeComponent = collidedEntity.getComponent(TypeComponent.class);
                 if (typeComponent != null) {
-                    switch (typeComponent.type) {
+                    switch (typeComponent.getType()) {
                         case SQUARE:
                             entityComponentMapper.get(collidedEntity).setHitObstacle(true);
                             break;
@@ -137,15 +135,14 @@ public class CollisionSystem extends IteratingSystem {
                     //System.out.println("type == null");
                 }
             }
-        }else if (thisType.type == TypeComponent.Type.POWER_UP) {
+        }else if (thisType.getType() == TypeComponent.Type.POWER) {
             if (collidedEntity != null) {
                 TypeComponent typeComponent = collidedEntity.getComponent(TypeComponent.class);
                 if (typeComponent != null) {
-                    switch (typeComponent.type) {
+                    switch (typeComponent.getType()) {
                         case BALL:
-
                             if (collidedEntity.getComponent(TypeComponent.class).tag == TypeComponent.Tag.PLAYER_BALL) {
-                                entityComponentMapper.get(collidedEntity).setHitPowerUp(true);
+                                entityComponentMapper.get(collidedEntity).setHitPower(true);
                                 entityComponentMapper.get(entity).setDestroy(true);
                             }
                             break;

@@ -1,11 +1,9 @@
 package com.wisekrakr.androidmain.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,9 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.androidmain.AndroidGame;
-import com.wisekrakr.androidmain.GameUtilities;
+import com.wisekrakr.androidmain.GameConstants;
 
 public class EndScreen extends ScreenAdapter {
 
@@ -27,7 +24,7 @@ public class EndScreen extends ScreenAdapter {
     public EndScreen(AndroidGame game) {
         this.game = game;
 
-        stage = new Stage(new FitViewport(GameUtilities.WORLD_WIDTH, GameUtilities.WORLD_HEIGHT), game.getSpriteBatch());
+        stage = new Stage(new FitViewport(GameConstants.WORLD_WIDTH, GameConstants.WORLD_HEIGHT));
     }
 
     @Override
@@ -40,7 +37,7 @@ public class EndScreen extends ScreenAdapter {
         stage.addActor(table);
 
         BitmapFont font = game.assetManager().assetManager.get("font/gamerFont.fnt");
-        font.getData().setScale((GameUtilities.WORLD_WIDTH/100)/5);
+        font.getData().setScale((GameConstants.WORLD_WIDTH/100)/5);
 
         Skin skin = game.assetManager().assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 

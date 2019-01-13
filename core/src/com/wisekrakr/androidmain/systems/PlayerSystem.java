@@ -7,11 +7,13 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.BodyFactory;
-import com.wisekrakr.androidmain.GameUtilities;
+import com.wisekrakr.androidmain.GameConstants;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
+
+import java.util.List;
 
 /**
  * System for Entities (excl. walls/obstacles).
@@ -47,44 +49,59 @@ public class PlayerSystem extends IteratingSystem {
 
         if (!playerComponent.hasEntityToShoot) {
             if (playerComponent.timeSinceLastShot == 0){
-                playerComponent.timeSinceLastShot = game.getTimeKeeper().gameClock;
+                playerComponent.timeSinceLastShot = game.getGameThread().getTimeKeeper().gameClock;
             }
 
-            if (game.getTimeKeeper().gameClock - playerComponent.timeSinceLastShot > playerComponent.spawnDelay) {
+            if (game.getGameThread().getTimeKeeper().gameClock - playerComponent.timeSinceLastShot > playerComponent.spawnDelayEntity) {
                 spawnBall(entity);
 
                 playerComponent.hasEntityToShoot = true;
                 playerComponent.timeSinceLastShot = 0;
             }
         }else {
-            Entity ent = game.getEntityCreator().getTotalEntities().get(0);
+            Entity ent = game.getGameThread().getEntityCreator().getTotalEntities().get(0);
 
             ent.getComponent(Box2dBodyComponent.class).body.setTransform(new Vector2(
                     bodyComponent.body.getPosition().x,
-                    bodyComponent.body.getPosition().y + GameUtilities.BALL_RADIUS
+                    bodyComponent.body.getPosition().y + GameConstants.BALL_RADIUS
             ), 0);
         }
-        outOfBounds(bodyComponent);
+        outOfBounds(entity);
     }
 
     private void spawnBall(Entity entity){
         Box2dBodyComponent bodyComponent = box2dBodyComponentMapper.get(entity);
 
-        Entity playerBall = game.getEntityCreator().createEntity(TypeComponent.Type.BALL,
+        EntityComponent.EntityColor color = null;
+
+        if (game.getGameThread().getEntityCreator().getTotalEntities().size() < 5) {
+
+            List<Entity> lastStanding = game.getGameThread().getEntityCreator().getTotalEntities();
+            for (Entity ent : lastStanding) {
+                color = ent.getComponent(EntityComponent.class).getEntityColor();
+            }
+
+        }else {
+            color = EntityComponent.randomBallColor();
+        }
+
+        Entity playerBall = game.getGameThread().getEntityCreator().createEntity(TypeComponent.Type.BALL,
                 BodyFactory.Material.RUBBER,
                 bodyComponent.body.getPosition().x,
-                bodyComponent.body.getPosition().y + GameUtilities.BALL_RADIUS,
-                GameUtilities.BALL_RADIUS, GameUtilities.BALL_RADIUS,
-                0, 0, 0);
-        game.getEntityCreator().getTotalEntities().add(0, playerBall);
+                bodyComponent.body.getPosition().y + GameConstants.BALL_RADIUS,
+                GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS,
+                0, 0, 0, color);
 
-
+        game.getGameThread().getEntityCreator().getTotalEntities().add(0, playerBall);
     }
 
-    private void outOfBounds(Box2dBodyComponent bodyComponent){
-        if (bodyComponent.body.getPosition().x + 20 > GameUtilities.WORLD_WIDTH || bodyComponent.body.getPosition().x - 20 < 0){
+    private void outOfBounds(Entity entity){
+        Box2dBodyComponent bodyComponent = box2dBodyComponentMapper.get(entity);
+        PlayerComponent playerComponent = playerComponentMapper.get(entity);
+
+        if (bodyComponent.body.getPosition().x + playerComponent.width > GameConstants.WORLD_WIDTH || bodyComponent.body.getPosition().x - playerComponent.width < 0){
             bodyComponent.body.setLinearVelocity(-bodyComponent.body.getLinearVelocity().x, 0);
-        }else if (bodyComponent.body.getPosition().y + 5 > GameUtilities.WORLD_HEIGHT || bodyComponent.body.getPosition().y - 5 < 0){
+        }else if (bodyComponent.body.getPosition().y + playerComponent.height > GameConstants.WORLD_HEIGHT || bodyComponent.body.getPosition().y - playerComponent.height < 0){
             bodyComponent.body.setLinearVelocity(0, -bodyComponent.body.getLinearVelocity().x);
         }
     }

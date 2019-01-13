@@ -5,7 +5,12 @@ import com.badlogic.gdx.utils.Pool;
 
 public class TimeKeeper {
 
-    public float time = 300f;
+    public float time = 120f;
+
+    public void setTime(float time) {
+        this.time = time;
+    }
+
     private float savedTime = 0;
 
     public float gameClock = 0;
@@ -15,7 +20,7 @@ public class TimeKeeper {
     }
 
     public void reset(){
-        time = 300f;
+        time = 120f;
     }
 
 }

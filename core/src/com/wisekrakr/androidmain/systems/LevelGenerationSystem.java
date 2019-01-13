@@ -2,6 +2,7 @@ package com.wisekrakr.androidmain.systems;
 
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.EntityCreator;
+import com.wisekrakr.androidmain.GameConstants;
 import com.wisekrakr.androidmain.levels.LevelModel;
 import com.wisekrakr.androidmain.levels.LevelNumber;
 
@@ -26,7 +27,6 @@ public class LevelGenerationSystem {
     private int mainLevel = 1;
 
     public LevelGenerationSystem(AndroidGame game, EntityCreator entityCreator){
-
         this.game = game;
         this.entityCreator = entityCreator;
 
@@ -34,6 +34,14 @@ public class LevelGenerationSystem {
 
         levelsToDo.addAll(Arrays.asList(LevelNumber.values()));
 
+        createBorders();
+    }
+
+    private void createBorders(){
+        entityCreator.createWalls(0,0, 5f, GameConstants.WORLD_HEIGHT *2);
+        entityCreator.createWalls(GameConstants.WORLD_WIDTH,0, 5f, GameConstants.WORLD_HEIGHT *2);
+        entityCreator.createWalls(GameConstants.WORLD_WIDTH,GameConstants.WORLD_HEIGHT, GameConstants.WORLD_WIDTH *2,10f);
+        //entityCreator.createWalls(0,0, GameConstants.WORLD_WIDTH *2,5f);
     }
 
     public void updateLevels(float deltaTime) {
@@ -111,8 +119,7 @@ public class LevelGenerationSystem {
         for (LevelNumber levelNumber: levelCompleted) {
             levelsToDo.remove(levelNumber);
 
-            game.getTimeKeeper().reset();
-            game.getEntityCreator().getTotalEntities().clear();
+            game.getGameThread().getEntityCreator().getTotalEntities().clear();
         }
         state = State.START;
     }
