@@ -1,4 +1,4 @@
-package com.wisekrakr.androidmain.visuals;
+package com.wisekrakr.androidmain.audiovisuals;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,7 +33,7 @@ public class Visualizer implements Disposable {
         game.getEngine().addSystem(renderingSystem);
         game.getEngine().addSystem(new PhysicsDebugSystem(game.getGameThread().getEntityCreator().world, renderingSystem.getCamera()));
 
-        entityVisuals = new EntityVisuals(game, entitySystem, spriteBatch);
+        entityVisuals = new EntityVisuals(game, spriteBatch);
     }
 
     public RenderingSystem getRenderingSystem() {

@@ -38,7 +38,7 @@ public class ScoreKeeper {
         return pointsToGive;
     }
 
-    public void reset(){
+    public static void reset(){
         score = 0;
     }
 }

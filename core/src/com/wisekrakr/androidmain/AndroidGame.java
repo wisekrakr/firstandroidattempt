@@ -32,7 +32,9 @@ public class AndroidGame extends Game {
 	public final static int LEVELSELECTION = 2;
 	public final static int APPLICATION = 3;
 	public final static int ENDGAME = 4;
+
 	private GameThread gameThread;
+
 
 	@Override
 	public void create() {
@@ -67,7 +69,7 @@ public class AndroidGame extends Game {
 				break;
 			case APPLICATION:
 				if(playScreen == null) playScreen = new PlayScreen(this);
-				this.setScreen(playScreen);
+				this.setScreen(new PlayScreen(this));
 				break;
 			case ENDGAME:
 				if(endScreen == null) endScreen = new EndScreen(this);

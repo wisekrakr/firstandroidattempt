@@ -33,16 +33,22 @@ public class LevelGenerationSystem {
         levelModel = new LevelModel(game, entityCreator);
 
         levelsToDo.addAll(Arrays.asList(LevelNumber.values()));
-
-        createBorders();
     }
 
-    private void createBorders(){
-        entityCreator.createWalls(0,0, 5f, GameConstants.WORLD_HEIGHT *2);
-        entityCreator.createWalls(GameConstants.WORLD_WIDTH,0, 5f, GameConstants.WORLD_HEIGHT *2);
-        entityCreator.createWalls(GameConstants.WORLD_WIDTH,GameConstants.WORLD_HEIGHT, GameConstants.WORLD_WIDTH *2,10f);
-        //entityCreator.createWalls(0,0, GameConstants.WORLD_WIDTH *2,5f);
+    public void init(){
+
+        Iterator<LevelNumber>iterator = levelsToDo.iterator();
+
+        if (iterator.hasNext()){
+            mainLevel = iterator.next().getValue();
+            if (mainLevel != levelCompleted.size()) {
+                state = State.START;
+            }else {
+                mainLevel += 1;
+            }
+        }
     }
+
 
     public void updateLevels(float deltaTime) {
 
@@ -66,16 +72,10 @@ public class LevelGenerationSystem {
     }
 
     private void start(){
+        game.getGamePreferences().setLevelGoing(mainLevel, false);
 
-        Iterator<LevelNumber>iterator = levelsToDo.iterator();
+        state = State.BUILDING;
 
-        if (iterator.hasNext()){
-            mainLevel = iterator.next().getValue();
-
-            game.getGamePreferences().setLevelGoing(mainLevel, false);
-
-            state = State.BUILDING;
-        }
     }
 
     private void building(){
@@ -103,26 +103,35 @@ public class LevelGenerationSystem {
 
     private void update(float deltaTime){
 
-        if (game.getGamePreferences().levelGoing(mainLevel) && !game.getGamePreferences().levelDone(mainLevel)) {
-            levelModel.updateLevel(mainLevel, deltaTime);
-
-            if (game.getGamePreferences().levelDone(mainLevel)){
-                levelCompleted.add(LevelNumber.valueOf(mainLevel));
-
-                state = State.END;
+        if (mainLevel != 0) {
+            if (game.getGamePreferences().levelGoing(mainLevel) && !game.getGamePreferences().levelDone(mainLevel)) {
+                levelModel.updateLevel(mainLevel, deltaTime);
+                if (game.getGamePreferences().levelDone(mainLevel)){
+                    state = State.END;
+                }else {
+                    resetLevels();
+                }
             }
+        }else {
+            System.out.println("No level number given ");
         }
     }
 
     private void completedLevel(){
+        levelCompleted.add(LevelNumber.valueOf(mainLevel));
 
         for (LevelNumber levelNumber: levelCompleted) {
             levelsToDo.remove(levelNumber);
-
-            game.getGameThread().getEntityCreator().getTotalEntities().clear();
         }
-        state = State.START;
+        game.changeScreen(AndroidGame.LEVELSELECTION);
+
     }
 
+    private void resetLevels(){
+        levelsToDo.addAll(Arrays.asList(LevelNumber.values()));
+    }
 
+    public LevelModel getLevelModel() {
+        return levelModel;
+    }
 }

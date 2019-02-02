@@ -17,21 +17,21 @@ public class GameThread {
     private PooledEngine engine;
     private TimeKeeper timeKeeper;
 
-
     protected GameThread(AndroidGame game) {
         this.game = game;
 
         timeKeeper = new TimeKeeper();
 
         engine = game.getEngine();
+
         entityCreator = new EntityCreator(game, engine);
+        levelGenerationSystem = new LevelGenerationSystem(game, entityCreator);
 
         init();
     }
 
     private void init() {
         engine.addSystem(new PhysicsSystem(entityCreator.world));
-        levelGenerationSystem = new LevelGenerationSystem(game, entityCreator);
     }
 
     public EntityCreator getEntityCreator(){return  entityCreator;}

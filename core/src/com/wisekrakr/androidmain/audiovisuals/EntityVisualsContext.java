@@ -1,4 +1,4 @@
-package com.wisekrakr.androidmain.visuals;
+package com.wisekrakr.androidmain.audiovisuals;
 
 import com.badlogic.ashley.core.Entity;
 import com.wisekrakr.androidmain.components.TypeComponent;

@@ -26,21 +26,13 @@ class LevelCreator {
 
                         entityCreator.createRowEntity(TypeComponent.Type.BALL,
                                 BodyDef.BodyType.StaticBody,
-                                BodyFactory.Material.RUBBER,
+                                BodyFactory.Material.STONE,
                                 ((width/2) - (width/5))  + j * GameConstants.BALL_RADIUS, height/2 - k * GameConstants.BALL_RADIUS,
                                 GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
 
 
                     }
                 }
-
-//                entityCreator.createObstacle(width/2,height/2,
-//                        300f,0,
-//                        80f, 10f,
-//                        BodyFactory.Material.STEEL,
-//                        BodyDef.BodyType.KinematicBody);
-
-
 
                 break;
             case TWO:
@@ -70,7 +62,11 @@ class LevelCreator {
                     }
                 }
 
-
+                entityCreator.createObstacle(width/2,height/2,
+                        300f,0,
+                        80f, 10f,
+                        BodyFactory.Material.STEEL,
+                        BodyDef.BodyType.KinematicBody);
                 break;
             case FOUR:
                 System.out.println("Making level 4, with a total of entities: " + getInitialEntities());
@@ -84,6 +80,12 @@ class LevelCreator {
                                 GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS, EntityComponent.randomBallColor());
                     }
                 }
+
+                entityCreator.createObstacle(width/2,height/2,
+                        300f,0,
+                        80f, 10f,
+                        BodyFactory.Material.STEEL,
+                        BodyDef.BodyType.KinematicBody);
                 break;
             case FIVE:
                 System.out.println("Making level 5, with a total of entities: " + getInitialEntities());

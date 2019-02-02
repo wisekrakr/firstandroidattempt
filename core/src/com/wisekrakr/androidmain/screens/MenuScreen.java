@@ -2,6 +2,7 @@ package com.wisekrakr.androidmain.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,8 +24,6 @@ public class MenuScreen extends ScreenAdapter {
     public MenuScreen(AndroidGame game) {
         this.game = game;
         stage = new Stage(new FitViewport(GameConstants.WORLD_WIDTH, GameConstants.WORLD_HEIGHT));
-
-
     }
 
     @Override
@@ -33,19 +32,22 @@ public class MenuScreen extends ScreenAdapter {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.bottom().left();
+        table.bottom().center();
 
         Skin skin = game.assetManager().assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 
-        TextButton selectLevel = new TextButton("Select Level", skin);
-        TextButton preferences = new TextButton("Preferences", skin);
-        TextButton exit = new TextButton("Exit", skin);
+        TextButton newGame = new TextButton("start", skin);
+        TextButton preferences = new TextButton("preferences", skin);
+        TextButton exit = new TextButton("exit", skin);
+        TextButton reset = new TextButton("reset", skin);
 
-        table.add(selectLevel).expandX();
+        table.add(newGame).expandX();
         table.row();
         table.add(preferences).expandX();
         table.row();
         table.add(exit).expandX();
+
+        reset.setBounds(0,0, 70, 30);
 
         exit.addListener(new ChangeListener() {
             @Override
@@ -55,10 +57,17 @@ public class MenuScreen extends ScreenAdapter {
             }
         });
 
-        selectLevel.addListener(new ChangeListener() {
+        newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.changeScreen(AndroidGame.APPLICATION);
+            }
+        });
+
+        reset.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+//                game.getGameThread().getLevelGenerationSystem().resetLevels();
             }
         });
 
@@ -73,19 +82,20 @@ public class MenuScreen extends ScreenAdapter {
         textureRegion = new TextureRegion(texture);
 
         stage.addActor(table);
+        stage.addActor(reset);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         stage.act();
 
-
         stage.getBatch().begin();
-        stage.getBatch().draw(textureRegion, GameConstants.WORLD_WIDTH/2 - 300/2 ,
-                GameConstants.WORLD_HEIGHT/2 - 400/2,
-                300, GameConstants.WORLD_HEIGHT);
+        stage.getBatch().draw(textureRegion, GameConstants.WORLD_WIDTH/2 - 300f/2 ,
+                GameConstants.WORLD_HEIGHT/2 - 400f/2,
+                300f, GameConstants.WORLD_HEIGHT);
         stage.getBatch().end();
 
         stage.draw();

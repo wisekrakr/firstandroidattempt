@@ -11,6 +11,7 @@ import com.wisekrakr.androidmain.GameConstants;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 
+import com.wisekrakr.androidmain.helpers.GameHelper;
 import com.wisekrakr.androidmain.retainers.ScoreKeeper;
 
 /**
@@ -20,7 +21,6 @@ import com.wisekrakr.androidmain.retainers.ScoreKeeper;
  *
  */
 
-
 public class EntitySystem extends IteratingSystem {
 
     private AndroidGame game;
@@ -28,6 +28,7 @@ public class EntitySystem extends IteratingSystem {
 
     private ComponentMapper<EntityComponent> entityComponentMapper;
     private ComponentMapper<Box2dBodyComponent> bodyComponentMapper;
+    private float timeCounter = 0;
 
     @SuppressWarnings("unchecked")
     public EntitySystem(AndroidGame game){
@@ -46,29 +47,22 @@ public class EntitySystem extends IteratingSystem {
         Box2dBodyComponent bodyComponent = bodyComponentMapper.get(entity);
         EntityComponent entityComponent = entityComponentMapper.get(entity);
 
-        bodyComponent.body.applyForceToCenter(entityComponent.velocityX, entityComponent.velocityY, true);
-
         if (!entityComponent.destroy) {
-            if (entityComponent.hitEntity) {
-                setAlive(entity);
-
-            } else if (entityComponent.hitSurface) {
+            if (entityComponent.hitSurface || entityComponent.hitObstacle) {
                 bodyComponent.body.applyForceToCenter(-entityComponent.velocityX, -entityComponent.velocityY, true);
-
-            } else if (entityComponent.hitObstacle) {
-                bodyComponent.body.applyForceToCenter(-entityComponent.velocityX, -entityComponent.velocityY, true);
-
+            }else if (entityComponent.hitEntity){
+                bodyComponentMapper.get(entity).body.setAwake(false);
             }
         } else {
             if (entityComponent.hitEntity) {
-                scoreCounter(20); //count bounces... multiplier in scores and bounces in collision>?
+                scoreCounter(20);
             }
             scoreCounter(10);
             bodyComponent.isDead = true;
-            game.getGameThread().getEntityCreator().getTotalEntities().remove(entity);
+            game.getGameThread().getEntityCreator().getTotalShapes().remove(entity);
         }
 
-        powerImplementation.updatingPowerUpSystem(entity, 30f);
+        powerImplementation.updatingPowerUpSystem(entity, GameHelper.generateRandomNumberBetween(20f, 40f));
         outOfBounds(entity);
     }
 
@@ -80,8 +74,10 @@ public class EntitySystem extends IteratingSystem {
     }
 
     private void setAlive(Entity entity){
-
-        if (bodyComponentMapper.get(entity).body.getType() == BodyDef.BodyType.StaticBody){
+        if (bodyComponentMapper.get(entity).body.getType() == BodyDef.BodyType.DynamicBody){
+            bodyComponentMapper.get(entity).body.setType(BodyDef.BodyType.StaticBody);
+            bodyComponentMapper.get(entity).body.setAwake(false);
+        }else if (bodyComponentMapper.get(entity).body.getType() == BodyDef.BodyType.StaticBody) {
             bodyComponentMapper.get(entity).body.setType(BodyDef.BodyType.DynamicBody);
             bodyComponentMapper.get(entity).body.setAwake(true);
         }

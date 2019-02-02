@@ -36,73 +36,48 @@ public class LevelSelectScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage);
 
         Table table = new Table();
-        table.center();
+        table.top();
         table.setFillParent(true);
-        stage.addActor(table);
 
         BitmapFont font = game.assetManager().assetManager.get("font/gamerFont.fnt");
-        font.getData().setScale((GameConstants.WORLD_WIDTH/100)/5);
+        font.getData().setScale((GameConstants.WORLD_WIDTH/100)/10);
 
         Skin skin = game.assetManager().assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 
-        Label playAgainLabel = new Label("Choose unlocked level to play", new Label.LabelStyle(font, Color.LIME));
+        Label playAgainLabel = new Label("play another one?", new Label.LabelStyle(font, Color.LIME));
 
-        TextButton levelOne = new TextButton("Level 1", skin);
-        TextButton levelTwo = new TextButton("Level 2", skin);
-        TextButton levelThree = new TextButton("Level 3", skin);
+        TextButton nextLevel = new TextButton("next level", skin);
+        TextButton mainMenu = new TextButton("main menu", skin);
 
         table.add(playAgainLabel).expandX().padTop(10f);
         table.row();
-        table.add(levelOne).uniformX();
+        table.add(nextLevel).uniformX();
         table.row();
-        table.add(levelTwo).uniformX();
-        table.row();
-        table.add(levelThree).uniformX();
+        table.add(mainMenu).uniformX();
 
 
-        levelOne.addListener(new ChangeListener() {
+        nextLevel.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.changeScreen(AndroidGame.APPLICATION);
-                //app screen show level 1
-
-                dispose();
             }
         });
-        if (game.getGamePreferences().levelDone(1)) {
 
-            levelTwo.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    game.changeScreen(AndroidGame.APPLICATION); //app screen shows level 2
-                    dispose();
-                }
-            });
-        }else if (game.getGamePreferences().levelDone(2)) {
+        mainMenu.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.changeScreen(AndroidGame.MENU); //app screen shows level 2
+            }
+        });
 
-            levelThree.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    game.changeScreen(AndroidGame.APPLICATION);//app screen shows level 3
-
-                    dispose();
-                }
-            });
-        }
+        stage.addActor(table);
     }
 
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
-    }
-
-
-    @Override
-    public void dispose() {
-        stage.dispose();
     }
 }

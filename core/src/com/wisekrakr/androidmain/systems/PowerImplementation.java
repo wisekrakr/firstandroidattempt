@@ -2,13 +2,16 @@ package com.wisekrakr.androidmain.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.BodyFactory;
+import com.wisekrakr.androidmain.EntityCreator;
 import com.wisekrakr.androidmain.GameConstants;
 import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
+import com.wisekrakr.androidmain.helpers.GameHelper;
 import com.wisekrakr.androidmain.helpers.PowerHelper;
 
 import java.util.ArrayList;
@@ -24,12 +27,6 @@ public class PowerImplementation {
 
     private Entity entity;
 
-    private PowerHelper powerHelper;
-
-    public PowerHelper getPowerHelper() {
-        return powerHelper;
-    }
-
     public enum PowerStage {
         INIT, UPDATE, EXIT
     }
@@ -44,14 +41,12 @@ public class PowerImplementation {
     private ArrayList<Entity> powers = new ArrayList<Entity>(); //todo create a hashmap
 
     private ComponentMapper<EntityComponent> entityComponentMapper;
-    private ComponentMapper<Box2dBodyComponent> box2dBodyComponentMapper;
     private AndroidGame game;
 
     PowerImplementation(AndroidGame game){
         this.game = game;
 
         entityComponentMapper = ComponentMapper.getFor(EntityComponent.class);
-        box2dBodyComponentMapper = ComponentMapper.getFor(Box2dBodyComponent.class);
     }
 
     /**
@@ -95,21 +90,32 @@ public class PowerImplementation {
 
         @Override
         public void spawnPower() {
-            entity = game.getGameThread().getEntityCreator().createPower(100,100,
-                    0, 0,
-                    GameConstants.BALL_RADIUS/2, GameConstants.BALL_RADIUS/2);
+            Vector2 filledPosition = new Vector2();
+            for (Entity ent: game.getGameThread().getEntityCreator().getTotalShapes()){
+                filledPosition = ent.getComponent(EntityComponent.class).position;
+            }
 
-            PowerHelper.setPowerUp(entity, PowerHelper.randomPowerUp());
+            Vector2 newPosition = GameHelper.randomPosition();
+            if (newPosition != filledPosition){
+                entity = game.getGameThread().getEntityCreator().createPower(newPosition.x, newPosition.y,
+                        0, 0,
+                        GameConstants.BALL_RADIUS/2, GameConstants.BALL_RADIUS/2);
 
-            System.out.println(PowerHelper.getPowerUpMap());
+                PowerHelper.setPowerUp(entity, PowerHelper.randomPowerUp());
 
-            powers.add(entity);
+                System.out.println(PowerHelper.getPowerUpMap());
 
-            setPowerStage(PowerStage.UPDATE);
+                powers.add(entity);
+
+                setPowerStage(PowerStage.UPDATE);
+            }else {
+                setPowerStage(PowerStage.INIT);
+            }
         }
 
         @Override
         public void powerTime(Entity entity) {
+            float timeCounter = 0;
 
             if (entityComponentMapper.get(entity).hitPower) {
                 switch (PowerHelper.getPower()) {
@@ -123,10 +129,10 @@ public class PowerImplementation {
                     case NUKE:
                         System.out.println("Nuke power up");
 
-                        if (!game.getGameThread().getEntityCreator().getTotalEntities().isEmpty()) {
-                            Collections.reverse(game.getGameThread().getEntityCreator().getTotalEntities());
+                        if (!game.getGameThread().getEntityCreator().getTotalShapes().isEmpty()) {
+                            Collections.reverse(game.getGameThread().getEntityCreator().getTotalShapes());
 
-                            List<Entity>sub = game.getGameThread().getEntityCreator().getTotalEntities().subList(0, game.getGameThread().getEntityCreator().getTotalEntities().size()/3);
+                            List<Entity>sub = game.getGameThread().getEntityCreator().getTotalShapes().subList(0, game.getGameThread().getEntityCreator().getTotalShapes().size()/3);
                             ArrayList<Entity> toBeKilled = new ArrayList<Entity>(sub);
 
                             for (Entity ent : toBeKilled) {
@@ -135,21 +141,54 @@ public class PowerImplementation {
                         }
                         setPowerStage(PowerStage.EXIT);
                         break;
-                    case FREEZE:
-                        System.out.println("Time Freeze power up");
+                    case THEY_LIVE:
+                        System.out.println("THEY CAN MOVE?!");
 
-                        for (Entity ent: game.getGameThread().getEntityCreator().getTotalEntities()){
-                            ent.getComponent(Box2dBodyComponent.class).body.setAwake(false);
+                        for (Entity ent: game.getGameThread().getEntityCreator().getTotalShapes()){
+                            if (ent.getComponent(Box2dBodyComponent.class).body.getType() == BodyDef.BodyType.DynamicBody){
+                                ent.getComponent(Box2dBodyComponent.class).body.setType(BodyDef.BodyType.StaticBody);
+                                ent.getComponent(Box2dBodyComponent.class).body.setAwake(false);
+                            }else if (ent.getComponent(Box2dBodyComponent.class).body.getType() == BodyDef.BodyType.StaticBody) {
+                                ent.getComponent(Box2dBodyComponent.class).body.setType(BodyDef.BodyType.DynamicBody);
+                                ent.getComponent(Box2dBodyComponent.class).body.setAwake(true);
+                            }
                         }
 
                         setPowerStage(PowerStage.EXIT);
                         break;
                     case MORE_BALLS:
                         System.out.println("More ball power down");
+                        Vector2 filledPosition = new Vector2();
+                        for (Entity ent: game.getGameThread().getEntityCreator().getTotalShapes()){
+                            filledPosition = ent.getComponent(EntityComponent.class).position;
+                        }
+
+                        Vector2 newPosition = GameHelper.randomPosition();
+                        if (newPosition != filledPosition) {
+                            for (int i = 0; i < 10; i++) {
+                                game.getGameThread().getEntityCreator().createRowEntity(TypeComponent.Type.BALL,
+                                        BodyDef.BodyType.StaticBody,
+                                        BodyFactory.Material.RUBBER,
+                                        newPosition.x, newPosition.y,
+                                        GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS,
+                                        EntityComponent.randomBallColor()
+                                );
+                            }
+                        }
+
                         setPowerStage(PowerStage.EXIT);
                         break;
                     case FREEZE_PLAYER:
                         System.out.println("Player Freeze power down");
+                        Entity player = game.getGameThread().getLevelGenerationSystem().getLevelModel().getPlayer();
+                        if (timeCounter == 0){
+                            timeCounter = game.getGameThread().getTimeKeeper().gameClock;
+                        }
+                        while (game.getGameThread().getTimeKeeper().gameClock - timeCounter < 10f){
+                            player.getComponent(Box2dBodyComponent.class).body.setAwake(false);
+                            timeCounter = game.getGameThread().getTimeKeeper().gameClock;
+                        }
+
                         setPowerStage(PowerStage.EXIT);
                         break;
                     case BLACK_AND_WHITE:

@@ -15,7 +15,11 @@ import com.wisekrakr.androidmain.components.TypeComponent;
 import com.wisekrakr.androidmain.helpers.EntityHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.BALL;
 import static com.wisekrakr.androidmain.components.TypeComponent.Type.PLAYER;
@@ -34,7 +38,7 @@ public class EntityCreator {
     private AndroidGame game;
     private PooledEngine engine;
 
-    private List<Entity> totalEntities = new ArrayList<Entity>();
+    private List<Entity> totalShapes = new ArrayList<Entity>();
     private List<Entity> totalObstacles = new ArrayList<Entity>();
 
     private TmxMapLoader mapLoader;
@@ -133,7 +137,6 @@ public class EntityCreator {
         Box2dBodyComponent bodyComponent = engine.createComponent(Box2dBodyComponent.class);
         entityHelper.getComponentInitializer().textureComponent(engine, entity);
         entityHelper.getComponentInitializer().typeComponent(engine, entity, type, TypeComponent.Tag.A_PRIORI_ENTITY);
-         //todo set rotation?
         entityHelper.getComponentInitializer().collisionComponent(engine, entity);
 
 
@@ -174,7 +177,7 @@ public class EntityCreator {
 
         engine.addEntity(entity);
 
-        totalEntities.add(entity);
+        totalShapes.add(entity);
 
     }
 
@@ -246,13 +249,14 @@ public class EntityCreator {
         return entity;
     }
 
-    public List<Entity> getTotalEntities(){
-        return totalEntities;
+    public List<Entity> getTotalShapes(){
+        return totalShapes;
     }
 
     public List<Entity> getTotalObstacles() {
         return totalObstacles;
     }
+
 
     public OrthogonalTiledMapRenderer getTiledMapRenderer() {
         return tiledMapRenderer;

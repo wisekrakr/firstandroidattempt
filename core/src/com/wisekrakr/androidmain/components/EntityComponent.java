@@ -8,6 +8,9 @@ import com.badlogic.gdx.utils.Pool;
 
 import com.wisekrakr.androidmain.helpers.GameHelper;
 
+import java.awt.Color;
+import java.util.ArrayList;
+
 public class EntityComponent implements Component, Pool.Poolable {
 
     public boolean hitSurface = false;

@@ -3,15 +3,10 @@ package com.wisekrakr.androidmain.levels;
 import com.badlogic.ashley.core.Entity;
 
 public class AbstractLevelContext implements LevelContext {
-
-    private LevelCreator levelCreator = new LevelCreator();
-
-    public LevelCreator getLevelCreator(){
-        return levelCreator;
-    }
+    
 
     @Override
-    public void init(Entity entity) {
+    public void init() {
 
     }
 
@@ -27,6 +22,11 @@ public class AbstractLevelContext implements LevelContext {
 
     @Override
     public void completeLevel(int numberOfLevel) {
+
+    }
+
+    @Override
+    public void gameOver(int numberOfLevel) {
 
     }
 }

@@ -9,14 +9,16 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.GameConstants;
+import com.wisekrakr.androidmain.audiovisuals.EntityAudio;
 import com.wisekrakr.androidmain.helpers.GameHelper;
 import com.wisekrakr.androidmain.controls.Controls;
 import com.wisekrakr.androidmain.systems.CollisionSystem;
 import com.wisekrakr.androidmain.systems.EntitySystem;
+import com.wisekrakr.androidmain.systems.LevelGenerationSystem;
 import com.wisekrakr.androidmain.systems.ObstacleSystem;
 import com.wisekrakr.androidmain.systems.PlayerControlSystem;
 import com.wisekrakr.androidmain.systems.PlayerSystem;
-import com.wisekrakr.androidmain.visuals.Visualizer;
+import com.wisekrakr.androidmain.audiovisuals.Visualizer;
 
 import java.util.ArrayList;
 
@@ -33,6 +35,9 @@ public class PlayScreen extends ScreenAdapter {
     private InfoDisplay infoDisplay;
     private TouchControl touchControl;
 
+    private EntityAudio entityAudio;
+    private LevelGenerationSystem levelGenerationSystem;
+
     public PlayScreen(AndroidGame game) {
         this.game = game;
 
@@ -42,12 +47,18 @@ public class PlayScreen extends ScreenAdapter {
 
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(controls);
+
+        infoDisplay = new InfoDisplay(game);
+
+        entityAudio = new EntityAudio(game);
     }
 
     /**
      * Add remaining systems we did not need to add to the Gamethread.
      */
     private void addSystems() {
+        //levelGenerationSystem = new LevelGenerationSystem(game, game.getGameThread().getEntityCreator());
+        game.getGameThread().getLevelGenerationSystem().init();
 
         EntitySystem entitySystem = new EntitySystem(game);
         game.getEngine().addSystem(entitySystem);
@@ -63,8 +74,6 @@ public class PlayScreen extends ScreenAdapter {
         game.getEngine().addSystem(new ObstacleSystem(game.getGameThread().getEntityCreator()));
 
         //entityCreator.loadMap();
-
-        infoDisplay = new InfoDisplay(game);
     }
 
     @Override
@@ -101,22 +110,12 @@ public class PlayScreen extends ScreenAdapter {
                 delta
         );
 
-        touchControl.renderTouchControls();
+        //touchControl.renderTouchControls();
 
         visualizer.draw();
-    }
 
-    private Sound bounceSoundInit(){
-        ArrayList<Sound> sounds = new ArrayList<Sound>();
-
-        sounds.add(game.assetManager().assetManager.get("sounds/bounce thicc.wav", Sound.class));
-        sounds.add(game.assetManager().assetManager.get("sounds/bounce thwap.wav", Sound.class));
-        sounds.add(game.assetManager().assetManager.get("sounds/bounce thwip.wav", Sound.class));
-        sounds.add(game.assetManager().assetManager.get("sounds/bounce thoight.wav", Sound.class));
-
-        int index = GameHelper.randomGenerator.nextInt(sounds.size());
-
-        return sounds.get(index);
+        entityAudio.audioForAction(controls);
+        entityAudio.audioForEntity();
     }
 
     @Override
@@ -126,6 +125,5 @@ public class PlayScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
-
     }
 }

@@ -34,7 +34,6 @@ public class EndScreen extends ScreenAdapter {
         Table table = new Table();
         table.center();
         table.setFillParent(true);
-        stage.addActor(table);
 
         BitmapFont font = game.assetManager().assetManager.get("font/gamerFont.fnt");
         font.getData().setScale((GameConstants.WORLD_WIDTH/100)/5);
@@ -42,18 +41,13 @@ public class EndScreen extends ScreenAdapter {
         Skin skin = game.assetManager().assetManager.get(String.valueOf(Gdx.files.internal("font/flat-earth-ui.json")));
 
         Label gameOverLabel = new Label("GAME OVER", new Label.LabelStyle(font, Color.RED));
-        Label playAgainLabel = new Label("Click for Next Challenge", new Label.LabelStyle(font, Color.LIME));
 
-        TextButton nextLevel = new TextButton("Next Levels", skin);
-        TextButton mainMenu = new TextButton("Main Menu", skin);
-        TextButton exit = new TextButton("Exit", skin);
+        TextButton mainMenu = new TextButton("main menu", skin);
+        TextButton exit = new TextButton("exit", skin);
 
         table.add(gameOverLabel).expandX();
         table.row();
-        table.add(playAgainLabel).expandX().padTop(10f);
-        table.row();
-        table.add(nextLevel).uniformX();
-        table.row();
+
         table.add(mainMenu).uniformX();
         table.row();
         table.add(exit).uniformX();
@@ -62,15 +56,6 @@ public class EndScreen extends ScreenAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.exit();
-
-            }
-        });
-
-        nextLevel.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.changeScreen(AndroidGame.APPLICATION);
-                dispose();
             }
         });
 
@@ -81,17 +66,12 @@ public class EndScreen extends ScreenAdapter {
             }
         });
 
-
+        stage.addActor(table);
     }
 
     @Override
     public void render(float delta) {
 
-//        if(Gdx.input.justTouched()) {
-//            game.changeScreen(AndroidGame.APPLICATION);
-//            playScreen.show();
-//            dispose();
-//        }
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();

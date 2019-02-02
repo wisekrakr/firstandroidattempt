@@ -59,7 +59,7 @@ public class PlayerSystem extends IteratingSystem {
                 playerComponent.timeSinceLastShot = 0;
             }
         }else {
-            Entity ent = game.getGameThread().getEntityCreator().getTotalEntities().get(0);
+            Entity ent = game.getGameThread().getEntityCreator().getTotalShapes().get(0);
 
             ent.getComponent(Box2dBodyComponent.class).body.setTransform(new Vector2(
                     bodyComponent.body.getPosition().x,
@@ -74,9 +74,9 @@ public class PlayerSystem extends IteratingSystem {
 
         EntityComponent.EntityColor color = null;
 
-        if (game.getGameThread().getEntityCreator().getTotalEntities().size() < 5) {
+        if (game.getGameThread().getEntityCreator().getTotalShapes().size() < 5) {
 
-            List<Entity> lastStanding = game.getGameThread().getEntityCreator().getTotalEntities();
+            List<Entity> lastStanding = game.getGameThread().getEntityCreator().getTotalShapes();
             for (Entity ent : lastStanding) {
                 color = ent.getComponent(EntityComponent.class).getEntityColor();
             }
@@ -92,7 +92,7 @@ public class PlayerSystem extends IteratingSystem {
                 GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS,
                 0, 0, 0, color);
 
-        game.getGameThread().getEntityCreator().getTotalEntities().add(0, playerBall);
+        game.getGameThread().getEntityCreator().getTotalShapes().add(0, playerBall);
     }
 
     private void outOfBounds(Entity entity){

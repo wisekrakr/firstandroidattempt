@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.components.EntityComponent;
@@ -44,26 +43,27 @@ public class PlayerControlSystem extends IteratingSystem {
         PlayerComponent playerComponent = playerComponentMapper.get(entity);
 
         if (controller.left) {
-            b2body.body.setLinearVelocity(-500, 0);
+            b2body.body.setLinearVelocity(-500f, 0);
         }
         if (controller.right) {
-            b2body.body.setLinearVelocity(500, 0);
+            b2body.body.setLinearVelocity(500f, 0);
         }
         if (controller.down) {
             b2body.body.setLinearVelocity(0, 0);
         }
 
+        Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+
+        camera.unproject(mousePos); // convert position from screen to box2d world position
+
+        float speed = 1000000000000f;  // set the speed of the ball
+
+        float xVelocity = mousePos.x - b2body.body.getPosition().x; // get distance from shooter to target on x plain
+        float yVelocity = mousePos.y - b2body.body.getPosition().y; // get distance from shooter to target on y plain
+
         if (playerComponent.hasEntityToShoot){
             if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
 
-                Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-
-                camera.unproject(mousePos); // convert position from screen to box2d world position
-
-                float speed = 10000000f;  // set the speed of the ball
-
-                float xVelocity = mousePos.x - b2body.body.getPosition().x; // get distance from shooter to target on x plain
-                float yVelocity = mousePos.y - b2body.body.getPosition().y; // get distance from shooter to target on y plain
 
                 float length = (float) Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // get distance to target direct
 
@@ -72,21 +72,21 @@ public class PlayerControlSystem extends IteratingSystem {
                     yVelocity = yVelocity / length;  // get required y velocity to aim at target
                 }
 
-                Iterator<Entity> iterator = game.getGameThread().getEntityCreator().getTotalEntities().iterator();
+                Iterator<Entity> iterator = game.getGameThread().getEntityCreator().getTotalShapes().iterator();
                 if (iterator.hasNext()) {
-
-                    game.getGameThread().getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityX = xVelocity * speed;
-                    game.getGameThread().getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = yVelocity * speed;
-
+                    game.getGameThread().getEntityCreator().getTotalShapes().get(0).getComponent(
+                            Box2dBodyComponent.class).body.applyForceToCenter(
+                                    xVelocity * speed, yVelocity * speed, true);
                 }
                 playerComponent.hasEntityToShoot = false;
 
             }else if (controller.up){
-                game.getGameThread().getEntityCreator().getTotalEntities().get(0).getComponent(EntityComponent.class).velocityY = 10000000f;
+                game.getGameThread().getEntityCreator().getTotalShapes().get(0).getComponent(
+                        Box2dBodyComponent.class).body.applyForceToCenter(
+                        xVelocity * speed, yVelocity * speed, true);
 
                 playerComponent.hasEntityToShoot = false;
             }
         }
-
     }
 }

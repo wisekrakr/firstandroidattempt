@@ -27,6 +27,17 @@ public class MyAssetManager implements Disposable {
         assetManager.load("sounds/bounce thwap.wav", Sound.class);
         assetManager.load("sounds/bounce thwip.wav", Sound.class);
 
+        assetManager.load("sounds/hit_wall.wav", Sound.class);
+        assetManager.load("sounds/powerdown_moreballs.wav", Sound.class);
+        assetManager.load("sounds/powerup_extratime.wav", Sound.class);
+        assetManager.load("sounds/powerup_freeze.wav", Sound.class);
+        assetManager.load("sounds/powerup_nuke.wav", Sound.class);
+        assetManager.load("sounds/shoot.wav", Sound.class);
+        assetManager.load("sounds/secret.wav", Sound.class);
+        assetManager.load("sounds/gameover.wav", Sound.class);
+        assetManager.load("sounds/levelcomplete.wav", Sound.class);
+
+
         assetManager.finishLoading();
     }
     /*
