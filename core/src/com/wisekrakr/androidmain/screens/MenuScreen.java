@@ -39,15 +39,12 @@ public class MenuScreen extends ScreenAdapter {
         TextButton newGame = new TextButton("start", skin);
         TextButton preferences = new TextButton("preferences", skin);
         TextButton exit = new TextButton("exit", skin);
-        TextButton reset = new TextButton("reset", skin);
 
         table.add(newGame).expandX();
         table.row();
         table.add(preferences).expandX();
         table.row();
         table.add(exit).expandX();
-
-        reset.setBounds(0,0, 70, 30);
 
         exit.addListener(new ChangeListener() {
             @Override
@@ -64,13 +61,6 @@ public class MenuScreen extends ScreenAdapter {
             }
         });
 
-        reset.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-//                game.getGameThread().getLevelGenerationSystem().resetLevels();
-            }
-        });
-
         preferences.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -82,7 +72,6 @@ public class MenuScreen extends ScreenAdapter {
         textureRegion = new TextureRegion(texture);
 
         stage.addActor(table);
-        stage.addActor(reset);
     }
 
     @Override

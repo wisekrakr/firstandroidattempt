@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.wisekrakr.androidmain.AndroidGame;
@@ -36,7 +37,6 @@ public class PlayScreen extends ScreenAdapter {
     private TouchControl touchControl;
 
     private EntityAudio entityAudio;
-    private LevelGenerationSystem levelGenerationSystem;
 
     public PlayScreen(AndroidGame game) {
         this.game = game;
@@ -73,7 +73,7 @@ public class PlayScreen extends ScreenAdapter {
 
         game.getEngine().addSystem(new ObstacleSystem(game.getGameThread().getEntityCreator()));
 
-        //entityCreator.loadMap();
+        game.getGameThread().getEntityCreator().loadMap();
     }
 
     @Override
@@ -100,8 +100,8 @@ public class PlayScreen extends ScreenAdapter {
         game.getEngine().update(delta);
         visualizer.getRenderingSystem().getCamera().update();
 
-//        entityCreator.getTiledMapRenderer().setView(camera);
-//        entityCreator.getTiledMapRenderer().render();
+        game.getGameThread().getEntityCreator().getTiledMapRenderer().setView(visualizer.getRenderingSystem().getCamera());
+        game.getGameThread().getEntityCreator().getTiledMapRenderer().render();
 
         game.getGameThread().getLevelGenerationSystem().updateLevels(delta);
 

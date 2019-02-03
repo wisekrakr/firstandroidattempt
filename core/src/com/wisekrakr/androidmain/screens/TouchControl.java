@@ -1,16 +1,16 @@
 package com.wisekrakr.androidmain.screens;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.wisekrakr.androidmain.AndroidGame;
 import com.wisekrakr.androidmain.GameConstants;
-import com.wisekrakr.androidmain.components.Box2dBodyComponent;
-import com.wisekrakr.androidmain.components.TypeComponent;
+
 
 public class TouchControl implements Disposable {
     private Stage stage;
@@ -33,12 +33,21 @@ public class TouchControl implements Disposable {
 
         touchPad = new Touchpad(5, skin);
         touchPad.setBounds(10,10,GameConstants.WORLD_WIDTH/2.5f,GameConstants.WORLD_HEIGHT/5);
+
     }
 
     public void renderTouchControls() {
         stage.act();
         stage.draw();
 
+        if (touchPad.isTouched()){
+            touchPad.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    System.out.println("bliep");
+                }
+            });
+        }
     }
 
     @Override

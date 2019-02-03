@@ -64,7 +64,6 @@ public class PlayerControlSystem extends IteratingSystem {
         if (playerComponent.hasEntityToShoot){
             if (controller.isLeftMouseDown || Gdx.input.isTouched()) {
 
-
                 float length = (float) Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // get distance to target direct
 
                 if (length != 0) {

@@ -7,6 +7,6 @@ public interface EntityVisualsContext {
 
     void visualizeColoredEntity(Entity entity, TypeComponent.Type type);
     void visualizePower(Entity entity);
-    void drawObject(Entity entity, String atlasPath, String regionPath, float width, float height);
-
+    void drawObjectViaAtlas(Entity entity, String atlasPath, String regionPath, float width, float height);
+    void drawObjectViaFileName(Entity entity, String fileName, float width, float height);
 }

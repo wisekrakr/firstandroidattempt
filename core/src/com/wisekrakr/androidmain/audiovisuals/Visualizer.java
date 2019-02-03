@@ -2,8 +2,14 @@ package com.wisekrakr.androidmain.audiovisuals;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.wisekrakr.androidmain.AndroidGame;
+import com.wisekrakr.androidmain.GameConstants;
+import com.wisekrakr.androidmain.components.EntityComponent;
+import com.wisekrakr.androidmain.components.ObstacleComponent;
+import com.wisekrakr.androidmain.components.PlayerComponent;
+import com.wisekrakr.androidmain.components.TransformComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
 import com.wisekrakr.androidmain.systems.EntitySystem;
 import com.wisekrakr.androidmain.systems.PhysicsDebugSystem;
@@ -60,10 +66,35 @@ public class Visualizer implements Disposable {
                     entityVisuals.visualizeColoredEntity(entity, type);
                     break;
                 case PLAYER:
+                    float x = entity.getComponent(TransformComponent.class).position.x;
+
+                    if (x > entity.getComponent(TransformComponent.class).position.x) {
+                        entityVisuals.drawObjectViaAtlas(entity,
+                                "images/game/game.atlas",
+                                "dude_left",
+                                GameConstants.WORLD_WIDTH / 10,
+                                GameConstants.BALL_RADIUS / 3);
+                    }else if (x < entity.getComponent(TransformComponent.class).position.x){
+                        entityVisuals.drawObjectViaAtlas(entity,
+                                "images/game/game.atlas",
+                                "dude_right",
+                                GameConstants.WORLD_WIDTH / 10,
+                                GameConstants.BALL_RADIUS / 3);
+                    }else {
+                        entityVisuals.drawObjectViaAtlas(entity,
+                                "images/game/game.atlas",
+                                "dude_front",
+                                GameConstants.WORLD_WIDTH / 10,
+                                GameConstants.BALL_RADIUS / 3);
+                    }
 
                     break;
                 case OBSTACLE:
-
+                    entityVisuals.drawObjectViaAtlas(entity,
+                            "images/game/game.atlas",
+                            "woodfloor",
+                            entity.getComponent(ObstacleComponent.class).width,
+                            entity.getComponent(ObstacleComponent.class).height);
                     break;
                 case POWER:
                     entityVisuals.visualizePower(entity);
@@ -73,6 +104,8 @@ public class Visualizer implements Disposable {
                     break;
 
             }
+
+
         }
         spriteBatch.end();
     }

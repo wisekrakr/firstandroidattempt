@@ -12,6 +12,7 @@ import com.wisekrakr.androidmain.components.Box2dBodyComponent;
 import com.wisekrakr.androidmain.components.EntityComponent;
 import com.wisekrakr.androidmain.components.PlayerComponent;
 import com.wisekrakr.androidmain.components.TypeComponent;
+import com.wisekrakr.androidmain.helpers.GameHelper;
 
 import java.util.List;
 
@@ -74,12 +75,13 @@ public class PlayerSystem extends IteratingSystem {
 
         EntityComponent.EntityColor color = null;
 
-        if (game.getGameThread().getEntityCreator().getTotalShapes().size() < 5) {
+        if (game.getGameThread().getEntityCreator().getTotalShapes().size() < 10) {
 
             List<Entity> lastStanding = game.getGameThread().getEntityCreator().getTotalShapes();
-            for (Entity ent : lastStanding) {
-                color = ent.getComponent(EntityComponent.class).getEntityColor();
-            }
+
+            Entity ent = lastStanding.get(GameHelper.randomGenerator.nextInt(lastStanding.size()));
+            color = ent.getComponent(EntityComponent.class).getEntityColor();
+
 
         }else {
             color = EntityComponent.randomBallColor();
@@ -90,7 +92,8 @@ public class PlayerSystem extends IteratingSystem {
                 bodyComponent.body.getPosition().x,
                 bodyComponent.body.getPosition().y + GameConstants.BALL_RADIUS,
                 GameConstants.BALL_RADIUS, GameConstants.BALL_RADIUS,
-                0, 0, 0, color);
+                0, 0, 0,
+                color);
 
         game.getGameThread().getEntityCreator().getTotalShapes().add(0, playerBall);
     }

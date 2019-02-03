@@ -50,14 +50,14 @@ public class EntitySystem extends IteratingSystem {
         if (!entityComponent.destroy) {
             if (entityComponent.hitSurface || entityComponent.hitObstacle) {
                 bodyComponent.body.applyForceToCenter(-entityComponent.velocityX, -entityComponent.velocityY, true);
-            }else if (entityComponent.hitEntity){
+            }else if (entityComponent.hitEntity && entity != game.getGameThread().getEntityCreator().getTotalShapes().get(0)){
                 bodyComponentMapper.get(entity).body.setAwake(false);
             }
         } else {
             if (entityComponent.hitEntity) {
-                scoreCounter(20);
+                scoreCounter(10);
             }
-            scoreCounter(10);
+            scoreCounter(5);
             bodyComponent.isDead = true;
             game.getGameThread().getEntityCreator().getTotalShapes().remove(entity);
         }

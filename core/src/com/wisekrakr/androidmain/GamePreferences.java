@@ -10,6 +10,7 @@ public class GamePreferences {
     private static final String PREF_SOUND_ENABLED = "sound.enabled";
     private static final String PREF_SOUND_VOL = "sound";
     private static final String PREFS_NAME = "bigballs";
+    private static final String HIGH_SCORES = "highscores";
 
     private static final String COMPLETED = "completed";
     private static final String ONGOING = "ongoing";
@@ -60,6 +61,15 @@ public class GamePreferences {
 
     public void setSoundVolume(float volume) {
         getPrefs().putFloat(PREF_SOUND_VOL, volume);
+        getPrefs().flush();
+    }
+
+    public int getHighScores(){
+        return getPrefs().getInteger(HIGH_SCORES);
+    }
+
+    public void setHighScore(int score){
+        getPrefs().putInteger(HIGH_SCORES, score);
         getPrefs().flush();
     }
 

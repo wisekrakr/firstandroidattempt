@@ -21,8 +21,6 @@ public class LevelModel extends AbstractLevelContext{
     public LevelModel(AndroidGame game, EntityCreator entityCreator) {
         this.game = game;
         this.entityCreator = entityCreator;
-
-        constantEntities();
     }
 
     private void constantEntities(){
@@ -37,7 +35,7 @@ public class LevelModel extends AbstractLevelContext{
 
     @Override
     public void startLevel(int numberOfLevel, int rows, int columns) {
-
+        constantEntities();
         LevelCreator.getLevel(LevelNumber.valueOf(numberOfLevel), entityCreator, rows, columns);
     }
 
@@ -47,7 +45,7 @@ public class LevelModel extends AbstractLevelContext{
 
         if (game.getGameThread().getTimeKeeper().time > 0) {
 
-            if (entityCreator.getTotalShapes().size() <= 5) {
+            if (entityCreator.getTotalShapes().size() <= 2) {
                 completeLevel(numberOfLevel);
             }
 
@@ -83,16 +81,12 @@ public class LevelModel extends AbstractLevelContext{
 
     private void cleanUp(){
         player.getComponent(PlayerComponent.class).hasEntityToShoot = false;
+        for (Entity entity: game.getEngine().getEntities()){
+            entity.getComponent(Box2dBodyComponent.class).isDead = true;
+        }
 
-        for (Entity entity: entityCreator.getTotalShapes()){
-            entity.getComponent(EntityComponent.class).setDestroy(true);
-        }
-        for (Entity entity: entityCreator.getTotalObstacles()){
-            entity.getComponent(ObstacleComponent.class).destroy = true;
-        }
-//        for (Entity entity: game.getEngine().getEntities()){
-//            entity.getComponent(Box2dBodyComponent.class).isDead = true;
-//        }
+        entityCreator.getTotalShapes().clear();
+        entityCreator.getTotalObstacles().clear();
     }
 
     public Entity getPlayer() {

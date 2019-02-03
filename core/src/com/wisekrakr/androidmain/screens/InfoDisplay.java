@@ -15,12 +15,18 @@ import com.wisekrakr.androidmain.retainers.TimeKeeper;
 
 public class InfoDisplay implements Disposable {
 
+    private Integer ballLeft;
+    private Integer levelNumber;
     private Integer score;
     private Label scoreCountLabel;
     private Integer worldTimer;
     private Label timeCountLabel;
     private Label timeLabel;
     private Label scoreLabel;
+    private Label levelLabel;
+    private Label levelNumberLabel;
+    private Label ballsLabel;
+    private Label numberOfBallsLabel;
 
     private AndroidGame game;
 
@@ -35,29 +41,48 @@ public class InfoDisplay implements Disposable {
         stage = new Stage(new FitViewport(GameConstants.WORLD_WIDTH, GameConstants.WORLD_HEIGHT));
 
         BitmapFont font = game.assetManager().assetManager.get("font/gamerFont.fnt");
-        font.getData().setScale((GameConstants.WORLD_WIDTH/100)/3);
+        font.getData().setScale((GameConstants.WORLD_WIDTH/100)/5);
 
         Color white = new Color(1,1,1,0.3f);
         Color goldenRod = new Color(218, 165, 32, 0.3f);
 
-        timeLabel = new Label("TIME", new Label.LabelStyle(font, white));
-        timeCountLabel = new Label(String.format("%06d", worldTimer), new Label.LabelStyle(font, goldenRod));
-        scoreLabel = new Label("Score", new Label.LabelStyle(font, white));
-        scoreCountLabel = new Label(String.format("%06d", score), new Label.LabelStyle(font, goldenRod));
+        levelLabel = new Label("Level", new Label.LabelStyle(font, Color.WHITE));
+        levelNumberLabel = new Label(String.format("%06d", levelNumber), new Label.LabelStyle(font, Color.GOLDENROD));
+        timeLabel = new Label("TIME", new Label.LabelStyle(font, Color.WHITE));
+        timeCountLabel = new Label(String.format("%06d", worldTimer), new Label.LabelStyle(font, Color.GOLDENROD));
+        scoreLabel = new Label("Score", new Label.LabelStyle(font, Color.WHITE));
+        scoreCountLabel = new Label(String.format("%06d", score), new Label.LabelStyle(font, Color.GOLDENROD));
+        ballsLabel = new Label("Balls left", new Label.LabelStyle(font, Color.WHITE));
+        numberOfBallsLabel = new Label(String.format("%06d", ballLeft), new Label.LabelStyle(font, Color.GOLDENROD));
 
-        Table table = new Table();
-        table.setFillParent(true);
-        table.center();
+        Table tableLeft = new Table();
+        tableLeft.setFillParent(true);
+        tableLeft.bottom().left().padLeft(20).padBottom(20);
 
-        table.add(timeLabel).expandX().padTop(2);
-        table.row();
-        table.add(timeCountLabel).expandX().padTop(2);
-        table.row().pad(30,0,30,0);
-        table.add(scoreLabel).expandX().padBottom(2);
-        table.row();
-        table.add(scoreCountLabel).expandX().padBottom(2);
+        Table tableRight = new Table();
+        tableRight.setFillParent(true);
+        tableRight.bottom().right().padRight(20).padBottom(20);
 
-        stage.addActor(table);
+
+        tableRight.add(levelLabel).padTop(2);
+        tableRight.row();
+        tableRight.add(levelNumberLabel).padTop(2);
+        tableRight.row();
+        tableRight.add(ballsLabel).padBottom(2);
+        tableRight.row();
+        tableRight.add(numberOfBallsLabel).padBottom(2);
+
+
+        tableLeft.add(timeLabel).padTop(2);
+        tableLeft.row();
+        tableLeft.add(timeCountLabel).padTop(2);
+        tableLeft.row();
+        tableLeft.add(scoreLabel).padBottom(2);
+        tableLeft.row();
+        tableLeft.add(scoreCountLabel).padBottom(2);
+
+        stage.addActor(tableLeft);
+        stage.addActor(tableRight);
     }
 
     void renderDisplay(TimeKeeper timer, float delta){
@@ -72,6 +97,8 @@ public class InfoDisplay implements Disposable {
 
             timeCountLabel.setText(String.format("%s",worldTimer));
             scoreCountLabel.setText(Float.toString(ScoreKeeper.getScore()));
+            levelNumberLabel.setText(Integer.toString(game.getGameThread().getLevelGenerationSystem().getMainLevel()));
+            numberOfBallsLabel.setText(Integer.toString(game.getGameThread().getEntityCreator().getTotalShapes().size()));
         }
     }
 

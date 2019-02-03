@@ -84,6 +84,7 @@ public class CollisionSystem extends IteratingSystem {
                     }
                     collisionComponent.collisionEntity = null;
                     entityComponentMapper.get(entity).setHitEntity(false);
+
                     //entityComponentMapper.get(entity).setHitSurface(false);
                 }else {
                     //System.out.println("type == null");
